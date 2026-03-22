@@ -1,9 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 1050">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1140">
   <defs>
     <style>
       .text-title { font-family: "Microsoft YaHei", sans-serif; font-size: 26px; font-weight: bold; fill: #2c3e50; text-anchor: middle; }
       .box-title { font-family: "Microsoft YaHei", sans-serif; font-size: 18px; font-weight: bold; }
-      .box-desc { font-family: "Microsoft YaHei", sans-serif; font-size: 14px; fill: #555555; }
+      .box-desc { font-family: "Microsoft YaHei", sans-serif; font-size: 14px; fill: #444; }
+      .relation-text { font-family: "Microsoft YaHei", sans-serif; font-size: 14px; font-weight: bold; fill: #e74c3c; }
+      
       .ground { stroke: #34495e; stroke-width: 4; stroke-linecap: round; }
       .tank { fill: #ecf0f1; stroke: #34495e; stroke-width: 4; stroke-linejoin: round; }
       .worker { stroke: #2c3e50; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
@@ -11,133 +13,124 @@
       .rope { stroke: #e67e22; stroke-width: 2.5; stroke-dasharray: 5,5; }
       .tripod { stroke: #95a5a6; stroke-width: 4; stroke-linecap: round; }
       .vision-line { stroke: #e74c3c; stroke-width: 2; stroke-dasharray: 6, 4; }
-      .flow-line { fill: none; stroke: #bdc3c7; stroke-width: 3; stroke-dasharray: 8, 8; }
-      .arrow { fill: #bdc3c7; }
+      
+      /* 关系连线样式 */
+      .rel-line-solid { fill: none; stroke: #7f8c8d; stroke-width: 3; }
+      .rel-line-dash { fill: none; stroke: #e74c3c; stroke-width: 3; stroke-dasharray: 8, 8; }
+      .source-line { fill: none; stroke-width: 3; stroke-dasharray: 6, 6; }
     </style>
+    
+    <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#7f8c8d" />
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#e74c3c" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#9b59b6" />
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#1abc9c" />
+    </marker>
   </defs>
 
-  <rect x="0" y="0" width="420" height="600" fill="#f8f9fa" />
-  <text x="210" y="40" font-family="Microsoft YaHei" font-size="16" fill="#bdc3c7" font-weight="bold" text-anchor="middle">后方：项目、属地与审批区</text>
+  <rect x="0" y="0" width="600" height="700" fill="#f8f9fa" />
+  <text x="300" y="40" font-family="Microsoft YaHei" font-size="20" fill="#bdc3c7" font-weight="bold" text-anchor="middle">后端：组织、属地与审批层</text>
   
-  <rect x="420" y="0" width="680" height="600" fill="#ffffff" />
-  <text x="760" y="40" font-family="Microsoft YaHei" font-size="16" fill="#bdc3c7" font-weight="bold" text-anchor="middle">前方：现场作业区</text>
+  <rect x="600" y="0" width="800" height="700" fill="#ffffff" />
+  <text x="1000" y="40" font-family="Microsoft YaHei" font-size="20" fill="#bdc3c7" font-weight="bold" text-anchor="middle">前端：现场执行与物理作业区</text>
   
-  <line x1="420" y1="0" x2="420" y2="600" stroke="#ecf0f1" stroke-width="4" stroke-dasharray="15,10" />
+  <line x1="600" y1="0" x2="600" y2="700" stroke="#ecf0f1" stroke-width="4" stroke-dasharray="15,10" />
 
-  <g transform="translate(110, 110)">
-    <rect x="-60" y="-60" width="120" height="28" rx="14" fill="#9b59b6" />
-    <text x="0" y="-40" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle">项目发包单位</text>
-    <circle cx="0" cy="-10" r="12" fill="#ecf0f1" stroke="#2c3e50" stroke-width="2.5" />
-    <path d="M -15 10 L 15 10 L 20 40 L -20 40 Z" fill="#34495e" />
-    <rect x="-35" y="30" width="70" height="15" fill="#bdc3c7" rx="2" />
-    <rect x="10" y="15" width="15" height="20" fill="#fff" stroke="#95a5a6" stroke-width="1">
-       <animate attributeName="x" values="10; 50; 10" dur="3s" repeatCount="indefinite" />
-       <animate attributeName="opacity" values="1; 0; 1" dur="3s" repeatCount="indefinite" />
-    </rect>
+  <path d="M 220 180 C 350 180, 350 300, 480 300" class="rel-line-dash" marker-end="url(#arrow-red)">
+      <animate attributeName="stroke-dashoffset" values="16;0" dur="0.8s" repeatCount="indefinite" />
+  </path>
+  <rect x="290" y="210" width="90" height="24" fill="#fff" rx="4" />
+  <text x="335" y="227" class="relation-text" text-anchor="middle">签订委托合同</text>
+
+  <path d="M 220 420 C 350 420, 350 340, 480 340" class="rel-line-solid" marker-end="url(#arrow-gray)" />
+  <rect x="300" y="380" width="90" height="24" fill="#fff" rx="4" />
+  <text x="345" y="397" font-family="Microsoft YaHei" font-size="14" font-weight="bold" fill="#7f8c8d" text-anchor="middle">提出监管要求</text>
+
+  <path d="M 160 230 C 160 300, 160 550, 240 550" class="source-line" stroke="#9b59b6" marker-end="url(#arrow-purple)">
+      <animate attributeName="stroke-dashoffset" values="12;0" dur="1s" repeatCount="indefinite" />
+  </path>
+  <path d="M 160 470 C 160 500, 160 570, 240 570" class="source-line" stroke="#1abc9c" marker-end="url(#arrow-teal)">
+      <animate attributeName="stroke-dashoffset" values="12;0" dur="1s" repeatCount="indefinite" />
+  </path>
+  <rect x="110" y="548" width="80" height="24" fill="#fff" rx="4" />
+  <text x="150" y="565" font-family="Microsoft YaHei" font-size="12" font-weight="bold" fill="#34495e" text-anchor="middle">指派/来源</text>
+
+  <path d="M 240 160 C 450 160, 550 500, 710 500" class="source-line" stroke="#9b59b6"><animate attributeName="stroke-dashoffset" values="12;0" dur="0.8s" repeatCount="indefinite" /></path>
+  <path d="M 240 400 C 450 400, 550 500, 850 500" class="source-line" stroke="#1abc9c"><animate attributeName="stroke-dashoffset" values="12;0" dur="0.8s" repeatCount="indefinite" /></path>
+  <path d="M 580 320 C 650 320, 650 500, 990 500" class="source-line" stroke="#2980b9"><animate attributeName="stroke-dashoffset" values="12;0" dur="1s" repeatCount="indefinite" /></path>
+
+  <g transform="translate(160, 160)">
+    <rect x="-80" y="-40" width="160" height="70" rx="10" fill="#9b59b6" />
+    <text x="0" y="-15" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">项目发包单位</text>
+    <text x="0" y="10" font-family="Microsoft YaHei" font-size="12" fill="#ecf0f1" text-anchor="middle">任务委托/资质审核/整体统筹</text>
   </g>
 
-  <g transform="translate(290, 110)">
-    <rect x="-55" y="-60" width="110" height="28" rx="14" fill="#8e44ad" />
-    <text x="0" y="-40" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle">项目安全员</text>
-    <circle cx="0" cy="-10" r="12" fill="#ecf0f1" stroke="#2c3e50" stroke-width="2.5" />
-    <path d="M -12 -12 A 12 12 0 0 1 12 -12 Z" class="helmet" /> <path d="M -15 10 L 15 10 L 15 40 L -15 40 Z" fill="#9b59b6" opacity="0.8" /> <rect x="-5" y="10" width="15" height="20" fill="#fff" stroke="#2c3e50" stroke-width="1.5" />
-    <line x1="-2" y1="15" x2="8" y2="15" stroke="#2c3e50" stroke-width="1" />
-    <line x1="-2" y1="20" x2="8" y2="20" stroke="#2c3e50" stroke-width="1" />
-    <line x1="10" y1="-10" x2="700" y2="-10" class="vision-line">
-       <animate attributeName="stroke-dashoffset" values="0;10" dur="0.5s" repeatCount="indefinite" />
-    </line>
-    <line x1="10" y1="-10" x2="600" y2="350" class="vision-line">
-       <animate attributeName="stroke-dashoffset" values="0;10" dur="0.8s" repeatCount="indefinite" />
-    </line>
+  <g transform="translate(160, 400)">
+    <rect x="-80" y="-40" width="160" height="70" rx="10" fill="#1abc9c" />
+    <text x="0" y="-15" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">属地管理单位</text>
+    <text x="0" y="10" font-family="Microsoft YaHei" font-size="12" fill="#ecf0f1" text-anchor="middle">区域管理/辨识建档/监管</text>
   </g>
 
-  <g transform="translate(110, 270)">
-    <rect x="-60" y="-60" width="120" height="28" rx="14" fill="#1abc9c" />
-    <text x="0" y="-40" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle">属地管理单位</text>
-    <circle cx="0" cy="-10" r="12" fill="#ecf0f1" stroke="#2c3e50" stroke-width="2.5" />
-    <path d="M -15 10 L 15 10 L 20 40 L -20 40 Z" fill="#16a085" />
-    <rect x="-35" y="30" width="70" height="15" fill="#bdc3c7" rx="2" />
-    <polygon points="-15,15 -25,30 -5,30" fill="#f1c40f" stroke="#e67e22" stroke-width="2">
-       <animate attributeName="opacity" values="1; 0.5; 1" dur="1.5s" repeatCount="indefinite" />
-    </polygon>
-    <text x="-15" y="27" font-size="10" font-weight="bold" fill="#c0392b" text-anchor="middle">!</text>
+  <g transform="translate(500, 320)">
+    <rect x="-80" y="-40" width="160" height="70" rx="10" fill="#2980b9" />
+    <text x="0" y="-15" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#fff" text-anchor="middle">作业单位</text>
+    <text x="0" y="10" font-family="Microsoft YaHei" font-size="12" fill="#ecf0f1" text-anchor="middle">主体责任/评估/应急预案</text>
   </g>
 
-  <g transform="translate(110, 430)">
-    <rect x="-55" y="-60" width="110" height="28" rx="14" fill="#34495e" />
-    <text x="0" y="-40" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle">作业审批人</text>
-    <circle cx="0" cy="-10" r="12" fill="#ecf0f1" stroke="#2c3e50" stroke-width="2.5" />
-    <path d="M -15 10 L 15 10 L 20 40 L -20 40 Z" fill="#2980b9" />
-    <rect x="-35" y="30" width="70" height="15" fill="#bdc3c7" rx="2" />
-    <rect x="-10" y="25" width="20" height="25" fill="#fff" stroke="#95a5a6" stroke-width="1" />
-    <g>
-      <animateTransform attributeName="transform" type="translate" values="0,-15; 0,0; 0,-15" dur="1.5s" repeatCount="indefinite" />
-      <rect x="0" y="15" width="10" height="15" fill="#c0392b" />
-      <rect x="-5" y="30" width="20" height="5" fill="#e74c3c" />
-    </g>
-    <path d="M -5 30 L 0 35 L 10 22" fill="none" stroke="#2ecc71" stroke-width="3">
-       <animate attributeName="opacity" values="0; 1; 0" dur="1.5s" repeatCount="indefinite" />
-    </path>
+  <g transform="translate(320, 560)">
+    <rect x="-80" y="-30" width="160" height="60" rx="30" fill="#34495e" />
+    <text x="0" y="5" font-family="Microsoft YaHei" font-size="16" font-weight="bold" fill="#fff" text-anchor="middle">作业审批人</text>
   </g>
 
-  <g transform="translate(320, 270)">
-    <rect x="-50" y="-70" width="100" height="28" rx="14" fill="#2980b9" />
-    <text x="0" y="-50" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle">作业单位</text>
-    <circle cx="0" cy="-20" r="12" fill="#ecf0f1" stroke="#2c3e50" stroke-width="2.5" />
-    <path d="M -14 -23 A 14 14 0 0 1 14 -23 Z" class="helmet" />
-    <path d="M -15 0 L 15 0 L 15 40 L -15 40 Z" fill="#3498db" />
-    <rect x="-10" y="10" width="20" height="25" fill="#ecf0f1" />
-    <g opacity="0.2" stroke="#2c3e50" stroke-width="3" fill="none">
-      <circle cx="35" cy="-20" r="15" />
-      <path d="M 35 -40 L 35 -30 M 35 -10 L 35 0 M 15 -20 L 25 -20 M 45 -20 L 55 -20 M 20 -35 L 27 -28 M 43 -12 L 50 -5 M 50 -35 L 43 -28 M 27 -12 L 20 -5" />
-      <animateTransform attributeName="transform" type="rotate" from="0 35 -20" to="360 35 -20" dur="4s" repeatCount="indefinite" />
-    </g>
+
+  <line x1="600" y1="580" x2="1080" y2="580" class="ground" />
+  <line x1="1240" y1="580" x2="1400" y2="580" class="ground" />
+  <path d="M 1080 580 L 1080 620 L 1000 660 L 1000 700 L 1320 700 L 1320 660 L 1240 620 L 1240 580" class="tank" />
+
+  <g transform="translate(710, 580)">
+    <rect x="-50" y="-120" width="100" height="24" rx="12" fill="#8e44ad" />
+    <text x="0" y="-103" font-family="Microsoft YaHei" font-size="12" fill="#fff" text-anchor="middle">项目安全员</text>
+    <line x1="0" y1="-95" x2="0" y2="-65" stroke="#8e44ad" stroke-width="2" />
+    <line x1="0" y1="-45" x2="0" y2="-15" class="worker" />
+    <line x1="0" y1="-15" x2="-10" y2="0" class="worker" />
+    <line x1="0" y1="-15" x2="10" y2="0" class="worker" />
+    <circle cx="0" cy="-55" r="10" fill="#ecf0f1" stroke="#2c3e50" stroke-width="2.5" />
+    <path d="M -8 -40 L 8 -40 L 8 -20 L -8 -20 Z" fill="#8e44ad" opacity="0.6"/> 
   </g>
 
-  <path d="M 170 110 L 230 110" class="flow-line"><animate attributeName="stroke-dashoffset" values="16;0" dur="0.8s" repeatCount="indefinite" /></path>
-  <path d="M 170 290 Q 250 350 490 420" class="flow-line" stroke="#1abc9c" stroke-width="2"><animate attributeName="stroke-dashoffset" values="16;0" dur="0.8s" repeatCount="indefinite" /></path>
-  <path d="M 170 430 Q 250 430 450 400" class="flow-line"><animate attributeName="stroke-dashoffset" values="16;0" dur="1s" repeatCount="indefinite" /></path>
-  <path d="M 370 290 Q 420 290 600 420" class="flow-line"><animate attributeName="stroke-dashoffset" values="16;0" dur="0.8s" repeatCount="indefinite" /></path>
+  <g transform="translate(850, 580)">
+    <rect x="-60" y="-120" width="120" height="24" rx="12" fill="#16a085" />
+    <text x="0" y="-103" font-family="Microsoft YaHei" font-size="12" fill="#fff" text-anchor="middle">现场安全检查人员</text>
+    <line x1="0" y1="-95" x2="0" y2="-65" stroke="#16a085" stroke-width="2" />
+    <line x1="0" y1="-45" x2="0" y2="-15" class="worker" />
+    <line x1="0" y1="-15" x2="-10" y2="0" class="worker" />
+    <line x1="0" y1="-15" x2="10" y2="0" class="worker" />
+    <circle cx="0" cy="-55" r="10" fill="#ecf0f1" stroke="#2c3e50" stroke-width="2.5" />
+    <path d="M -8 -40 L 8 -40 L 8 -20 L -8 -20 Z" fill="#16a085" opacity="0.6"/> 
+  </g>
 
-  <line x1="420" y1="480" x2="800" y2="480" class="ground" />
-  <line x1="940" y1="480" x2="1080" y2="480" class="ground" />
-  
-  <path d="M 800 480 L 800 520 L 730 560 L 730 600 L 1010 600 L 1010 560 L 940 520 L 940 480" class="tank" />
-
-  <g transform="translate(490, 480)">
-    <rect x="-60" y="-115" width="120" height="28" rx="14" fill="#2ecc71" />
-    <text x="0" y="-95" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle">现场安全检查员</text>
-    <line x1="0" y1="-85" x2="0" y2="-65" stroke="#2ecc71" stroke-width="2" />
+  <g transform="translate(990, 580)">
+    <rect x="-50" y="-120" width="100" height="24" rx="12" fill="#e67e22" />
+    <text x="0" y="-103" font-family="Microsoft YaHei" font-size="12" fill="#fff" text-anchor="middle">作业负责人</text>
+    <line x1="0" y1="-95" x2="0" y2="-65" stroke="#e67e22" stroke-width="2" />
     <line x1="0" y1="-45" x2="0" y2="-15" class="worker" />
     <line x1="0" y1="-15" x2="-10" y2="0" class="worker" />
     <line x1="0" y1="-15" x2="10" y2="0" class="worker" />
     <circle cx="0" cy="-55" r="10" fill="#ecf0f1" stroke="#2c3e50" stroke-width="2.5" />
     <path d="M -12 -57 A 12 12 0 0 1 12 -57 Z" class="helmet" />
-    <path d="M -8 -40 L 8 -40 L 8 -20 L -8 -20 Z" fill="#2ecc71" opacity="0.8"/> <line x1="0" y1="-40" x2="20" y2="-30" class="worker" />
-    <rect x="18" y="-35" width="10" height="15" fill="#ecf0f1" stroke="#2c3e50" stroke-width="1.5" /> </g>
-
-  <g transform="translate(620, 480)">
-    <rect x="-55" y="-115" width="110" height="28" rx="14" fill="#e67e22" />
-    <text x="0" y="-95" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle">作业负责人</text>
-    <line x1="0" y1="-85" x2="0" y2="-65" stroke="#e67e22" stroke-width="2" />
-    <line x1="0" y1="-45" x2="0" y2="-15" class="worker" />
-    <line x1="0" y1="-15" x2="-10" y2="0" class="worker" />
-    <line x1="0" y1="-15" x2="10" y2="0" class="worker" />
-    <circle cx="0" cy="-55" r="10" fill="#ecf0f1" stroke="#2c3e50" stroke-width="2.5" />
-    <path d="M -12 -57 A 12 12 0 0 1 12 -57 Z" class="helmet" />
-    <path d="M -8 -40 L 8 -40 L 8 -20 L -8 -20 Z" fill="#e67e22" opacity="0.8"/> 
-    <line x1="0" y1="-40" x2="25" y2="-25" class="worker">
-       <animate attributeName="y2" values="-25; -35; -25" dur="1s" repeatCount="indefinite" />
-    </line>
-    <path d="M 30 -35 Q 35 -45 40 -35 M 35 -30 Q 42 -42 48 -30" fill="none" stroke="#e67e22" stroke-width="2">
-       <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite" />
-    </path>
+    <path d="M -8 -40 L 8 -40 L 8 -20 L -8 -20 Z" fill="#e67e22" opacity="0.8"/>
   </g>
 
-  <g transform="translate(750, 480)">
-    <rect x="-40" y="-115" width="80" height="28" rx="14" fill="#e74c3c" />
-    <text x="0" y="-95" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle">监护人</text>
-    <line x1="0" y1="-85" x2="0" y2="-65" stroke="#e74c3c" stroke-width="2" />
+  <g transform="translate(1120, 580)">
+    <rect x="-40" y="-120" width="80" height="24" rx="12" fill="#e74c3c" />
+    <text x="0" y="-103" font-family="Microsoft YaHei" font-size="12" fill="#fff" text-anchor="middle">监护人</text>
+    <line x1="0" y1="-95" x2="0" y2="-65" stroke="#e74c3c" stroke-width="2" />
     <line x1="0" y1="-45" x2="0" y2="-15" class="worker" />
     <line x1="0" y1="-15" x2="-10" y2="0" class="worker" />
     <line x1="0" y1="-15" x2="10" y2="0" class="worker" />
@@ -145,99 +138,85 @@
     <path d="M -12 -57 A 12 12 0 0 1 12 -57 Z" class="helmet" />
     <line x1="0" y1="-40" x2="15" y2="-25" class="worker" />
     <rect x="12" y="-25" width="8" height="12" fill="#e74c3c" rx="2" />
-    <circle cx="16" cy="-22" r="1.5" fill="#2ecc71">
-        <animate attributeName="opacity" values="1;0;1" dur="0.8s" repeatCount="indefinite" />
-    </circle>
-    <line x1="10" y1="-55" x2="100" y2="40" class="vision-line">
-       <animate attributeName="stroke-dashoffset" values="0;10" dur="0.8s" repeatCount="indefinite" />
-    </line>
+    <circle cx="16" cy="-22" r="1.5" fill="#2ecc71"><animate attributeName="opacity" values="1;0;1" dur="0.8s" repeatCount="indefinite" /></circle>
   </g>
 
-  <line x1="870" y1="360" x2="820" y2="480" class="tripod" />
-  <line x1="870" y1="360" x2="920" y2="480" class="tripod" />
-  <circle cx="870" cy="360" r="6" fill="#7f8c8d" />
-  <line x1="870" y1="360" x2="870" y2="550" class="rope" /> 
+  <line x1="1160" y1="440" x2="1110" y2="580" class="tripod" />
+  <line x1="1160" y1="440" x2="1210" y2="580" class="tripod" />
+  <circle cx="1160" cy="440" r="6" fill="#7f8c8d" />
+  <line x1="1160" y1="440" x2="1160" y2="670" class="rope" /> 
 
-  <g transform="translate(870, 570)">
-    <rect x="30" y="-80" width="70" height="28" rx="14" fill="#16a085" />
-    <text x="65" y="-60" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle">作业人</text>
-    <line x1="10" y1="-45" x2="30" y2="-65" stroke="#16a085" stroke-width="2" />
+  <g transform="translate(1160, 670)">
+    <rect x="40" y="-80" width="70" height="24" rx="12" fill="#27ae60" />
+    <text x="75" y="-63" font-family="Microsoft YaHei" font-size="12" fill="#fff" text-anchor="middle">作业人</text>
+    <line x1="10" y1="-45" x2="40" y2="-65" stroke="#27ae60" stroke-width="2" />
     <circle cx="0" cy="-35" r="12" stroke="#2c3e50" stroke-width="3" fill="#ecf0f1" />
     <path d="M -14 -38 A 14 14 0 0 1 14 -38 Z" class="helmet" />
     <line x1="0" y1="-23" x2="0" y2="15" class="worker" />
-    <path d="M -8 -15 L 8 -15 M -8 5 L 8 5" stroke="#e74c3c" stroke-width="2" /> 
-    <line x1="0" y1="-15" x2="-18" y2="0" class="worker"><animate attributeName="y2" values="0; -8; 0" dur="1s" repeatCount="indefinite" /></line>
-    <line x1="0" y1="-15" x2="18" y2="0" class="worker"><animate attributeName="y2" values="0; 8; 0" dur="1s" repeatCount="indefinite" /></line>
     <line x1="0" y1="15" x2="-15" y2="30" class="worker" />
     <line x1="0" y1="15" x2="15" y2="30" class="worker" />
   </g>
 
-  <line x1="30" y1="630" x2="1070" y2="630" stroke="#bdc3c7" stroke-width="2" />
-  
-  <g transform="translate(30, 660)">
-    <rect x="0" y="0" width="6" height="20" fill="#9b59b6" rx="3" />
-    <text x="15" y="16" fill="#9b59b6" class="box-title">项目发包单位</text>
-    <text x="15" y="45" class="box-desc">负责将作业任务进行委托、签订合同的部门。</text>
-    <text x="15" y="67" class="box-desc">审核作业单位资质、签订协议、提供技术资料、</text>
-    <text x="15" y="89" class="box-desc">办理审批手续，对整体安全进行协调管理。</text>
+
+  <g transform="translate(30, 750)">
+    <rect x="0" y="0" width="420" height="360" fill="#f4eefa" rx="10" />
+    <path d="M 0 10 Q 0 0 10 0 L 410 0 Q 420 0 420 10 L 420 50 L 0 50 Z" fill="#9b59b6" />
+    <text x="210" y="32" font-family="Microsoft YaHei" font-size="20" font-weight="bold" fill="#fff" text-anchor="middle">项目发包管理体系</text>
+    
+    <rect x="20" y="70" width="6" height="20" fill="#8e44ad" rx="3" />
+    <text x="40" y="86" fill="#8e44ad" class="box-title">项目发包单位</text>
+    <text x="40" y="115" class="box-desc">负责将作业任务进行委托、签订合同或协议的</text>
+    <text x="40" y="137" class="box-desc">部门。负责审核作业单位资质、签订安全协议、</text>
+    <text x="40" y="159" class="box-desc">提供技术资料、办理审批手续，并对项目整体</text>
+    <text x="40" y="181" class="box-desc">安全进行协调与统筹管理。</text>
+    
+    <rect x="20" y="220" width="6" height="20" fill="#8e44ad" rx="3" />
+    <text x="40" y="236" fill="#8e44ad" class="box-title">项目安全员</text>
+    <text x="40" y="265" class="box-desc">发包单位派驻的现场监督力量。负责对项目</text>
+    <text x="40" y="287" class="box-desc">整体的现场执行安全进行全面的监督与检查。</text>
   </g>
 
-  <g transform="translate(380, 660)">
-    <rect x="0" y="0" width="6" height="20" fill="#8e44ad" rx="3" />
-    <text x="15" y="16" fill="#8e44ad" class="box-title">项目安全员</text>
-    <text x="15" y="45" class="box-desc">由项目发包单位指派，负责对项目整</text>
-    <text x="15" y="67" class="box-desc">体安全进行监督检查的人员。</text>
+  <g transform="translate(480, 750)">
+    <rect x="0" y="0" width="420" height="360" fill="#e8f8f5" rx="10" />
+    <path d="M 0 10 Q 0 0 10 0 L 410 0 Q 420 0 420 10 L 420 50 L 0 50 Z" fill="#1abc9c" />
+    <text x="210" y="32" font-family="Microsoft YaHei" font-size="20" font-weight="bold" fill="#fff" text-anchor="middle">属地安全管理体系</text>
+    
+    <rect x="20" y="70" width="6" height="20" fill="#16a085" rx="3" />
+    <text x="40" y="86" fill="#16a085" class="box-title">属地管理单位</text>
+    <text x="40" y="115" class="box-desc">有限空间所在区域的直接管理部门。负责对本辖</text>
+    <text x="40" y="137" class="box-desc">区内有限空间进行辨识、建档、设置警示标识，</text>
+    <text x="40" y="159" class="box-desc">并对进入辖区作业的单位进行现场安全监管，确</text>
+    <text x="40" y="181" class="box-desc">保符合属地自身的安全管理要求。</text>
+    
+    <rect x="20" y="220" width="6" height="20" fill="#16a085" rx="3" />
+    <text x="40" y="236" fill="#16a085" class="box-title">现场安全检查人员</text>
+    <text x="40" y="265" class="box-desc">属地单位派驻的现场触角。负责对具体的作</text>
+    <text x="40" y="287" class="box-desc">业现场环境进行日常管理和动态安全排查。</text>
   </g>
 
-  <g transform="translate(730, 660)">
-    <rect x="0" y="0" width="6" height="20" fill="#1abc9c" rx="3" />
-    <text x="15" y="16" fill="#1abc9c" class="box-title">属地管理单位</text>
-    <text x="15" y="45" class="box-desc">有限空间所在区域的直接管理部门。负责辨识、</text>
-    <text x="15" y="67" class="box-desc">建档、设置警示标识，并对进入本辖区作业的</text>
-    <text x="15" y="89" class="box-desc">单位进行现场安全监管。</text>
-  </g>
+  <g transform="translate(930, 750)">
+    <rect x="0" y="0" width="440" height="360" fill="#ebf5fb" rx="10" />
+    <path d="M 0 10 Q 0 0 10 0 L 430 0 Q 440 0 440 10 L 440 50 L 0 50 Z" fill="#2980b9" />
+    <text x="220" y="32" font-family="Microsoft YaHei" font-size="20" font-weight="bold" fill="#fff" text-anchor="middle">作业单位及一线执行体系</text>
+    
+    <rect x="20" y="65" width="6" height="18" fill="#2980b9" rx="3" />
+    <text x="35" y="80" fill="#2980b9" class="box-title">作业单位</text>
+    <text x="35" y="103" class="box-desc">进入有限空间实施作业的部门/承包商，是作业的</text>
+    <text x="35" y="123" class="box-desc">安全主体责任方。负责全流程管理与设备配备。</text>
 
-  <g transform="translate(30, 780)">
-    <rect x="0" y="0" width="6" height="20" fill="#2ecc71" rx="3" />
-    <text x="15" y="16" fill="#2ecc71" class="box-title">现场安全检查员</text>
-    <text x="15" y="45" class="box-desc">由属地管理单位指派，对有限空间</text>
-    <text x="15" y="67" class="box-desc">作业现场进行实际管理和检查的人员。</text>
-  </g>
+    <rect x="20" y="140" width="6" height="18" fill="#e67e22" rx="3" />
+    <text x="35" y="155" fill="#e67e22" class="box-title">作业负责人</text>
+    <text x="35" y="178" class="box-desc">在现场组织、指挥与协调实施的具体指挥人员。</text>
+    
+    <rect x="20" y="195" width="6" height="18" fill="#e74c3c" rx="3" />
+    <text x="35" y="210" fill="#e74c3c" class="box-title">监护人</text>
+    <text x="35" y="233" class="box-desc">在有限空间外监测气体、保持通讯的专项保护人员。</text>
+    
+    <rect x="20" y="250" width="6" height="18" fill="#27ae60" rx="3" />
+    <text x="35" y="265" fill="#27ae60" class="box-title">作业人</text>
+    <text x="35" y="288" class="box-desc">进入内部实际施工的一线执行人员。</text>
 
-  <g transform="translate(380, 780)">
-    <rect x="0" y="0" width="6" height="20" fill="#34495e" rx="3" />
-    <text x="15" y="16" fill="#34495e" class="box-title">作业审批人</text>
-    <text x="15" y="45" class="box-desc">负责有限空间作业审批的</text>
-    <text x="15" y="67" class="box-desc">人员。</text>
-  </g>
-
-  <g transform="translate(730, 780)">
-    <rect x="0" y="0" width="6" height="20" fill="#2980b9" rx="3" />
-    <text x="15" y="16" fill="#2980b9" class="box-title">作业单位</text>
-    <text x="15" y="45" class="box-desc">进入有限空间实施作业的部门或承包商。</text>
-    <text x="15" y="67" class="box-desc">是作业安全主体责任方。负责全流程的</text>
-    <text x="15" y="89" class="box-desc">设备配备、预案制定及实施管理。</text>
-  </g>
-
-  <g transform="translate(30, 910)">
-    <rect x="0" y="0" width="6" height="20" fill="#e67e22" rx="3" />
-    <text x="15" y="16" fill="#e67e22" class="box-title">作业负责人</text>
-    <text x="15" y="45" class="box-desc">在作业现场负责组织实施有限</text>
-    <text x="15" y="67" class="box-desc">空间作业的人员。</text>
-  </g>
-
-  <g transform="translate(380, 910)">
-    <rect x="0" y="0" width="6" height="20" fill="#e74c3c" rx="3" />
-    <text x="15" y="16" fill="#e74c3c" class="box-title">监护人</text>
-    <text x="15" y="45" class="box-desc">在有限空间外（如地面）对有限</text>
-    <text x="15" y="67" class="box-desc">空间作业进行监护的人员。</text>
-  </g>
-
-  <g transform="translate(730, 910)">
-    <rect x="0" y="0" width="6" height="20" fill="#16a085" rx="3" />
-    <text x="15" y="16" fill="#16a085" class="box-title">作业人</text>
-    <text x="15" y="45" class="box-desc">进入有限空间实施作业的</text>
-    <text x="15" y="67" class="box-desc">人员。</text>
+    
   </g>
 
 </svg>
