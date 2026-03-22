@@ -1,0 +1,241 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1050">
+  <defs>
+    <style>
+      .main-title { font-family: "Microsoft YaHei", sans-serif; font-size: 32px; font-weight: bold; fill: #2c3e50; }
+      .sub-title { font-family: "Microsoft YaHei", sans-serif; font-size: 16px; fill: #7f8c8d; }
+      .card-title { font-family: "Microsoft YaHei", sans-serif; font-size: 20px; font-weight: bold; fill: #2c3e50; }
+      .param-text { font-family: "Microsoft YaHei", sans-serif; font-size: 14px; font-weight: bold; fill: #e74c3c; }
+      .desc-text { font-family: "Microsoft YaHei", sans-serif; font-size: 13px; fill: #34495e; }
+      .highlight-box { fill: #fdfefe; stroke: #bdc3c7; stroke-width: 2; rx: 12; }
+      
+      /* 动画与线条通用样式 */
+      .airflow { fill: none; stroke: #3498db; stroke-width: 3; stroke-dasharray: 8 6; stroke-linecap: round; }
+      .signal-wave { fill: none; stroke: #3498db; stroke-width: 3; stroke-linecap: round; }
+      .rope-dash { fill: none; stroke: #e67e22; stroke-width: 4; stroke-dasharray: 10 5; }
+      .icon-base { fill: none; stroke: #2c3e50; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1400" height="1050" fill="#f4f6f7" />
+  
+  <text x="50" y="60" class="main-title">防护与应急救援设备设施配置标准</text>
+  <text x="50" y="90" class="sub-title">必须根据有限空间作业风险，按国家/行业标准至少配备以下设备，并确保有效可用。</text>
+  <line x1="50" y1="110" x2="1350" y2="110" stroke="#bdc3c7" stroke-width="2" stroke-dasharray="6,4" />
+
+  <g transform="translate(50, 140)">
+    <rect x="0" y="0" width="410" height="260" class="highlight-box" fill="#fff9f9" stroke="#ffcccc" />
+    <text x="20" y="35" class="card-title">气体检测报警仪</text>
+    
+    <rect x="20" y="60" width="80" height="140" rx="10" fill="#f39c12" stroke="#2c3e50" stroke-width="3" />
+    <rect x="30" y="70" width="60" height="70" rx="4" fill="#2c3e50" />
+    <line x1="32" y1="80" x2="88" y2="80" stroke="#2ecc71" stroke-width="2">
+       <animate attributeName="y1" values="80; 130; 80" dur="2s" repeatCount="indefinite" />
+       <animate attributeName="y2" values="80; 130; 80" dur="2s" repeatCount="indefinite" />
+    </line>
+    <circle cx="45" cy="165" r="8" fill="#ecf0f1" stroke="#2c3e50" stroke-width="2" />
+    <circle cx="75" cy="165" r="8" fill="#e74c3c" stroke="#2c3e50" stroke-width="2">
+       <animate attributeName="fill" values="#e74c3c; #ff9999; #e74c3c" dur="0.5s" repeatCount="indefinite" />
+    </circle>
+    
+    <path d="M 60 200 L 60 230 L 110 230" class="icon-base" />
+    <path d="M 60 200 L 60 230 L 110 230" fill="none" stroke="#3498db" stroke-width="2" stroke-dasharray="6,4">
+       <animate attributeName="stroke-dashoffset" values="10;0" dur="0.5s" repeatCount="indefinite" />
+    </path>
+
+    <text x="130" y="70" class="param-text">必备四合一 (推荐泵吸式)</text>
+    <rect x="130" y="80" width="260" height="100" fill="#2c3e50" rx="6" />
+    <text x="140" y="100" font-family="Microsoft YaHei" font-size="12" fill="#2ecc71" font-weight="bold">O2 : 缺氧19.5% / 富氧23.5% (VOL)</text>
+    <text x="140" y="125" font-family="Microsoft YaHei" font-size="12" fill="#f1c40f" font-weight="bold">可燃气 : 10% LEL (一级) / 25% (二级)</text>
+    <text x="140" y="150" font-family="Microsoft YaHei" font-size="12" fill="#e74c3c" font-weight="bold">H2S : 3.5/7 PPM  |  CO : 12.5/25 PPM</text>
+    
+    <text x="130" y="210" class="desc-text">• 每年至少检定或校准1次 (贴有效标签)</text>
+    <text x="130" y="235" class="desc-text">• 每次使用前需进行零点标定和功能检查</text>
+  </g>
+
+  <g transform="translate(490, 140)">
+    <rect x="0" y="0" width="410" height="260" class="highlight-box" fill="#f4fdfb" stroke="#a2d9ce" />
+    <text x="20" y="35" class="card-title">呼吸防护用品</text>
+    
+    <rect x="30" y="60" width="40" height="110" rx="20" fill="#f1c40f" stroke="#2c3e50" stroke-width="3" />
+    <path d="M 25 80 L 75 80 M 25 150 L 75 150" stroke="#34495e" stroke-width="4" /> <circle cx="50" cy="50" r="10" fill="#bdc3c7" stroke="#2c3e50" stroke-width="2" />
+    
+    <circle cx="95" cy="50" r="14" fill="#fff" stroke="#2c3e50" stroke-width="2" />
+    <path d="M 83 50 A 12 12 0 0 1 107 50" fill="none" stroke="#2ecc71" stroke-width="4" />
+    <line x1="95" y1="50" x2="88" y2="43" stroke="#e74c3c" stroke-width="2">
+       <animateTransform attributeName="transform" type="rotate" values="0 95 50; 20 95 50; 0 95 50" dur="2s" repeatCount="indefinite" />
+    </line>
+    <path d="M 50 40 Q 50 10 95 10 Q 110 10 110 30" fill="none" stroke="#2c3e50" stroke-width="2" /> <path d="M 90 200 C 90 170 130 170 130 200 C 130 230 90 230 90 200 Z" fill="#ecf0f1" stroke="#2c3e50" stroke-width="3" />
+    <circle cx="110" cy="200" r="12" fill="#34495e" />
+    <path d="M 135 200 L 150 200 M 135 190 L 145 185 M 135 210 L 145 215" stroke="#3498db" stroke-width="2" stroke-linecap="round">
+       <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite" />
+    </path>
+
+    <text x="140" y="70" class="param-text">隔绝式 / 逃生型</text>
+    <text x="140" y="95" class="desc-text">• SCBA(自给开路压缩空气): 压力≥28MPa</text>
+    <text x="140" y="115" class="desc-text">• 长管呼吸器 / 正压自给闭路氧气呼吸器</text>
+    <text x="140" y="135" class="desc-text">• 气瓶需在3年检验有效期内</text>
+    <text x="140" y="155" class="desc-text">• 逃生型(压缩空气/氧气)呼吸器</text>
+    <text x="140" y="200" class="desc-text" fill="#e67e22" font-weight="bold">★ 定期检查面罩、供气阀等部件</text>
+  </g>
+
+  <g transform="translate(930, 140)">
+    <rect x="0" y="0" width="420" height="260" class="highlight-box" fill="#fdfaf3" stroke="#f5cba7" />
+    <text x="20" y="35" class="card-title">坠落防护用品与救援提升</text>
+    
+    <line x1="70" y1="70" x2="30" y2="230" class="icon-base" stroke-width="6" stroke="#7f8c8d" />
+    <line x1="70" y1="70" x2="110" y2="230" class="icon-base" stroke-width="6" stroke="#7f8c8d" />
+    <circle cx="70" cy="70" r="8" fill="#e67e22" />
+    <rect x="85" y="130" width="15" height="25" fill="#34495e" /> <line x1="92" y1="142" x2="110" y2="142" stroke="#2c3e50" stroke-width="3" stroke-linecap="round">
+       <animateTransform attributeName="transform" type="rotate" from="0 92 142" to="360 92 142" dur="1.5s" repeatCount="indefinite" />
+    </line>
+
+    <line x1="70" y1="70" x2="70" y2="200" class="rope-dash">
+       <animate attributeName="stroke-dashoffset" values="15;0" dur="0.5s" repeatCount="indefinite" />
+    </line>
+    
+    <path d="M 60 200 L 80 200 L 80 220 L 60 220 Z" fill="none" stroke="#e74c3c" stroke-width="3" />
+    <path d="M 65 200 L 65 190 A 5 5 0 0 1 75 190 L 75 200" fill="none" stroke="#2c3e50" stroke-width="2" />
+
+    <text x="140" y="80" class="param-text">全身式安全带 + 救援提升</text>
+    <text x="140" y="110" class="desc-text">• 全身式安全带 (符合GB 6095)</text>
+    <text x="140" y="135" class="desc-text">• 专用安全绳 (符合GB 24543)</text>
+    <text x="140" y="160" class="desc-text">• 必须配备提升救援设备：</text>
+    <text x="160" y="185" class="desc-text" font-weight="bold">三脚架 / 吊臂 / 绞盘</text>
+    <text x="140" y="210" class="desc-text" fill="#e74c3c">• 确保无需入内即可将人员从底部拉出</text>
+  </g>
+
+  <g transform="translate(50, 430)">
+    <rect x="0" y="0" width="410" height="250" class="highlight-box" fill="#f4f9fd" stroke="#a9cce3" />
+    <text x="20" y="35" class="card-title">通风设备</text>
+    
+    <path d="M 40 120 C 40 70 100 70 100 120 C 100 160 60 180 60 180 L 40 160 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="4" />
+    <circle cx="70" cy="120" r="25" fill="#34495e" />
+    <g>
+      <path d="M 70 120 L 70 95 M 70 120 L 92 135 M 70 120 L 48 135" stroke="#ecf0f1" stroke-width="4" stroke-linecap="round" />
+      <animateTransform attributeName="transform" type="rotate" from="0 70 120" to="360 70 120" dur="0.2s" repeatCount="indefinite" />
+    </g>
+    
+    <path d="M 95 160 Q 130 160 130 200 L 130 220" fill="none" stroke="#bdc3c7" stroke-width="15" stroke-linecap="round" />
+    <path d="M 95 160 Q 130 160 130 200 L 130 220" class="airflow">
+       <animate attributeName="stroke-dashoffset" values="14;0" dur="0.3s" repeatCount="indefinite" />
+    </path>
+    <path d="M 120 230 L 110 240 M 130 235 L 130 245 M 140 230 L 150 240" stroke="#3498db" stroke-width="2">
+       <animate attributeName="opacity" values="1;0;1" dur="0.6s" repeatCount="indefinite" />
+    </path>
+
+    <text x="160" y="80" class="param-text">防爆型强制送风/排风</text>
+    <text x="160" y="115" class="desc-text">• 必须为防爆型强制设备</text>
+    <text x="160" y="145" class="desc-text">• 风管铺设要求：</text>
+    <text x="180" y="170" class="desc-text" font-weight="bold" fill="#2980b9">必须延伸至作业区域底部</text>
+    <text x="180" y="195" class="desc-text" font-weight="bold" fill="#2980b9">或作业人员实际工作处</text>
+  </g>
+
+  <g transform="translate(490, 430)">
+    <rect x="0" y="0" width="410" height="250" class="highlight-box" fill="#fffcf4" stroke="#f9e79f" />
+    <text x="20" y="35" class="card-title">安全照明设备</text>
+    
+    <g transform="translate(50, 80)">
+      <circle cx="20" cy="30" r="30" fill="#f1c40f" opacity="0.2">
+         <animate attributeName="r" values="30;35;30" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <path d="M 10 0 L 30 0 L 35 20 L 5 20 Z" fill="#7f8c8d" stroke="#2c3e50" stroke-width="2" />
+      <path d="M 10 20 C -5 50 45 50 30 20 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="2" />
+      <text x="-5" y="80" class="desc-text" font-weight="bold">常规环境</text>
+      <text x="-5" y="100" class="param-text">≤ 36V</text>
+    </g>
+
+    <g transform="translate(160, 80)">
+      <circle cx="20" cy="30" r="25" fill="#e67e22" opacity="0.2">
+         <animate attributeName="r" values="25;30;25" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <path d="M 10 0 L 30 0 L 35 20 L 5 20 Z" fill="#95a5a6" stroke="#2c3e50" stroke-width="2" />
+      <path d="M 10 20 C -5 50 45 50 30 20 Z" fill="#e67e22" stroke="#2c3e50" stroke-width="2" />
+      <rect x="-10" y="65" width="60" height="5" fill="#95a5a6" /> <text x="-5" y="90" class="desc-text" font-weight="bold">金属结构内</text>
+      <text x="5" y="110" class="param-text">≤ 24V</text>
+    </g>
+
+    <g transform="translate(280, 80)">
+      <circle cx="20" cy="30" r="20" fill="#e74c3c" opacity="0.2">
+         <animate attributeName="r" values="20;25;20" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <path d="M 10 0 L 30 0 L 35 20 L 5 20 Z" fill="#34495e" stroke="#2c3e50" stroke-width="2" />
+      <path d="M 10 20 C -5 50 45 50 30 20 Z" fill="#e74c3c" stroke="#2c3e50" stroke-width="2" />
+      <path d="M -10 70 Q 10 60 20 70 T 50 70" fill="none" stroke="#3498db" stroke-width="2" /> <text x="-10" y="90" class="desc-text" font-weight="bold">积水/潮湿结露</text>
+      <text x="5" y="110" class="param-text">≤ 12V</text>
+    </g>
+
+    <text x="50" y="215" class="desc-text" fill="#c0392b">⚠️ 严格执行安全电压标准，防止触电事故！</text>
+  </g>
+
+  <g transform="translate(930, 430)">
+    <rect x="0" y="0" width="420" height="250" class="highlight-box" fill="#faf9fdf" stroke="#d2b4de" />
+    <text x="20" y="35" class="card-title">通讯与联络设备</text>
+    
+    <rect x="50" y="100" width="40" height="80" rx="4" fill="#2c3e50" stroke="#34495e" stroke-width="2" />
+    <line x1="60" y1="100" x2="60" y2="60" stroke="#2c3e50" stroke-width="4" stroke-linecap="round" /> <rect x="55" y="110" width="30" height="25" fill="#bdc3c7" /> <circle cx="80" cy="95" r="4" fill="#2ecc71">
+       <animate attributeName="opacity" values="1;0;1" dur="0.5s" repeatCount="indefinite" />
+    </circle>
+    
+    <path d="M 40 70 A 30 30 0 0 0 40 130 M 30 60 A 45 45 0 0 0 30 140" class="signal-wave">
+       <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite" />
+       <animate attributeName="stroke-dasharray" values="0,40; 40,0" dur="1s" repeatCount="indefinite" />
+    </path>
+    <path d="M 100 70 A 30 30 0 0 1 100 130 M 110 60 A 45 45 0 0 1 110 140" class="signal-wave">
+       <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite" />
+       <animate attributeName="stroke-dasharray" values="0,40; 40,0" dur="1s" repeatCount="indefinite" />
+    </path>
+
+    <text x="160" y="90" class="param-text">防爆对讲机 / 声光联络</text>
+    <text x="160" y="125" class="desc-text">• 内部空间狭小、屏障多</text>
+    <text x="160" y="150" class="desc-text">• 需配备防爆对讲机保持畅通</text>
+    <text x="160" y="175" class="desc-text">• 或布置可靠的声光信号装置</text>
+    <text x="160" y="200" class="desc-text" fill="#e67e22">• 监护人必须时刻保持与内部联络</text>
+  </g>
+
+  <g transform="translate(50, 710)">
+    <rect x="0" y="0" width="850" height="250" class="highlight-box" fill="#fbfcfc" stroke="#d5d8dc" />
+    <text x="20" y="35" class="card-title">其他个体防护用品 (PPE) 及工器具</text>
+    
+    <g transform="translate(80, 100)">
+      <path d="M 0 30 C 0 -10 60 -10 60 30 Z" fill="#f1c40f" stroke="#2c3e50" stroke-width="3" />
+      <line x1="-10" y1="30" x2="70" y2="30" stroke="#2c3e50" stroke-width="4" stroke-linecap="round" />
+      <path d="M 10 20 L 20 0 L 25 0 L 15 20 Z" fill="#fff" opacity="0.6">
+         <animateTransform attributeName="transform" type="translate" values="-10,0; 50,0; -10,0" dur="3s" repeatCount="indefinite" />
+      </path>
+      <text x="30" y="65" class="desc-text" text-anchor="middle" font-weight="bold">安全帽 (GB 2811)</text>
+    </g>
+
+    <g transform="translate(260, 100)">
+      <path d="M 10 30 L 10 0 C 10 -10 30 -10 30 0 L 30 30 C 40 30 40 45 20 45 C 0 45 0 30 10 30 Z" fill="#e67e22" stroke="#2c3e50" stroke-width="3" />
+      <text x="20" y="65" class="desc-text" text-anchor="middle" font-weight="bold">防护手套/绝缘鞋</text>
+    </g>
+
+    <g transform="translate(420, 100)">
+      <circle cx="10" cy="10" r="6" fill="none" stroke="#2c3e50" stroke-width="3" />
+      <line x1="15" y1="15" x2="40" y2="40" stroke="#2c3e50" stroke-width="4" stroke-linecap="round" />
+      <circle cx="45" cy="45" r="6" fill="none" stroke="#2c3e50" stroke-width="3" />
+      <animateTransform attributeName="transform" type="rotate" values="0 45 45; -15 45 45; 0 45 45" dur="1s" repeatCount="indefinite" />
+    </g>
+    <text x="440" y="165" class="desc-text" text-anchor="middle" font-weight="bold">防爆/专用工器具</text>
+
+    <text x="580" y="90" class="param-text">因地制宜，全面防护</text>
+    <text x="580" y="125" class="desc-text">• 必须根据实际作业风险进行配备</text>
+    <text x="580" y="150" class="desc-text">• 包括且不限于：护目镜、防护服</text>
+    <text x="580" y="175" class="desc-text">• 使用前必须逐一检查完好性</text>
+    <text x="580" y="200" class="desc-text">• 严禁将不合格装备带入有限空间</text>
+  </g>
+
+  <g transform="translate(930, 710)">
+    <rect x="0" y="0" width="420" height="250" class="highlight-box" fill="#2c3e50" stroke="#34495e" />
+    
+    <polygon points="210,30 160,110 260,110" fill="#f1c40f" stroke="#e67e22" stroke-width="4">
+       <animate attributeName="opacity" values="1;0.7;1" dur="1s" repeatCount="indefinite" />
+    </polygon>
+    <text x="210" y="95" font-family="Arial" font-size="40" font-weight="bold" fill="#2c3e50" text-anchor="middle">!</text>
+    
+    <text x="210" y="150" font-family="Microsoft YaHei" font-size="20" font-weight="bold" fill="#fff" text-anchor="middle">生命至上 · 安全第一</text>
+    <text x="210" y="180" font-family="Microsoft YaHei" font-size="14" fill="#bdc3c7" text-anchor="middle">所有设备设施必须符合国家或行业标准！</text>
+    <text x="210" y="205" font-family="Microsoft YaHei" font-size="14" fill="#e74c3c" font-weight="bold" text-anchor="middle">未配齐上述装备，严禁入内作业！</text>
+  </g>
+
+</svg>
