@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <style>
+      .text-main { font-family: "Microsoft YaHei", sans-serif; font-size: 14px; fill: #333; }
+      .text-bold { font-family: "Microsoft YaHei", sans-serif; font-size: 16px; font-weight: bold; fill: #2c3e50; }
+      .bg-gradient { fill: url(#grad1); }
+      /* 眨眼动画 */
+      @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+      .eye { animation: blink 4s infinite; transform-origin: center; }
+    </style>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8f9fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e9ecef;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="800" class="bg-gradient" />
+  <text x="600" y="50" font-size="28" font-weight="bold" text-anchor="middle" fill="#2c3e50">有限空间：风险评估与三级审批流程图</text>
+
+  <g transform="translate(50, 120)">
+    <rect x="0" y="0" width="520" height="400" rx="15" fill="#fff" stroke="#dee2e6" stroke-width="2" />
+    <text x="260" y="35" class="text-bold" text-anchor="middle">【现场阶段】风险评估与措施制定</text>
+    
+    <path d="M 50 350 L 50 150 Q 50 100 100 100 L 250 100 Q 300 100 300 150 L 300 350 Z" fill="#f1f3f5" stroke="#495057" stroke-width="4" />
+    <rect x="100" y="80" width="150" height="20" fill="#343a40" /> <circle cx="175" cy="230" r="40" fill="#9b59b6" opacity="0.4">
+      <animate attributeName="r" values="40;50;40" dur="3s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.4;0.1;0.4" dur="5s" repeatCount="indefinite" />
+    </circle>
+
+    <g transform="translate(380, 250)">
+      <path d="M -15 80 L 15 80 L 10 30 L -10 30 Z" fill="#2980b9" />
+      <circle cx="0" cy="15" r="12" fill="#ffe0bd" />
+      <path d="M -14 10 A 14 14 0 0 1 14 10 Z" fill="#f1c40f" /> <circle cx="-4" cy="15" r="1.5" class="eye" /> <circle cx="4" cy="15" r="1.5" class="eye" />
+      <rect x="-35" y="35" width="30" height="40" fill="#fff" stroke="#333" />
+      <path d="M -30 45 L -10 45 M -30 55 L -10 55" stroke="#dee2e6" />
+      <path d="M -15 45 L -10 50 L -5 40" fill="none" stroke="#2ecc71" stroke-width="2" opacity="0">
+        <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite" />
+      </path>
+    </g>
+
+    <line x1="60" y1="120" x2="290" y2="120" stroke="#2ecc71" stroke-width="3" stroke-dasharray="5,5">
+      <animate attributeName="y1" values="120;340;120" dur="4s" repeatCount="indefinite" />
+      <animate attributeName="y2" values="120;340;120" dur="4s" repeatCount="indefinite" />
+    </line>
+  </g>
+
+  <g transform="translate(600, 120)">
+    <rect x="0" y="0" width="550" height="400" rx="15" fill="#fff" stroke="#dee2e6" stroke-width="2" />
+    <text x="275" y="35" class="text-bold" text-anchor="middle">【审批阶段】三级联审与签字</text>
+
+    <g transform="translate(80, 320)">
+      <circle cx="0" cy="-60" r="12" fill="#ffe0bd" />
+      <rect x="-15" y="-48" width="30" height="40" fill="#e67e22" /> <text x="0" y="15" class="text-main" text-anchor="middle">作业负责人</text>
+    </g>
+
+    <g transform="translate(275, 150)">
+      <circle cx="0" cy="-60" r="12" fill="#ffe0bd" />
+      <rect x="-15" y="-48" width="30" height="40" fill="#9b59b6" /> <text x="0" y="15" class="text-main" text-anchor="middle">发包审批人</text>
+    </g>
+
+    <g transform="translate(470, 320)">
+      <circle cx="0" cy="-60" r="12" fill="#ffe0bd" />
+      <rect x="-15" y="-48" width="30" height="40" fill="#1abc9c" /> <text x="0" y="15" class="text-main" text-anchor="middle">属地审批人</text>
+    </g>
+
+    <g id="approval_ticket">
+      <rect x="-20" y="-25" width="40" height="50" fill="#fff" stroke="#2c3e50" stroke-width="2" rx="2" />
+      <line x1="-12" y1="-10" x2="12" y2="-10" stroke="#eee" />
+      <line x1="-12" y1="0" x2="12" y2="0" stroke="#eee" />
+      <circle cx="10" cy="15" r="8" fill="#e74c3c" opacity="0">
+        <animate attributeName="opacity" values="0;1;0" dur="1.33s" repeatCount="indefinite" />
+      </circle>
+      
+      <animateMotion path="M 80 260 L 275 90 L 470 260" dur="4s" repeatCount="indefinite" rotate="auto" />
+    </g>
+
+    <path d="M 110 280 L 240 130" fill="none" stroke="#bdc3c7" stroke-width="2" stroke-dasharray="5,5" />
+    <path d="M 310 130 L 440 280" fill="none" stroke="#bdc3c7" stroke-width="2" stroke-dasharray="5,5" />
+  </g>
+
+  <g transform="translate(50, 550)">
+    <rect x="0" y="0" width="350" height="200" rx="10" fill="#f4f9fd" />
+    <rect width="350" height="40" rx="10" fill="#2980b9" />
+    <text x="175" y="26" fill="#fff" font-weight="bold" text-anchor="middle">作业单位体系</text>
+    <text x="20" y="70" class="text-main">• 负责现场风险辨识与评估</text>
+    <text x="20" y="100" class="text-main">• 制定控制危险的针对性措施</text>
+    <text x="20" y="130" class="text-main">• 填写审批表报负责人审核</text>
+    
+    <rect x="375" y="0" width="350" height="200" rx="10" fill="#f4eefa" />
+    <rect x="375" y="0" width="350" height="40" rx="10" fill="#9b59b6" />
+    <text x="550" y="26" fill="#fff" font-weight="bold" text-anchor="middle">项目发包体系</text>
+    <text x="395" y="70" class="text-main">• 参与风险评估，提供现场信息</text>
+    <text x="395" y="100" class="text-main">• 审核外包作业资质与协议内容</text>
+    <text x="395" y="130" class="text-main">• 对作业票进行二级安全确认</text>
+    
+    <rect x="750" y="0" width="350" height="200" rx="10" fill="#e8f8f5" />
+    <rect x="750" y="0" width="350" height="40" rx="10" fill="#1abc9c" />
+    <text x="925" y="26" fill="#fff" font-weight="bold" text-anchor="middle">属地管理体系</text>
+    <text x="770" y="70" class="text-main">• 确认属地安全条件是否允许</text>
+    <text x="770" y="100" class="text-main">• 最终签字确认，准许进入作业</text>
+    <text x="770" y="130" class="text-main">• 资料归档，留存备查</text>
+  </g>
+
+</svg>
