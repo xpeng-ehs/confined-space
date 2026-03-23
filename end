@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#f8f9fa" />
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e5e7eb" stroke-width="1"/>
+  </pattern>
+  <rect width="800" height="600" fill="url(#grid)" />
+
+  <g transform="translate(50, 30)">
+    <rect x="0" y="0" width="220" height="40" rx="20" fill="#cbd5e1">
+      <animate attributeName="fill" from="#cbd5e1" to="#3b82f6" dur="0.5s" begin="0.5s" fill="freeze" />
+    </rect>
+    <text x="110" y="26" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">人员/工具清点验收</text>
+    <path d="M230 20 L250 20" stroke="#94a3b8" stroke-width="2" />
+
+    <rect x="260" y="0" width="220" height="40" rx="20" fill="#cbd5e1">
+      <animate attributeName="fill" from="#cbd5e1" to="#10b981" dur="0.5s" begin="3s" fill="freeze" />
+    </rect>
+    <text x="370" y="26" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">出入口封闭与复位</text>
+    <path d="M490 20 L510 20" stroke="#94a3b8" stroke-width="2" />
+
+    <rect x="520" y="0" width="220" height="40" rx="20" fill="#cbd5e1">
+      <animate attributeName="fill" from="#cbd5e1" to="#64748b" dur="0.5s" begin="5.5s" fill="freeze" />
+    </rect>
+    <text x="630" y="26" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">解除隔离撤离现场</text>
+  </g>
+
+  <g id="section-1" transform="translate(80, 120)" opacity="0">
+    <rect x="0" y="0" width="100" height="120" fill="#fff" stroke="#3b82f6" stroke-width="2" rx="4" />
+    <path d="M20 40 L35 55 L65 30" fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="50" stroke-dashoffset="50">
+      <animate attributeName="stroke-dashoffset" from="50" to="0" dur="0.5s" begin="1s" fill="freeze" />
+    </path>
+    <path d="M20 80 L35 95 L65 70" fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="50" stroke-dashoffset="50">
+      <animate attributeName="stroke-dashoffset" from="50" to="0" dur="0.5s" begin="1.5s" fill="freeze" />
+    </path>
+    <text x="50" y="160" font-family="Microsoft YaHei" font-size="13" fill="#1e293b" text-anchor="middle" font-weight="bold">人员设备带离清点</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.5s" fill="freeze" />
+  </g>
+
+  <g id="section-2" transform="translate(320, 120)" opacity="0">
+    <circle cx="50" cy="50" r="40" fill="#475569" stroke="#1e293b" stroke-width="4" />
+    <path d="M20 50 L80 50 M50 20 L50 80" stroke="#334155" stroke-width="2" />
+    <g opacity="0">
+      <rect x="40" y="40" width="20" height="20" rx="2" fill="#fbbf24" />
+      <path d="M43 40 V35 A7 7 0 0 1 57 35 V40" fill="none" stroke="#fbbf24" stroke-width="3" />
+      <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="3.5s" fill="freeze" />
+    </g>
+    <text x="50" y="160" font-family="Microsoft YaHei" font-size="13" fill="#1e293b" text-anchor="middle" font-weight="bold">关闭出入口并加锁</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="3s" fill="freeze" />
+  </g>
+
+  <g id="section-3-optimized" transform="translate(560, 120)" opacity="0">
+    <g transform="translate(0, 0)">
+      <rect x="15" y="20" width="20" height="20" rx="2" fill="#fbbf24" />
+      <path d="M18 20 V15 A7 7 0 0 1 32 15 V20" fill="none" stroke="#fbbf24" stroke-width="3">
+        <animateTransform attributeName="transform" type="translate" from="0,0" to="0,-5" dur="0.3s" begin="6s" fill="freeze" />
+      </path>
+      <animate attributeName="opacity" from="1" to="0" dur="0.5s" begin="6.5s" fill="freeze" />
+    </g>
+
+    <g transform="translate(60, 10)">
+      <path d="M-10 15 L10 35 M-5 10 L15 30" stroke="#94a3b8" stroke-width="3" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="translate" from="0,0" to="100,0" dur="0.8s" begin="7s" fill="freeze" />
+      </path>
+      <g>
+        <path d="M-15 40 L5 0 M-20 35 Q0 30 20 35" stroke="#1e293b" stroke-width="3" stroke-linecap="round" fill="none" />
+        <animateTransform attributeName="transform" type="translate" values="0,0; -10,0; 100,0" dur="1s" begin="6.8s" fill="freeze" />
+      </g>
+    </g>
+
+    <text x="50" y="160" font-family="Microsoft YaHei" font-size="13" fill="#1e293b" text-anchor="middle" font-weight="bold">解除隔离清理现场</text>
+    <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="5.5s" fill="freeze" />
+  </g>
+
+  <g transform="translate(400, 450)">
+    <ellipse cx="0" cy="0" rx="200" ry="50" fill="#1e293b" />
+    
+    <g transform="translate(-150, 0)" opacity="0">
+       <circle cx="0" cy="-20" r="10" fill="#94a3b8" />
+       <path d="M-10 0 Q0 -8 10 0 L8 25 L-8 25 Z" fill="#334155" />
+       <animate attributeName="opacity" from="1" to="1" values="0;1;1;0" keyTimes="0;0.1;0.8;1" dur="2s" begin="7.5s" fill="freeze" />
+       <animateTransform attributeName="transform" type="translate" from="-150,0" to="400,0" dur="2s" begin="7.5s" fill="freeze" />
+    </g>
+
+    <path d="M100 -250 Q120 -150 100 -20" fill="none" stroke="#facc15" stroke-width="15" stroke-dasharray="5,5" opacity="1">
+        <animate attributeName="opacity" from="1" to="0" dur="0.5s" begin="6.5s" fill="freeze" />
+    </path>
+    
+    <text x="0" y="75" font-family="Microsoft YaHei" font-size="14" fill="#64748b" text-anchor="middle" font-weight="bold">作业后：状态恢复与现场清场</text>
+  </g>
+
+  <rect x="250" y="550" width="300" height="36" rx="18" fill="#475569" />
+  <text x="400" y="574" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle">有限空间作业后验收要求</text>
+</svg>
