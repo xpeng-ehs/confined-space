@@ -1,36 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
-  <!-- 背景：汽车厂车间背景 -->
   <rect width="800" height="600" fill="#f8f9fa" />
   
-  <!-- 工业格栅地面背景 -->
   <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
     <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e5e7eb" stroke-width="1"/>
   </pattern>
   <rect width="800" height="600" fill="url(#grid)" />
 
-  <!-- 顶部流程导航（体现先后顺序） -->
   <g transform="translate(50, 30)">
-    <!-- 步骤一：识别 -->
     <rect x="0" y="0" width="220" height="40" rx="20" fill="#cbd5e1">
       <animate attributeName="fill" from="#cbd5e1" to="#3b82f6" dur="0.5s" begin="0.5s" fill="freeze" />
     </rect>
     <text x="110" y="26" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">1.环境识别与告知</text>
-    
     <path d="M230 20 L250 20" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)" />
 
-    <!-- 步骤二：隔离 -->
     <rect x="260" y="0" width="220" height="40" rx="20" fill="#cbd5e1">
       <animate attributeName="fill" from="#cbd5e1" to="#10b981" dur="0.5s" begin="2.5s" fill="freeze" />
     </rect>
     <text x="370" y="26" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">2.能源与物理隔离</text>
-
     <path d="M490 20 L510 20" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)" />
 
-    <!-- 步骤三：通风 -->
     <rect x="520" y="0" width="220" height="40" rx="20" fill="#cbd5e1">
-      <animate attributeName="fill" from="#cbd5e1" to="#f59e0b" dur="0.5s" begin="5s" fill="freeze" />
+      <animate attributeName="fill" from="#cbd5e1" to="#f59e0b" dur="0.5s" begin="5.5s" fill="freeze" />
     </rect>
-    <text x="630" y="26" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">3.清空、置换与通风</text>
+    <text x="630" y="26" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">3.强制性机械通风</text>
     
     <defs>
       <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
@@ -39,11 +31,8 @@
     </defs>
   </g>
 
-  <!-- 内容区域 -->
-
-  <!-- [6.1 识别与告知模块] -->
-  <g id="logic-identification" transform="translate(530, 100)">
-    <g id="signage" transform="translate(30, 20)" opacity="0">
+  <g id="logic-identification" transform="translate(60, 120)" opacity="0">
+    <g transform="translate(0, 0)">
       <rect x="0" y="0" width="120" height="150" rx="8" fill="#fff" stroke="#ef4444" stroke-width="2" />
       <rect x="0" y="0" width="120" height="35" rx="8" fill="#ef4444" />
       <text x="60" y="24" font-family="Arial" font-weight="bold" font-size="14" fill="#fff" text-anchor="middle">DANGER</text>
@@ -51,89 +40,68 @@
       <text x="60" y="85" font-family="Microsoft YaHei" font-size="10" fill="#666" text-anchor="middle">未经许可禁止进入</text>
       <circle cx="60" cy="120" r="15" fill="#fbbf24" stroke="#000" />
       <path d="M60 110 L60 125 M60 130 L60 132" stroke="#000" stroke-width="2" />
-      <animate attributeName="opacity" from="0" to="1" dur="1s" begin="0.8s" fill="freeze" />
     </g>
-    <text x="90" y="200" font-family="Microsoft YaHei" font-size="13" fill="#1e293b" text-anchor="middle" font-weight="bold">设置明显警示标志</text>
+    <text x="60" y="185" font-family="Microsoft YaHei" font-size="13" fill="#1e293b" text-anchor="middle" font-weight="bold">设置明显警示标志</text>
+    
+    <animate attributeName="opacity" from="0" to="1" dur="1s" begin="0.5s" fill="freeze" />
   </g>
 
-  <!-- [6.2 隔离模块] -->
-  <g id="logic-isolation" transform="translate(50, 100)">
-    <g transform="translate(0, 10)">
-      <rect x="0" y="30" width="180" height="15" fill="#94a3b8" />
-      <circle cx="90" cy="37" r="20" fill="#ef4444" />
-      <rect x="86" y="10" width="8" height="50" fill="#450a0a" />
+  <g id="logic-isolation" transform="translate(300, 120)" opacity="0">
+    <g transform="translate(0, 0)">
+      <rect x="0" y="20" width="150" height="10" fill="#94a3b8" />
+      <circle cx="75" cy="25" r="15" fill="#ef4444" />
       <g opacity="0">
-        <rect x="80" y="30" width="20" height="20" rx="2" fill="#fbbf24" />
+        <rect x="68" y="15" width="14" height="20" rx="2" fill="#fbbf24" />
         <animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="3s" fill="freeze" />
       </g>
-      <text x="90" y="85" font-family="Microsoft YaHei" font-size="12" fill="#475569" text-anchor="middle">物料切断/挂牌锁定</text>
+      <text x="75" y="60" font-family="Microsoft YaHei" font-size="12" fill="#475569" text-anchor="middle">物料切断/挂牌锁定</text>
     </g>
-
-    <g transform="translate(0, 110)">
-      <rect x="40" y="0" width="100" height="60" fill="#cbd5e1" stroke="#475569" stroke-width="2" />
-      <path d="M90 15 L90 45" stroke="#000" stroke-width="6" stroke-linecap="round">
-        <animateTransform attributeName="transform" type="rotate" from="0 90 30" to="90 90 30" dur="0.3s" begin="4s" fill="freeze" />
+    <g transform="translate(0, 80)">
+      <rect x="25" y="0" width="100" height="50" fill="#cbd5e1" stroke="#475569" stroke-width="2" />
+      <path d="M75 10 L75 40" stroke="#000" stroke-width="6" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="rotate" from="0 75 25" to="90 75 25" dur="0.3s" begin="4s" fill="freeze" />
       </path>
-      <circle cx="90" cy="30" r="12" fill="none" stroke="#ef4444" stroke-width="2" opacity="0">
+      <circle cx="75" cy="25" r="12" fill="none" stroke="#ef4444" stroke-width="2" opacity="0">
         <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="4.3s" fill="freeze" />
       </circle>
-      <text x="90" y="85" font-family="Microsoft YaHei" font-size="12" fill="#475569" text-anchor="middle">动力电源安全断开</text>
+      <text x="75" y="75" font-family="Microsoft YaHei" font-size="12" fill="#475569" text-anchor="middle">动力电源安全断开</text>
     </g>
+    
+    <animate attributeName="opacity" from="0" to="1" dur="1s" begin="2.5s" fill="freeze" />
   </g>
 
-  <!-- [6.3 清空、置换与通风模块] -->
-  <g id="logic-ventilation" transform="translate(300, 100)" opacity="0">
-    <!-- 移动式轴流风机 -->
-    <rect x="20" y="50" width="60" height="60" rx="5" fill="#475569" />
-    <circle cx="50" cy="80" r="25" fill="#334155" stroke="#94a3b8" stroke-width="2" />
-    <!-- 风机扇叶动画 -->
-    <g transform="translate(50, 80)">
-      <path d="M-20 0 L20 0 M0 -20 L0 20" stroke="#fff" stroke-width="4" stroke-linecap="round">
-        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="0.5s" repeatCount="indefinite" />
-      </path>
+  <g id="logic-ventilation" transform="translate(550, 120)" opacity="0">
+    <g transform="translate(0, 0)">
+      <rect x="20" y="30" width="60" height="60" rx="5" fill="#475569" />
+      <circle cx="50" cy="60" r="25" fill="#334155" stroke="#94a3b8" stroke-width="2" />
+      <g transform="translate(50, 60)">
+        <path d="M-20 0 L20 0 M0 -20 L0 20" stroke="#fff" stroke-width="4" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="0.5s" repeatCount="indefinite" />
+        </path>
+      </g>
     </g>
-    
-    <!-- 黄色送风管 -->
-    <path d="M80 80 Q150 80 150 200" fill="none" stroke="#facc15" stroke-width="25" stroke-linecap="round" />
-    <path d="M80 80 Q150 80 150 200" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="5 5" />
-    
-    <!-- 动态气流效果 -->
+    <path d="M50 85 Q50 150 -100 360" fill="none" stroke="#facc15" stroke-width="20" stroke-linecap="round" />
     <g opacity="0.6">
       <circle r="3" fill="#3b82f6">
-        <animateMotion path="M85 80 Q150 80 150 250" dur="1s" repeatCount="indefinite" begin="5.5s" />
+        <animateMotion path="M50 85 Q50 150 -100 360" dur="1s" repeatCount="indefinite" begin="6.5s" />
       </circle>
       <circle r="3" fill="#3b82f6">
-        <animateMotion path="M85 80 Q150 80 150 250" dur="1s" repeatCount="indefinite" begin="5.8s" />
-      </circle>
-      <circle r="3" fill="#3b82f6">
-        <animateMotion path="M85 80 Q150 80 150 250" dur="1s" repeatCount="indefinite" begin="6.1s" />
+        <animateMotion path="M50 85 Q50 150 -100 360" dur="1s" repeatCount="indefinite" begin="6.8s" />
       </circle>
     </g>
-
-    <text x="90" y="200" font-family="Microsoft YaHei" font-size="13" fill="#1e293b" text-anchor="middle" font-weight="bold">强制性机械通风</text>
+    <text x="50" y="185" font-family="Microsoft YaHei" font-size="13" fill="#1e293b" text-anchor="middle" font-weight="bold">强制性机械通风</text>
     
-    <animate attributeName="opacity" from="0" to="1" dur="1s" begin="5s" fill="freeze" />
+    <animate attributeName="opacity" from="0" to="1" dur="1s" begin="5.5s" fill="freeze" />
   </g>
 
-  <!-- 中心入口展示 -->
   <g transform="translate(450, 480)">
-    <!-- 入口 -->
     <ellipse cx="0" cy="0" rx="150" ry="40" fill="#1e293b" />
-    <!-- 内部阴影 -->
     <ellipse cx="0" cy="10" rx="130" ry="30" fill="#0f172a" />
-    <!-- 送风管深入地下部分 -->
-    <path d="M0 -180 Q0 -100 0 -20" transform="translate(0, 0)" fill="none" stroke="#facc15" stroke-width="25" stroke-linecap="round" opacity="0.8">
-       <animate attributeName="stroke-dasharray" from="0,1000" to="1000,0" dur="1s" begin="5s" fill="freeze" />
-    </path>
-    
-    <!-- 警示条纹 -->
     <path d="M-160 -10 L160 -10 L170 10 L-170 10 Z" fill="#fbbf24" />
     <path d="M-150 -10 L-130 10 M-110 -10 L-90 10 M-70 -10 L-50 10 M-30 -10 L-10 10 M10 -10 L30 10 M50 -10 L70 10 M90 -10 L110 10 M130 -10 L150 10" stroke="#000" stroke-width="6" />
-    
     <text x="0" y="55" font-family="Microsoft YaHei" font-size="14" fill="#64748b" text-anchor="middle" font-weight="bold">汽车厂地下设备间入口</text>
   </g>
 
-  <!-- 全局说明 -->
   <rect x="280" y="550" width="240" height="36" rx="18" fill="#1e293b" />
   <text x="400" y="574" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle">有限空间作业前安全准备流程</text>
 </svg>
