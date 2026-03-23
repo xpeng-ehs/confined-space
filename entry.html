@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#f8f9fa" />
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e5e7eb" stroke-width="1"/>
+  </pattern>
+  <rect width="800" height="600" fill="url(#grid)" />
+
+  <g transform="translate(50, 30)">
+    <rect x="0" y="0" width="220" height="40" rx="20" fill="#cbd5e1">
+      <animate attributeName="fill" from="#cbd5e1" to="#0ea5e9" dur="0.5s" begin="0.5s" fill="freeze" />
+    </rect>
+    <text x="110" y="26" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">确认检查与准入</text>
+    <path d="M230 20 L250 20" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)" />
+
+    <rect x="260" y="0" width="220" height="40" rx="20" fill="#cbd5e1">
+      <animate attributeName="fill" from="#cbd5e1" to="#6366f1" dur="0.5s" begin="3s" fill="freeze" />
+    </rect>
+    <text x="370" y="26" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">动态过程监控</text>
+    <path d="M490 20 L510 20" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)" />
+
+    <rect x="520" y="0" width="220" height="40" rx="20" fill="#cbd5e1">
+      <animate attributeName="fill" from="#cbd5e1" to="#8b5cf6" dur="0.5s" begin="5.5s" fill="freeze" />
+    </rect>
+    <text x="630" y="26" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">全程专职监护</text>
+    
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8" />
+      </marker>
+    </defs>
+  </g>
+
+  <g id="entry-confirm" transform="translate(80, 120)" opacity="0">
+    <rect x="0" y="0" width="160" height="120" rx="5" fill="#fff" stroke="#0ea5e9" stroke-width="2" />
+    <path d="M20 30 L140 30 M20 60 L140 60 M20 90 L80 90" stroke="#e2e8f0" stroke-width="2" />
+    <path d="M90 85 L110 100 L140 70" fill="none" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="100" stroke-dashoffset="100">
+      <animate attributeName="stroke-dashoffset" from="100" to="0" dur="0.8s" begin="1s" fill="freeze" />
+    </path>
+    <text x="80" y="150" font-family="Microsoft YaHei" font-size="13" fill="#1e293b" text-anchor="middle" font-weight="bold">确认检查、签字准入</text>
+    <animate attributeName="opacity" from="0" to="1" dur="1s" begin="0.5s" fill="freeze" />
+  </g>
+
+  <g id="working-process" transform="translate(320, 120)" opacity="0">
+    <rect x="35" y="0" width="80" height="110" rx="10" fill="#334155" />
+    <rect x="45" y="15" width="60" height="40" fill="#bef264" />
+    <text x="75" y="42" font-family="monospace" font-size="16" fill="#166534" text-anchor="middle" font-weight="bold">O2: 20.9</text>
+    <circle cx="75" cy="75" r="8" fill="#ef4444">
+      <animate attributeName="opacity" values="1;0.2;1" dur="1s" repeatCount="indefinite" />
+    </circle>
+    <text x="75" y="150" font-family="Microsoft YaHei" font-size="13" fill="#1e293b" text-anchor="middle" font-weight="bold">持续通风、动态检测</text>
+    <animate attributeName="opacity" from="0" to="1" dur="1s" begin="3s" fill="freeze" />
+  </g>
+
+  <g id="safety-guard" transform="translate(560, 120)" opacity="0">
+    <circle cx="80" cy="30" r="25" fill="#8b5cf6" />
+    <path d="M40 100 L120 100 L110 55 L50 55 Z" fill="#8b5cf6" />
+    <rect x="55" y="65" width="50" height="15" fill="#facc15" />
+    <text x="80" y="76" font-family="Microsoft YaHei" font-size="9" fill="#000" text-anchor="middle" font-weight="bold">监护人</text>
+    <path d="M100 40 Q130 20 120 0" fill="none" stroke="#8b5cf6" stroke-width="2">
+       <animate attributeName="stroke-dasharray" values="0,20;20,0" dur="1s" repeatCount="indefinite" />
+    </path>
+    <text x="80" y="150" font-family="Microsoft YaHei" font-size="13" fill="#1e293b" text-anchor="middle" font-weight="bold">全程监护、定时记录</text>
+    <animate attributeName="opacity" from="0" to="1" dur="1s" begin="5.5s" fill="freeze" />
+  </g>
+
+  <g transform="translate(400, 480)">
+    <ellipse cx="0" cy="0" rx="180" ry="50" fill="#1e293b" />
+    <ellipse cx="0" cy="10" rx="160" ry="40" fill="#0f172a" />
+    
+    <g opacity="0.4">
+       <circle cx="0" cy="-20" r="15" fill="#fff" />
+       <path d="M-20 20 L20 20 L15 -5 L-15 -5 Z" fill="#fff" />
+       <animate attributeName="opacity" values="0.2;0.5;0.2" dur="3s" repeatCount="indefinite" />
+    </g>
+
+    <path d="M220 -200 Q200 -100 100 -10" fill="none" stroke="#facc15" stroke-width="20" stroke-linecap="round" />
+    
+    <path d="M-190 -15 L190 -15 L200 15 L-200 15 Z" fill="#fbbf24" />
+    <path d="M-180 -15 L-160 15 M-130 -15 L-110 15 M-80 -15 L-60 15 M-30 -15 L-10 15 M20 -15 L40 15 M70 -15 L90 15 M120 -15 L140 15 M170 -15 L190 15" stroke="#000" stroke-width="8" />
+    
+    <text x="0" y="65" font-family="Microsoft YaHei" font-size="14" fill="#64748b" text-anchor="middle" font-weight="bold">有限空间作业进行中控制现场</text>
+  </g>
+
+  <rect x="250" y="550" width="300" height="36" rx="18" fill="#1e293b" />
+  <text x="400" y="574" font-family="Microsoft YaHei" font-size="14" fill="#fff" text-anchor="middle">有限空间作业中安全监控保障流程</text>
+</svg>
