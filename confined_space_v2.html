@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>有限空间通风计算器 v2.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:        #ffffff;
+            --surface:   #f8fafc;
+            --surface2:  #e8eef7;
+            --border:    #cbd5e1;
+            --accent:    #0891b2;
+            --accent-dim:#0e7490;
+            --danger:    #dc2626;
+            --warn:      #ea580c;
+            --ok:        #16a34a;
+            --txt:       #1e293b;
+            --txt-dim:   #64748b;
+            --txt-label: #475569;
+            --mono:      'JetBrains Mono', monospace;
+            --sans:      'Noto Sans SC', sans-serif;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--txt);
+            font-family: var(--sans);
+            min-height: 100vh;
+            font-size: 14px;
+        }
+
+        /* ─── Layout ─────────────────────────────── */
+        .app {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            grid-template-rows: 56px 1fr auto;
+            grid-template-areas:
+                "sidebar header"
+                "sidebar main"
+                "sidebar footer";
+            min-height: 100vh;
+        }
+
+        /* ─── Sidebar ────────────────────────────── */
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            box-shadow: 1px 0 3px rgba(0,0,0,0.06);
+        }
+        .sidebar-logo {
+            height: 56px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 18px;
+            border-bottom: 1px solid var(--border);
+        }
+        .logo-icon {
+            width: 28px; height: 28px;
+            background: var(--accent);
+            border-radius: 6px;
+            display: grid;
+            place-items: center;
+            font-size: 14px;
+            color: #fff;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .logo-text {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--txt);
+            letter-spacing: 0.05em;
+            line-height: 1.3;
+        }
+        .logo-text small {
+            display: block;
+            font-weight: 400;
+            color: var(--txt-dim);
+            font-size: 10px;
+        }
+        .nav-section {
+            padding: 16px 12px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: var(--txt-dim);
+            text-transform: uppercase;
+        }
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: calc(100% - 24px);
+            margin: 2px 12px;
+            padding: 9px 12px;
+            background: none;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            color: var(--txt-dim);
+            font-family: var(--sans);
+            font-size: 13px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.15s;
+        }
+        .nav-btn:hover { background: var(--surface2); color: var(--txt); }
+        .nav-btn.active {
+            background: rgba(8,145,178,0.12);
+            border-color: rgba(8,145,178,0.3);
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .nav-btn .nav-icon { font-size: 16px; flex-shrink: 0; }
+        .nav-badge {
+            margin-left: auto;
+            font-size: 9px;
+            font-family: var(--mono);
+            background: rgba(8,145,178,0.15);
+            color: var(--accent);
+            padding: 1px 6px;
+            border-radius: 20px;
+        }
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 12px;
+            font-size: 10px;
+            color: var(--txt-dim);
+            border-top: 1px solid var(--border);
+            line-height: 1.6;
+        }
+
+        /* ─── Header ─────────────────────────────── */
+        .topbar {
+            grid-area: header;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .topbar-title {
+            font-family: var(--mono);
+            font-size: 13px;
+            color: var(--txt-dim);
+        }
+        .topbar-title span { color: var(--accent); }
+        .status-pill {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--warn);
+            background: rgba(234,88,12,0.08);
+            border: 1px solid rgba(234,88,12,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .status-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--warn);
+            animation: blink 1.8s ease-in-out infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+        /* ─── Main ───────────────────────────────── */
+        main {
+            grid-area: main;
+            padding: 24px;
+            overflow-y: auto;
+            background: #fafbfc;
+        }
+
+        /* ─── Form card ──────────────────────────── */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 24px;
+            align-items: start;
+        }
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .panel-input {
+            background: #fafbfc;
+            border: 2px solid var(--accent);
+            box-shadow: 0 2px 8px rgba(8,145,178,0.12);
+        }
+        .panel-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--surface2);
+        }
+        .panel-title {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--txt-label);
+        }
+        .panel-title-accent { color: var(--accent); }
+        .panel-body { padding: 22px; }
+
+        /* ─── Input rows ─────────────────────────── */
+        .field {
+            margin-bottom: 18px;
+        }
+        .field-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--txt);
+            margin-bottom: 7px;
+            font-weight: 600;
+        }
+        .field-label .unit {
+            margin-left: auto;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: #fff;
+            background: var(--accent);
+            padding: 3px 9px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        input[type="number"], select {
+            width: 100%;
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            color: var(--txt);
+            font-family: var(--mono);
+            font-size: 14px;
+            padding: 12px 14px;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            outline: none;
+        }
+        input[type="number"]:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(8,145,178,0.15);
+            background: #f0faf7;
+        }
+        input[type="number"]:hover, select:hover {
+            border-color: var(--accent);
+        }
+        /* Remove spinner arrows */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* ─── Info callout ───────────────────────── */
+        .callout {
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 12px;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        .callout-blue {
+            background: rgba(8,145,178,0.06);
+            border-left: 3px solid var(--accent);
+            color: #0e7490;
+        }
+        .callout-amber {
+            background: rgba(234,88,12,0.06);
+            border-left: 3px solid var(--warn);
+            color: #b45309;
+        }
+        .callout-green {
+            background: rgba(22,163,74,0.06);
+            border-left: 3px solid var(--ok);
+            color: #15803d;
+        }
+        .callout strong { color: var(--txt); }
+
+        /* ─── Quick buttons ──────────────────────── */
+        .quick-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-bottom: 16px;
+        }
+        .quick-label {
+            width: 100%;
+            font-size: 11px;
+            color: var(--txt-dim);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .qbtn {
+            background: #fff;
+            border: 1.5px solid var(--border);
+            color: var(--txt-label);
+            font-size: 11px;
+            font-family: var(--mono);
+            padding: 6px 11px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .qbtn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(8,145,178,0.04);
+        }
+        .qbtn.flash {
+            background: rgba(8,145,178,0.12);
+            border-color: var(--accent);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ─── Calc button ────────────────────────── */
+        .calc-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-family: var(--sans);
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            transition: all 0.15s;
+            margin-top: 8px;
+            box-shadow: 0 2px 6px rgba(8,145,178,0.25);
+        }
+        .calc-btn:hover {
+            background: #0e7490;
+            box-shadow: 0 4px 10px rgba(8,145,178,0.35);
+            transform: translateY(-1px);
+        }
+        .calc-btn:active { transform: scale(0.98); }
+
+        /* ─── Result panel ───────────────────────── */
+        .result-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #eef7fa 100%);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 18px 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(8,145,178,0.1);
+        }
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: var(--accent);
+        }
+        .metric-card.warn::before { background: var(--warn); }
+        .metric-card.warn {
+            background: linear-gradient(135deg, #fef7f0 0%, #fce7d6 100%);
+            border-color: rgba(234,88,12,0.3);
+        }
+        .metric-card.ok::before { background: var(--ok); }
+        .metric-card.ok {
+            background: linear-gradient(135deg, #f0fae8 0%, #e3f7d6 100%);
+            border-color: rgba(22,163,74,0.3);
+        }
+        .metric-label {
+            font-size: 11px;
+            color: var(--txt-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .metric-value {
+            font-family: var(--mono);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1.1;
+        }
+        .metric-card.warn .metric-value { color: var(--warn); }
+        .metric-card.ok .metric-value { color: var(--ok); }
+        .metric-sub {
+            font-size: 12px;
+            color: var(--txt-dim);
+            margin-top: 6px;
+            font-family: var(--mono);
+        }
+        .calc-detail {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 18px;
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--txt-dim);
+        }
+        .calc-detail .hl { color: var(--accent); font-family: var(--mono); font-weight: 600; }
+        .calc-detail .warn { color: var(--warn); }
+        .placeholder {
+            background: linear-gradient(135deg, #f8fafc 0%, #eef7fa 100%);
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            padding: 42px 24px;
+            text-align: center;
+            color: var(--txt-dim);
+            font-size: 13px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .placeholder-icon { font-size: 36px; margin-bottom: 12px; }
+
+        /* ─── Info panel (formulas) ──────────────── */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        .info-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px;
+        }
+        .info-card h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 10px;
+        }
+        .info-card p, .info-card li {
+            font-size: 12px;
+            color: var(--txt-dim);
+            line-height: 1.8;
+        }
+        .info-card ul { list-style: none; padding: 0; }
+        .info-card li::before { content: '▸ '; color: var(--accent); font-weight: 700; }
+        .formula {
+            font-family: var(--mono);
+            font-size: 13px;
+            color: var(--txt);
+            background: #fff;
+            padding: 10px 13px;
+            border-radius: 6px;
+            margin-top: 8px;
+            border: 1px solid var(--border);
+            font-weight: 600;
+        }
+
+        /* ─── Tab panes ──────────────────────────── */
+        .tab-pane { display: none; }
+        .tab-pane.active-pane { display: block; }
+
+        /* ─── K slider visual ────────────────────── */
+        .k-scale {
+            display: flex;
+            gap: 0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 8px;
+            height: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .k-seg {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-family: var(--mono);
+            font-weight: 700;
+            transition: opacity 0.2s;
+            color: #fff;
+        }
+        .k-seg:nth-child(1) { background: #059669; }
+        .k-seg:nth-child(2) { background: #0d9488; }
+        .k-seg:nth-child(3) { background: #f59e0b; }
+        .k-seg:nth-child(4) { background: #ea580c; }
+        .k-seg:nth-child(5) { background: #dc2626; }
+        .k-label-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--txt-dim);
+            margin-top: 6px;
+            font-family: var(--mono);
+            font-weight: 600;
+        }
+
+        /* ─── Footer ─────────────────────────────── */
+        footer {
+            grid-area: footer;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 12px 24px;
+            font-size: 11px;
+            color: var(--txt-dim);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-family: var(--mono);
+            box-shadow: 0 -1px 3px rgba(0,0,0,0.06);
+        }
+        footer .sep { color: var(--border); }
+
+        /* ─── Responsive ─────────────────────────── */
+        @media (max-width: 1024px) {
+            .calc-grid {
+                grid-template-columns: 1fr;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .app { 
+                grid-template-columns: 1fr; 
+                grid-template-areas: "header" "main" "footer"; 
+            }
+            .sidebar { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding: 16px;
+            }
+            .panel-body {
+                padding: 16px;
+            }
+            .field-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .result-panel {
+                gap: 12px;
+            }
+            .metric-card {
+                padding: 14px 16px;
+            }
+            .metric-value {
+                font-size: 24px;
+            }
+            .quick-bar {
+                gap: 6px;
+            }
+            .qbtn {
+                font-size: 10px;
+                padding: 5px 9px;
+            }
+            .topbar {
+                padding: 0 16px;
+            }
+            .topbar-title {
+                font-size: 12px;
+            }
+            footer {
+                padding: 10px 16px;
+                font-size: 10px;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <!-- ── Sidebar ── -->
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">CS</div>
+            <div class="logo-text">通风计算器<small>Confined Space v2.0</small></div>
+        </div>
+        <div class="nav-section">计算模式</div>
+        <button class="nav-btn active" data-tab="toxic" onclick="switchTab('toxic',this)">
+            <span class="nav-icon">🧪</span>
+            有害气体 / 易燃蒸气
+            <span class="nav-badge">TOXIC</span>
+        </button>
+        <button class="nav-btn" data-tab="oxygen" onclick="switchTab('oxygen',this)">
+            <span class="nav-icon">🫁</span>
+            缺氧恢复计算
+            <span class="nav-badge">O₂</span>
+        </button>
+
+        <div class="nav-section">参考信息</div>
+        <button class="nav-btn" onclick="scrollToSection('formulas')">
+            <span class="nav-icon">📐</span>
+            公式 & 说明
+        </button>
+
+        <div class="sidebar-footer">
+            符合 ACGIH 吹扫模型<br>
+            AQ 3028-2008 · GB 8958-2006<br>
+            <span style="color:var(--warn)">⚠ 计算值仅供参考，须以气体检测仪实测为准</span>
+        </div>
+    </nav>
+
+    <!-- ── Topbar ── -->
+    <header class="topbar">
+        <div class="topbar-title">
+            <span>EHS</span> / 有限空间通风计算器
+        </div>
+        <div class="status-pill">
+            <div class="status-dot"></div>
+            须以实测数据为准
+        </div>
+    </header>
+
+    <!-- ── Main ── -->
+    <main>
+
+        <!-- 有害气体模式 -->
+        <div id="toxicPane" class="tab-pane active-pane">
+            <div class="calc-grid">
+                <!-- 左：输入表单 -->
+                <div class="panel panel-input">
+                    <div class="panel-header">
+                        <span>🧪</span>
+                        <span class="panel-title">输入参数 — <span class="panel-title-accent">有害气体 / 易燃蒸气稀释</span></span>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="field">
+                            <div class="field-label">
+                                📦 有限空间容积 V
+                                <span class="unit">m³</span>
+                            </div>
+                            <input type="number" id="volToxic" value="25" step="1" min="0.1" placeholder="例: 25">
+                        </div>
+
+                        <div class="field">
+                            <div class="field-label">
+                                🌀 风机铭牌风量 Q_nom
+                                <span class="unit">m³/h</span>
+                            </div>
+                            <input type="number" id="fanNominal" value="400" step="10" min="1" placeholder="例: 400">
+                        </div>
+
+                        <div class="field">
+                            <div class="field-label">
+                                📉 风管损耗折减系数 η
+                                <span class="unit">0.4 ~ 1.0</span>
+                            </div>
+                            <input type="number" id="lossFactor" value="0.7" step="0.05" min="0.1" max="1.0" placeholder="默认0.7">
+                            <div class="callout callout-blue" style="margin-top:8px;">
+                                有效风量 = 铭牌风量 × η &nbsp;|&nbsp;
+                                短直管 η≈0.85 &nbsp;·&nbsp; 一般管路 η≈0.70 &nbsp;·&nbsp; 长复杂管 η≈0.45
+                            </div>
+                        </div>
+
+                        <div class="field-row">
+                            <div class="field">
+                                <div class="field-label">⚠️ 初始浓度 C₀ <span class="unit">ppm</span></div>
+                                <input type="number" id="initConc" value="350" step="1" min="0" placeholder="ppm / mg/m³">
+                            </div>
+                            <div class="field">
+                                <div class="field-label">🎯 目标安全浓度 Cₛ <span class="unit">ppm</span></div>
+                                <input type="number" id="targetConc" value="10" step="1" min="0" placeholder="ppm / mg/m³">
+                            </div>
+                        </div>
+
+                        <div class="quick-bar">
+                            <div class="quick-label">⚡ 快速填充目标浓度（点击）</div>
+                            <button class="qbtn" data-target="10" onclick="setTarget('targetConc',10,this)">苯 10ppm</button>
+                            <button class="qbtn" data-target="50" onclick="setTarget('targetConc',50,this)">甲苯 50ppm</button>
+                            <button class="qbtn" data-target="30" onclick="setTarget('targetConc',30,this)">CO 30ppm</button>
+                            <button class="qbtn" data-target="10" onclick="setTarget('targetConc',10,this)">H₂S 10ppm</button>
+                            <button class="qbtn" data-target="5000" onclick="setTarget('targetConc',5000,this)">CH₄ 10%LEL</button>
+                        </div>
+
+                        <div class="callout callout-amber" style="margin-bottom:16px;">
+                            易燃易爆物质目标浓度须 ≤ 10% LEL；有毒物须 ≤ OEL，建议取 50% OEL 作为更安全目标
+                        </div>
+
+                        <div class="field">
+                            <div class="field-label">
+                                🔄 混合不均匀系数 K
+                                <span class="unit">1 ~ 10</span>
+                            </div>
+                            <input type="number" id="kFactor" value="3.0" step="0.5" min="1" max="10" placeholder="推荐1.5~10">
+                            <div class="k-scale">
+                                <div class="k-seg">1~2</div>
+                                <div class="k-seg">2~4</div>
+                                <div class="k-seg">4~6</div>
+                                <div class="k-seg">6~8</div>
+                                <div class="k-seg">8~10</div>
+                            </div>
+                            <div class="k-label-row"><span>低复杂度</span><span>首次作业 ≥ 3.0</span><span>高风险</span></div>
+                        </div>
+
+                        <button class="calc-btn" onclick="calculateToxic()">⏱ 计算所需通风时间</button>
+                    </div>
+                </div>
+
+                <!-- 右：结果 -->
+                <div class="result-panel" id="toxicResults">
+                    <div class="placeholder">
+                        <div class="placeholder-icon">📊</div>
+                        填写参数后点击计算<br>
+                        <span style="font-size:12px;margin-top:4px;">结果将显示在此处</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 缺氧恢复模式 -->
+        <div id="oxygenPane" class="tab-pane">
+            <div class="calc-grid">
+                <div class="panel panel-input">
+                    <div class="panel-header">
+                        <span>🫁</span>
+                        <span class="panel-title">输入参数 — <span class="panel-title-accent">缺氧恢复（氧气稀释模型）</span></span>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="field">
+                            <div class="field-label">📦 有限空间容积 V <span class="unit">m³</span></div>
+                            <input type="number" id="volOxy" value="25" step="1" min="0.1">
+                        </div>
+                        <div class="field">
+                            <div class="field-label">🌀 风机铭牌风量 Q_nom <span class="unit">m³/h</span></div>
+                            <input type="number" id="fanNominalOxy" value="400" step="10" min="1">
+                        </div>
+                        <div class="field">
+                            <div class="field-label">📉 折减系数 η <span class="unit">0.4 ~ 1.0</span></div>
+                            <input type="number" id="lossFactorOxy" value="0.7" step="0.05" min="0.1" max="1.0">
+                        </div>
+
+                        <div class="field-row">
+                            <div class="field">
+                                <div class="field-label">🫁 初始氧浓度 <span class="unit">%VOL</span></div>
+                                <input type="number" id="initO2" value="18.0" step="0.1" min="0" max="25">
+                            </div>
+                            <div class="field">
+                                <div class="field-label">🎯 目标氧浓度 <span class="unit">%VOL</span></div>
+                                <input type="number" id="targetO2" value="19.5" step="0.1" min="0" max="23.5">
+                            </div>
+                        </div>
+
+                        <div class="callout callout-blue" style="margin-bottom:16px;">
+                            新风含氧量取 20.9%（稀释模型）。若当前氧浓度 &gt; 23.5%（富氧），请切换至有害气体模式，将过量氧视为污染物处理。
+                        </div>
+
+                        <div class="field">
+                            <div class="field-label">🔄 混合不均匀系数 K <span class="unit">1 ~ 10</span></div>
+                            <input type="number" id="kFactorOxy" value="3.0" step="0.5" min="1" max="10">
+                        </div>
+
+                        <button class="calc-btn" onclick="calculateOxygen()">⏱ 计算恢复所需时间</button>
+                    </div>
+                </div>
+
+                <div class="result-panel" id="oxyResults">
+                    <div class="placeholder">
+                        <div class="placeholder-icon">🫁</div>
+                        填写参数后点击计算
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 公式说明 -->
+        <div id="formulas" style="margin-top:24px;">
+            <div class="panel">
+                <div class="panel-header">
+                    <span>📐</span>
+                    <span class="panel-title">核心公式 & 工程指南 — <span class="panel-title-accent">版本 3.0</span></span>
+                </div>
+                <div class="panel-body">
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h4>有害气体稀释公式</h4>
+                            <div class="formula">t = K · V · ln(C₀/Cₛ) / Q_eff</div>
+                            <p style="margin-top:8px;">其中有效风量 Q_eff = Q_nom × η</p>
+                        </div>
+                        <div class="info-card">
+                            <h4>缺氧恢复公式</h4>
+                            <div class="formula">t = K·V·ln[(20.9−C₀)/(20.9−Cₛ)] / Q_eff</div>
+                            <p style="margin-top:8px;">基于新风含氧20.9%的稀释模型</p>
+                        </div>
+                        <div class="info-card">
+                            <h4>换气次数要求</h4>
+                            <ul>
+                                <li>换气次数 N = Q_eff / V（次/小时）</li>
+                                <li>AQ 3028 要求 N ≥ 5 次/小时</li>
+                                <li>对应最大允许通风时间 12 分钟</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h4>工程安全建议</h4>
+                            <ul>
+                                <li>计算值为理论值，增加 20%~50% 余量</li>
+                                <li>η 无实测时默认 0.7；长管多弯取低值</li>
+                                <li>持续气体检测优于任何计算模型</li>
+                                <li><strong style="color:var(--danger)">禁止</strong>仅靠计算不做实测即进入</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="callout callout-green" style="margin-top:16px;">
+                        ✅ 最终准入依据：泵吸式气体检测仪实测数据（有毒气体 / 可燃气体 / 氧含量）全部合格后方可进入
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer>
+        <span>EHS 专业工具</span>
+        <span class="sep">|</span>
+        <span>ACGIH 吹扫模型</span>
+        <span class="sep">|</span>
+        <span>AQ 3028-2008</span>
+        <span class="sep">|</span>
+        <span>GB 8958-2006</span>
+    </footer>
+</div>
+
+<script>
+    // ── Tab switching ─────────────────────────────────
+    function switchTab(id, btn) {
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active-pane'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id + 'Pane').classList.add('active-pane');
+        btn.classList.add('active');
+    }
+
+    function scrollToSection(id) {
+        document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ── Quick fill ────────────────────────────────────
+    function setTarget(fieldId, val, btn) {
+        document.getElementById(fieldId).value = val;
+        btn.classList.add('flash');
+        setTimeout(() => btn.classList.remove('flash'), 300);
+    }
+
+    // ── Result renderer ───────────────────────────────
+    function renderResults(containerId, tTheo, tReq, qNom, eta, qEff, K, extraNote, status) {
+        const minTheo = Math.round(tTheo * 60);
+        const minReq  = Math.round(tReq * 60);
+        const ach     = (60 / tReq).toFixed(1);
+        const minLow  = Math.ceil(minReq * 1.2);
+        const minHigh = Math.ceil(minReq * 1.5);
+        const achClass = parseFloat(ach) < 5 ? 'warn' : 'ok';
+        const achNote  = parseFloat(ach) < 5
+            ? `⚠ 低于规范要求（AQ 3028 ≥ 5次/小时），建议增大风量或减少K值`
+            : `✓ 满足 AQ 3028 换气次数要求（≥ 5次/小时）`;
+
+        document.getElementById(containerId).innerHTML = `
+            <div class="metric-card">
+                <div class="metric-label">考虑 K 值后所需通风时间</div>
+                <div class="metric-value">${minReq} <span style="font-size:16px;font-weight:400;">min</span></div>
+                <div class="metric-sub">K=${K} · η=${eta} · Q_eff=${qEff} m³/h</div>
+            </div>
+            <div class="metric-card" style="--accent:var(--txt-dim)">
+                <div class="metric-label">理论最小时间（理想混合）</div>
+                <div class="metric-value" style="color:var(--txt-dim)">${minTheo} <span style="font-size:16px;font-weight:400;">min</span></div>
+                <div class="metric-sub">K=1 理想情况</div>
+            </div>
+            <div class="metric-card ${achClass}">
+                <div class="metric-label">换气次数</div>
+                <div class="metric-value">${ach} <span style="font-size:14px;font-weight:400;">次/小时</span></div>
+                <div class="metric-sub">${achNote}</div>
+            </div>
+            <div class="calc-detail">
+                <strong style="color:var(--txt)">计算过程</strong><br>
+                铭牌风量 <span class="hl">${qNom} m³/h</span> × 折减系数 <span class="hl">${eta}</span> = 有效风量 <span class="hl">${qEff} m³/h</span><br>
+                理论时间 <span class="hl">${minTheo} min</span> × K = <span class="hl">${minReq} min</span><br>
+                <br>
+                <strong style="color:var(--txt)">建议实际通风时间</strong><br>
+                <span class="hl">${minLow} ~ ${minHigh} 分钟</span>（理论值 +20%~+50% 余量）<br>
+                <br>
+                ${extraNote}
+            </div>
+        `;
+    }
+
+    function renderError(containerId, msg) {
+        document.getElementById(containerId).innerHTML = `
+            <div class="metric-card" style="border-color:var(--danger)">
+                <div class="metric-label">输入错误</div>
+                <div style="color:var(--danger); font-size:13px; margin-top:6px;">${msg}</div>
+            </div>`;
+    }
+
+    function renderInfo(containerId, msg, color) {
+        document.getElementById(containerId).innerHTML = `
+            <div class="metric-card" style="border-color:${color || 'var(--ok)'}">
+                <div style="font-size:13px; line-height:1.7; color:${color || 'var(--ok)'}; margin-top:2px;">${msg}</div>
+            </div>`;
+    }
+
+    // ── Toxic calc ────────────────────────────────────
+    function calculateToxic() {
+        const V     = parseFloat(document.getElementById('volToxic').value);
+        const Q_nom = parseFloat(document.getElementById('fanNominal').value);
+        const eta   = parseFloat(document.getElementById('lossFactor').value);
+        const C0    = parseFloat(document.getElementById('initConc').value);
+        const Cs    = parseFloat(document.getElementById('targetConc').value);
+        const K     = parseFloat(document.getElementById('kFactor').value);
+        const cid   = 'toxicResults';
+
+        if (!V || V <= 0)              return renderError(cid, '❌ 容积须为正数（m³）');
+        if (!Q_nom || Q_nom <= 0)      return renderError(cid, '❌ 铭牌风量须为正数（m³/h）');
+        if (!eta || eta < 0.1 || eta > 1) return renderError(cid, '❌ 折减系数应在 0.4 ~ 1.0 之间');
+        if (isNaN(C0) || C0 < 0)       return renderError(cid, '❌ 初始浓度无效');
+        if (!Cs || Cs <= 0)            return renderError(cid, '❌ 目标安全浓度须大于 0');
+        if (!K || K < 1)               return renderError(cid, '❌ 混合系数 K 须 ≥ 1');
+
+        if (C0 <= Cs) {
+            return renderInfo(cid,
+                `✅ 初始浓度（${C0}）已 ≤ 目标安全浓度（${Cs}）<br>建议仍进行机械通风至少 5 次换气，并实时检测确认。`,
+                'var(--ok)');
+        }
+
+        const Q_eff  = Q_nom * eta;
+        const t_theo = (V * Math.log(C0 / Cs)) / Q_eff;
+        const t_req  = t_theo * K;
+        const extra  = t_req <= 0.2
+            ? `<span class="warn">⚠ 计算时间低于 12 分钟，仍建议至少通风 12 分钟（5次/小时底线）</span>`
+            : '';
+        renderResults(cid, t_theo, t_req, Q_nom, eta, Q_eff.toFixed(1), K, extra);
+    }
+
+    // ── Oxygen calc ───────────────────────────────────
+    function calculateOxygen() {
+        const V      = parseFloat(document.getElementById('volOxy').value);
+        const Q_nom  = parseFloat(document.getElementById('fanNominalOxy').value);
+        const eta    = parseFloat(document.getElementById('lossFactorOxy').value);
+        const C0_O2  = parseFloat(document.getElementById('initO2').value);
+        const Cs_O2  = parseFloat(document.getElementById('targetO2').value);
+        const K      = parseFloat(document.getElementById('kFactorOxy').value);
+        const fresh  = 20.9;
+        const cid    = 'oxyResults';
+
+        if (!V || V <= 0)               return renderError(cid, '❌ 容积须为正数（m³）');
+        if (!Q_nom || Q_nom <= 0)       return renderError(cid, '❌ 铭牌风量须为正数（m³/h）');
+        if (!eta || eta < 0.1 || eta > 1) return renderError(cid, '❌ 折减系数应在 0.4 ~ 1.0 之间');
+        if (isNaN(C0_O2) || C0_O2 < 0 || C0_O2 > 25) return renderError(cid, '❌ 初始氧气浓度异常（0 ~ 25%）');
+        if (isNaN(Cs_O2) || Cs_O2 <= 0 || Cs_O2 > 23.5) return renderError(cid, '❌ 目标氧气浓度应在 19.5% ~ 23.5%');
+        if (!K || K < 1)                return renderError(cid, '❌ 混合系数 K 须 ≥ 1');
+
+        if (C0_O2 > Cs_O2) {
+            return renderInfo(cid,
+                `⚠ 当前氧气浓度 ${C0_O2}% > 目标浓度 ${Cs_O2}%（富氧状态）<br>请切换至【有害气体模式】，将氧气视为污染物处理。`,
+                'var(--warn)');
+        }
+        if (C0_O2 >= fresh) {
+            return renderInfo(cid,
+                `✅ 当前氧气浓度 ${C0_O2}% 已达到或优于目标 ${Cs_O2}%，无需置换。<br>仍需持续通风并检测其他有害气体。`,
+                'var(--ok)');
+        }
+        if (Cs_O2 > fresh + 0.1) {
+            return renderError(cid, '❌ 目标氧气浓度不能超过新风含氧量（20.9%）');
+        }
+
+        const Q_eff  = Q_nom * eta;
+        const num    = fresh - C0_O2;
+        const den    = fresh - Cs_O2;
+        if (num <= 0 || den <= 0) return renderError(cid, '⚠ 参数异常，请检查初始和目标氧气浓度');
+
+        const t_theo = (V * Math.log(num / den)) / Q_eff;
+        const t_req  = t_theo * K;
+        const extra  = t_req <= 0.2
+            ? `<span class="warn">⚠ 计算时间低于 12 分钟，仍建议至少通风 12 分钟</span>` : '';
+        renderResults(cid, t_theo, t_req, Q_nom, eta, Q_eff.toFixed(1), K, extra);
+    }
+
+    // Auto-calc on load
+    window.addEventListener('DOMContentLoaded', calculateToxic);
+</script>
+</body>
+</html>
