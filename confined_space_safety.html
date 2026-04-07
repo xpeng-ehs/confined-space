@@ -1,1535 +1,1434 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>有限空间作业安全学习中心</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg:#f0f4f8; --surface:#ffffff; --surface2:#e8eef5; --border:#c8d8e8;
-  --accent:#1a6fc4; --accent2:#d9520f; --accent3:#0d9e6e;
-  --danger:#c0142e; --warning:#b06000;
-  --text:#1a2a3a; --muted:#5a7a95;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{overflow-x:hidden;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Noto Sans SC',sans-serif;}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(26,111,196,.04)1px,transparent 1px),linear-gradient(90deg,rgba(26,111,196,.04)1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>有限空间通风计算器 </title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:        #ffffff;
+            --surface:   #f8fafc;
+            --surface2:  #e8eef7;
+            --border:    #cbd5e1;
+            --accent:    #0891b2;
+            --accent-dim:#0e7490;
+            --danger:    #dc2626;
+            --warn:      #ea580c;
+            --ok:        #16a34a;
+            --txt:       #1e293b;
+            --txt-dim:   #64748b;
+            --txt-label: #475569;
+            --mono:      'JetBrains Mono', monospace;
+            --sans:      'Noto Sans SC', sans-serif;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── HEADER ── */
-header{position:sticky;top:0;z-index:200;background:rgba(240,244,248,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
-.header-row{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:52px;}
-.logo{display:flex;align-items:center;gap:10px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:2px;white-space:nowrap;}
-.logo-icon{width:28px;height:28px;border:2px solid var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:14px;animation:pulse-b 3s ease-in-out infinite;}
-@keyframes pulse-b{0%,100%{box-shadow:0 0 8px rgba(26,111,196,.2)}50%{box-shadow:0 0 18px rgba(26,111,196,.45)}}
-nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
-nav::-webkit-scrollbar{display:none;}
-nav button{background:transparent;border:none;color:var(--muted);font-family:'Noto Sans SC',sans-serif;font-size:13px;padding:8px 14px;cursor:pointer;border-radius:6px;transition:all .2s;white-space:nowrap;flex-shrink:0;}
-nav button:hover,nav button.active{background:rgba(26,111,196,.1);color:var(--accent);}
-nav button.active{border:1px solid rgba(26,111,196,.35);}
-/* Progress bar BELOW header, no overlap */
-.progress-bar{height:2px;background:var(--border);}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent3));width:0%;transition:width .5s ease;}
+        body {
+            background: var(--bg);
+            color: var(--txt);
+            font-family: var(--sans);
+            min-height: 100vh;
+            font-size: 14px;
+        }
 
-/* ── LAYOUT ── */
-.section{display:none;position:relative;z-index:5;min-height:calc(100vh - 56px);padding:40px 20px 60px;max-width:1100px;margin:0 auto;}
-.section.active{display:block;}
-.sec-tag{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:4px;display:block;margin-bottom:10px;}
-.sec-title{font-family:'Noto Serif SC',serif;font-size:clamp(24px,4vw,42px);font-weight:700;line-height:1.2;margin-bottom:32px;}
-.sec-title .hl{color:var(--accent);}
-.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:32px 0;}
-.hl-box{background:rgba(26,111,196,.07);border-left:3px solid var(--accent);padding:14px 18px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13px;color:var(--text);line-height:1.7;}
-.warn-box{background:rgba(176,96,0,.07);border-left:3px solid var(--warning);padding:14px 18px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13px;color:#7a4200;line-height:1.7;}
-.danger-box{background:rgba(192,20,46,.06);border-left:3px solid var(--danger);padding:14px 18px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13px;color:#8a0820;line-height:1.7;}
-.section-buttons{display:flex;gap:12px;margin-top:40px;flex-wrap:wrap;justify-content:center;}
-.tag{font-size:10px;padding:2px 8px;border-radius:10px;font-family:'Share Tech Mono',monospace;letter-spacing:1px;}
-.t-blue{background:rgba(26,111,196,.1);color:var(--accent);border:1px solid rgba(26,111,196,.25);}
-.t-ora{background:rgba(217,82,15,.1);color:var(--accent2);border:1px solid rgba(217,82,15,.25);}
-.t-grn{background:rgba(13,158,110,.1);color:var(--accent3);border:1px solid rgba(13,158,110,.25);}
-.t-red{background:rgba(192,20,46,.1);color:var(--danger);border:1px solid rgba(192,20,46,.25);}
-.t-yel{background:rgba(176,96,0,.1);color:var(--warning);border:1px solid rgba(176,96,0,.25);}
+        /* ─── Layout ─────────────────────────────── */
+        .app {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            grid-template-rows: 56px 1fr auto;
+            grid-template-areas:
+                "sidebar header"
+                "sidebar main"
+                "sidebar footer";
+            min-height: 100vh;
+        }
 
-/* ── PARTICLES ── */
-.particle{position:fixed;border-radius:50%;pointer-events:none;z-index:1;animation:fp linear infinite;opacity:.18;}
-@keyframes fp{0%{transform:translateY(100vh);opacity:0}10%{opacity:.18}90%{opacity:.18}100%{transform:translateY(-10vh) translateX(20px);opacity:0}}
+        /* ─── Sidebar ────────────────────────────── */
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            box-shadow: 1px 0 3px rgba(0,0,0,0.06);
+        }
+        .sidebar-logo {
+            height: 56px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 18px;
+            border-bottom: 1px solid var(--border);
+        }
+        .logo-icon {
+            width: 28px; height: 28px;
+            background: var(--accent);
+            border-radius: 6px;
+            display: grid;
+            place-items: center;
+            font-size: 14px;
+            color: #fff;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .logo-text {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--txt);
+            letter-spacing: 0.05em;
+            line-height: 1.3;
+        }
+        .logo-text small {
+            display: block;
+            font-weight: 400;
+            color: var(--txt-dim);
+            font-size: 10px;
+        }
+        .nav-section {
+            padding: 16px 12px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: var(--txt-dim);
+            text-transform: uppercase;
+        }
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: calc(100% - 24px);
+            margin: 2px 12px;
+            padding: 9px 12px;
+            background: none;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            color: var(--txt-dim);
+            font-family: var(--sans);
+            font-size: 13px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.15s;
+        }
+        .nav-btn:hover { background: var(--surface2); color: var(--txt); }
+        .nav-btn.active {
+            background: rgba(8,145,178,0.12);
+            border-color: rgba(8,145,178,0.3);
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .nav-btn .nav-icon { font-size: 16px; flex-shrink: 0; }
+        .nav-badge {
+            margin-left: auto;
+            font-size: 9px;
+            font-family: var(--mono);
+            background: rgba(8,145,178,0.15);
+            color: var(--accent);
+            padding: 1px 6px;
+            border-radius: 20px;
+        }
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 12px;
+            font-size: 10px;
+            color: var(--txt-dim);
+            border-top: 1px solid var(--border);
+            line-height: 1.6;
+        }
 
-/* ── HERO ── */
-.hero{min-height:calc(100vh - 56px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 20px;}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(217,82,15,.08);border:1px solid rgba(217,82,15,.3);color:var(--accent2);font-size:10px;font-family:'Share Tech Mono',monospace;letter-spacing:3px;padding:5px 14px;border-radius:20px;margin-bottom:28px;}
-.hero-badge::before{content:'';width:6px;height:6px;background:var(--accent2);border-radius:50%;animation:blink 1.5s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.hero h1{font-family:'Noto Serif SC',serif;font-size:clamp(32px,6vw,68px);font-weight:900;line-height:1.1;margin-bottom:20px;}
-.hero h1 span{display:block;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero p{font-size:15px;color:var(--muted);max-width:520px;line-height:1.8;margin-bottom:40px;}
-.hero-stats{display:flex;gap:36px;margin-bottom:40px;flex-wrap:wrap;justify-content:center;}
-.stat-num{font-family:'Share Tech Mono',monospace;font-size:30px;color:var(--accent);display:block;}
-.stat-label{font-size:11px;color:var(--muted);letter-spacing:1px;}
-.cta-btn{background:linear-gradient(135deg,var(--accent),#0d5fa8);border:none;color:#fff;font-family:'Noto Sans SC',sans-serif;font-weight:700;font-size:14px;padding:14px 36px;border-radius:8px;cursor:pointer;transition:all .3s;box-shadow:0 4px 18px rgba(26,111,196,.35);}
-.cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(26,111,196,.5);}
+        /* ─── Header ─────────────────────────────── */
+        .topbar {
+            grid-area: header;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .topbar-title {
+            font-family: var(--mono);
+            font-size: 13px;
+            color: var(--txt-dim);
+        }
+        .topbar-title span { color: var(--accent); }
+        .status-pill {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--warn);
+            background: rgba(234,88,12,0.08);
+            border: 1px solid rgba(234,88,12,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .status-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--warn);
+            animation: blink 1.8s ease-in-out infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-/* ── Next Section Button ── */
-.next-section-btn{background:linear-gradient(135deg,var(--accent),#0d5fa8);border:none;color:#fff;font-family:'Noto Sans SC',sans-serif;font-weight:700;font-size:14px;padding:14px 36px;border-radius:8px;cursor:pointer;transition:all .3s;box-shadow:0 4px 18px rgba(26,111,196,.35);margin-top:40px;display:block;width:100%;text-align:center;}
-.next-section-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(26,111,196,.5);}
+        /* ─── Main ───────────────────────────────── */
+        main {
+            grid-area: main;
+            padding: 24px;
+            overflow-y: auto;
+            background: #fafbfc;
+        }
 
-/* ═══════════════════════════════════════
-   CONCEPTS — 3-row layout
-══════════════════════════════════════ */
-/* Row labels */
-.con-row-label{display:flex;align-items:center;gap:10px;margin:28px 0 16px;font-size:15px;font-weight:700;color:var(--text);}
-.con-row-label::after{content:'';flex:1;height:1px;background:var(--border);}
-.con-row-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);background:rgba(26,111,196,.1);border:1px solid rgba(26,111,196,.25);padding:2px 8px;border-radius:10px;letter-spacing:2px;white-space:nowrap;}
-/* Row 1: definition accordion cards */
-.def-cards-row{display:flex;flex-direction:column;gap:10px;}
-.def-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .25s;box-shadow:0 1px 4px rgba(0,0,0,.06);}
-.def-card:hover{border-color:rgba(26,111,196,.45);}
-.def-card.open{border-color:var(--accent);}
-.def-card-head{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;user-select:none;}
-.def-icon{font-size:22px;flex-shrink:0;}
-.def-title{font-size:16px;font-weight:700;}
-.def-sub{font-size:11px;color:var(--muted);margin-top:2px;}
-.def-arrow{margin-left:auto;color:var(--accent);font-size:12px;transition:transform .25s cubic-bezier(0.4,0,0.2,1);flex-shrink:0;}
-.def-card.open .def-arrow{transform:rotate(180deg);}
-.def-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(0.4,0,0.2,1);padding:0 20px;}
-.def-card.open .def-body{max-height:3000px;padding:0 20px 22px;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-/* Row 2: hazard grid */
-.hazard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-.hazard-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:18px 14px;border-top:3px solid var(--hc,var(--accent));transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.06);}
-.hazard-card:hover{transform:translateY(-3px);}
-.hazard-icon{font-size:24px;margin-bottom:8px;}
-.hazard-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
-.hazard-val{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--hc,var(--accent));margin-bottom:8px;}
-.hazard-desc{font-size:11px;color:var(--muted);line-height:1.7;}
+        /* ─── Admission notice ────────────────────── */
+        .admission-notice {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(245,158,11,0.2);
+        }
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 24px;
+            align-items: start;
+        }
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .panel-input {
+            background: #fafbfc;
+            border: 2px solid var(--accent);
+            box-shadow: 0 2px 8px rgba(8,145,178,0.12);
+        }
+        .panel-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--surface2);
+        }
+        .panel-title {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--txt-label);
+        }
+        .panel-title-accent { color: var(--accent); }
+        .panel-body { padding: 22px; }
 
-/* concepts grid for examples */
-.ex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;margin-top:14px;}
-.ex-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;transition:all .25s;}
-.ex-card:hover{border-color:var(--accent);transform:translateY(-3px);}
-.ex-card svg{max-height:72px;width:100%;}
-.ex-card .ex-name{font-size:12px;font-weight:600;margin-top:6px;}
-.ex-card .ex-risk{font-size:10px;color:var(--muted);margin-top:2px;}
+        /* ─── Input rows ─────────────────────────── */
+        .field {
+            margin-bottom: 18px;
+        }
+        .field-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--txt);
+            margin-bottom: 7px;
+            font-weight: 600;
+        }
+        .field-label .unit {
+            margin-left: auto;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: #fff;
+            background: var(--accent);
+            padding: 3px 9px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        input[type="number"], select {
+            width: 100%;
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            color: var(--txt);
+            font-family: var(--mono);
+            font-size: 14px;
+            padding: 12px 14px;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            outline: none;
+        }
+        input[type="number"]:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(8,145,178,0.15);
+            background: #f0faf7;
+        }
+        input[type="number"]:hover, select:hover {
+            border-color: var(--accent);
+        }
+        /* Remove spinner arrows */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
 
-/* management units accordion */
-.mgmt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:8px;}
-.mgmt-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .25s;box-shadow:0 1px 4px rgba(0,0,0,.06);}
-.mgmt-card:hover{border-color:var(--accent);}
-.mgmt-card.open{border-color:var(--accent);}
-.mgmt-head{padding:18px 20px;display:flex;align-items:center;gap:12px;}
-.mgmt-head .icon{font-size:22px;}
-.mgmt-head .title{font-size:15px;font-weight:700;}
-.mgmt-head .desc{font-size:12px;color:var(--muted);margin-top:2px;}
-.mgmt-detail{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(0.4,0,0.2,1);}
-.mgmt-card.open .mgmt-detail{max-height:600px;}
-.mgmt-detail-inner{padding:0 20px 20px;}
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
 
-/* ═══════════════════════════════════════
-   ROLES
-══════════════════════════════════════ */
-.roles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
-.role-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:all .3s;box-shadow:0 1px 4px rgba(0,0,0,.06);}
-.role-card:hover,.role-card.sel{border-color:var(--accent);transform:translateY(-3px);}
-.role-card.sel{background:rgba(26,111,196,.05);}
-.role-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;border:2px solid;}
-.role-name{font-size:16px;font-weight:700;margin-bottom:4px;}
-.role-sum{font-size:12px;color:var(--muted);line-height:1.65;}
-.role-detail{background:rgba(26,111,196,.05);border:1px solid rgba(26,111,196,.3);border-radius:12px;padding:24px;margin-top:20px;display:none;animation:fadeUp .3s ease;}
-.role-detail.active{display:block;}
-.duty-list{list-style:none;display:flex;flex-direction:column;gap:9px;}
-.duty-list li{display:flex;gap:10px;font-size:13px;line-height:1.75;color:var(--text);word-break:break-word;}
-.duty-list li::before{content:'▸';color:var(--accent);flex-shrink:0;}
+        /* ─── Info callout ───────────────────────── */
+        .callout {
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 12px;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        .callout-blue {
+            background: rgba(8,145,178,0.06);
+            border-left: 3px solid var(--accent);
+            color: #0e7490;
+        }
+        .callout-amber {
+            background: rgba(234,88,12,0.06);
+            border-left: 3px solid var(--warn);
+            color: #b45309;
+        }
+        .callout-green {
+            background: rgba(22,163,74,0.06);
+            border-left: 3px solid var(--ok);
+            color: #15803d;
+        }
+        .callout strong { color: var(--txt); }
 
-/* ═══════════════════════════════════════
-   PROCESS — waterfall layout
-══════════════════════════════════════ */
-.process-principle{background:rgba(26,111,196,.05);border:1px solid rgba(26,111,196,.2);border-radius:12px;padding:24px 28px;margin-bottom:32px;display:flex;gap:28px;align-items:center;flex-wrap:wrap;}
-.principle-item{display:flex;flex-direction:column;align-items:center;gap:8px;flex:0 0 auto;min-width:80px;padding:0 8px;}
-.principle-num{font-family:'Share Tech Mono',monospace;font-size:28px;font-weight:700;color:var(--accent);display:block;}
-.principle-label{font-size:13px;color:var(--text);text-align:center;font-weight:500;}
-.principle-arrow{font-size:20px;color:var(--border);}
+        /* ─── Quick buttons ──────────────────────── */
+        .quick-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-bottom: 16px;
+        }
+        .quick-label {
+            width: 100%;
+            font-size: 11px;
+            color: var(--txt-dim);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .qbtn {
+            background: #fff;
+            border: 1.5px solid var(--border);
+            color: var(--txt-label);
+            font-size: 11px;
+            font-family: var(--mono);
+            padding: 6px 11px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .qbtn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(8,145,178,0.04);
+        }
+        .qbtn.flash {
+            background: rgba(8,145,178,0.12);
+            border-color: var(--accent);
+            color: var(--accent);
+            font-weight: 600;
+        }
 
-.phase-label{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
-.phase-label::after{content:'';flex:1;height:1px;background:var(--border);}
+        /* ─── Calc button ────────────────────────── */
+        .calc-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-family: var(--sans);
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            transition: all 0.15s;
+            margin-top: 8px;
+            box-shadow: 0 2px 6px rgba(8,145,178,0.25);
+        }
+        .calc-btn:hover {
+            background: #0e7490;
+            box-shadow: 0 4px 10px rgba(8,145,178,0.35);
+            transform: translateY(-1px);
+        }
+        .calc-btn:active { transform: scale(0.98); }
 
-/* Waterfall step card */
-.wf-step{display:flex;gap:20px;margin-bottom:20px;position:relative;animation:fadeUp .4s ease both;}
-.wf-left{display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0;width:52px;}
-.wf-circle{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Share Tech Mono',monospace;font-size:12px;font-weight:700;border:2px solid;flex-shrink:0;}
-.wf-line{width:2px;flex:1;min-height:20px;background:var(--border);}
-.wf-body{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;transition:border-color .2s;box-shadow:0 1px 4px rgba(0,0,0,.06);}
-.wf-body:hover{border-color:var(--accent);}
-.wf-body .step-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:4px;}
-.wf-body .step-title{font-size:15px;font-weight:700;margin-bottom:6px;}
-.wf-body .step-desc{font-size:12px;color:var(--muted);line-height:1.7;}
-.wf-body .step-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
-.wf-illus{width:160px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-/* Alert step */
-.wf-step.alert-step .wf-body{border-color:var(--danger);background:rgba(192,20,46,.04);}
-.wf-step.alert-step .wf-circle{border-color:var(--danger);background:rgba(192,20,46,.1);color:var(--danger);}
+        /* ─── Result panel ───────────────────────── */
+        .result-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .result-container {
+            background: #fafbfc;
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(8,145,178,0.12);
+        }
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .result-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--txt);
+            letter-spacing: 0.05em;
+        }
+        .update-time {
+            font-size: 11px;
+            color: var(--txt-dim);
+            font-family: var(--mono);
+            background: var(--surface2);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .result-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #eef7fa 100%);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 18px 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(8,145,178,0.1);
+        }
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: var(--accent);
+        }
+        .metric-card.warn::before { background: var(--warn); }
+        .metric-card.warn {
+            background: linear-gradient(135deg, #fef7f0 0%, #fce7d6 100%);
+            border-color: rgba(234,88,12,0.3);
+        }
+        .metric-card.ok::before { background: var(--ok); }
+        .metric-card.ok {
+            background: linear-gradient(135deg, #f0fae8 0%, #e3f7d6 100%);
+            border-color: rgba(22,163,74,0.3);
+        }
+        .metric-label {
+            font-size: 11px;
+            color: var(--txt-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .metric-value {
+            font-family: var(--mono);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1.1;
+        }
+        .metric-card.warn .metric-value { color: var(--warn); }
+        .metric-card.ok .metric-value { color: var(--ok); }
+        .metric-sub {
+            font-size: 12px;
+            color: var(--txt-dim);
+            margin-top: 6px;
+            font-family: var(--mono);
+        }
+        .calc-detail {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 18px;
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--txt-dim);
+        }
+        .calc-detail .hl { color: var(--accent); font-family: var(--mono); font-weight: 600; }
+        .calc-detail .warn { color: var(--warn); }
+        .placeholder {
+            background: linear-gradient(135deg, #f8fafc 0%, #eef7fa 100%);
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            padding: 42px 24px;
+            text-align: center;
+            color: var(--txt-dim);
+            font-size: 13px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .placeholder-icon { font-size: 36px; margin-bottom: 12px; }
 
-/* Animated illustration classes */
-.illus-svg{width:140px;height:auto;}
-@keyframes rotate-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@keyframes grow-bar{from{height:0;y:100%}to{height:var(--h)}}
-@keyframes dash-flow{to{stroke-dashoffset:-20}}
-@keyframes alarm-flash{0%,100%{opacity:1;fill:#c0142e}50%{opacity:.3;fill:#c0142e}}
-@keyframes person-enter{0%{transform:translateY(-18px);opacity:0}100%{transform:translateY(0);opacity:1}}
-@keyframes check-draw{from{stroke-dashoffset:40}to{stroke-dashoffset:0}}
-@keyframes winch-rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes person-rise{0%{transform:translateY(0)}100%{transform:translateY(-30px);opacity:0}}
-@keyframes wind-blow{0%{opacity:0;transform:translateX(-5px)}50%{opacity:1}100%{opacity:0;transform:translateX(10px)}}
+        /* ─── Info panel (formulas) ──────────────── */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        .info-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px;
+        }
+        .info-card h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 10px;
+        }
+        .info-card p, .info-card li {
+            font-size: 12px;
+            color: var(--txt-dim);
+            line-height: 1.8;
+        }
+        .info-card ul { list-style: none; padding: 0; }
+        .info-card li::before { content: '▸ '; color: var(--accent); font-weight: 700; }
+        .formula {
+            font-family: var(--mono);
+            font-size: 13px;
+            color: var(--txt);
+            background: #fff;
+            padding: 10px 13px;
+            border-radius: 6px;
+            margin-top: 8px;
+            border: 1px solid var(--border);
+            font-weight: 600;
+        }
 
-/* ═══════════════════════════════════════
-   VENTILATION & GAS
-══════════════════════════════════════ */
-.vent-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
-.gas-monitor{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:24px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.08);}
-.gas-monitor h3{font-size:18px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
-.gas-monitor h3::after{content:'LIVE SIM';font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--accent3);background:rgba(13,158,110,.1);border:1px solid rgba(13,158,110,.3);padding:2px 7px;border-radius:4px;letter-spacing:2px;animation:blink 2s ease-in-out infinite;}
-.gas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;}
-.gas-card{background:var(--surface2);border-radius:10px;padding:16px;border:1px solid var(--border);overflow:hidden;}
-.gas-name{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:6px;}
-.gas-value{font-family:'Share Tech Mono',monospace;font-size:26px;font-weight:700;transition:color .5s;}
-.gas-unit{font-size:10px;color:var(--muted);margin-bottom:12px;}
-.gas-bar-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
-.gas-bar-fill{height:100%;border-radius:2px;transition:width 1s ease,background .5s;}
-.gas-status{font-size:10px;margin-top:8px;font-family:'Share Tech Mono',monospace;letter-spacing:1px;}
-.gas-limit{font-size:9px;color:var(--muted);margin-top:3px;}
-.ok{color:var(--accent3)}.warn{color:var(--warning)}.danger-c{color:var(--danger)}
-@keyframes alarm-bg{0%,100%{background:rgba(192,20,46,.04)}50%{background:rgba(192,20,46,.12)}}
-.alarming{animation:alarm-bg 1s ease-in-out infinite;border-color:var(--danger)!important;}
-.sim-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
-.sim-btn{padding:9px 16px;border-radius:7px;border:1px solid;font-family:'Noto Sans SC',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;font-weight:500;background:var(--surface);}
-.sb-ok{border-color:var(--accent3);color:var(--accent3);}
-.sb-warn{border-color:var(--warning);color:var(--warning);}
-.sb-danger{border-color:var(--danger);color:var(--danger);}
-.sim-btn:hover{filter:brightness(1.2);transform:translateY(-1px);}
+        /* ─── Tab panes ──────────────────────────── */
+        .tab-pane { display: none; padding: 0; }
+        .tab-pane.active-pane { display: block; padding: 0 24px 24px 24px; }
+        
+        .tab-nav {
+            display: none;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+            position: sticky;
+            top: 56px;
+            z-index: 100;
+        }
+        .tab-nav button {
+            flex: 1;
+            padding: 10px 14px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--txt-dim);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: var(--sans);
+        }
+        .tab-nav button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .tab-nav button.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
 
-.detect-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:20px;}
-@media(max-width:768px){.detect-grid{grid-template-columns:1fr;}.vent-grid{grid-template-columns:1fr;}}
+        /* ─── K slider visual ────────────────────── */
+        .k-scale {
+            display: flex;
+            gap: 0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 8px;
+            height: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .k-seg {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-family: var(--mono);
+            font-weight: 700;
+            transition: opacity 0.2s;
+            color: #fff;
+        }
+        .k-seg:nth-child(1) { background: #059669; }
+        .k-seg:nth-child(2) { background: #0d9488; }
+        .k-seg:nth-child(3) { background: #f59e0b; }
+        .k-seg:nth-child(4) { background: #ea580c; }
+        .k-seg:nth-child(5) { background: #dc2626; }
+        .k-label-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--txt-dim);
+            margin-top: 6px;
+            font-family: var(--mono);
+            font-weight: 600;
+        }
 
-/* ═══════════════════════════════════════
-   EMERGENCY
-══════════════════════════════════════ */
-.emg-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-.emg-card{border-radius:12px;padding:22px;border:1px solid;box-shadow:0 1px 4px rgba(0,0,0,.06);}
-.emg-card.step-card{background:var(--surface);border-color:var(--border);}
-.emg-card.warn-card{background:rgba(192,20,46,.04);border-color:rgba(192,20,46,.25);}
-.e-step{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px;}
-.e-num{width:30px;height:30px;border-radius:7px;background:rgba(26,111,196,.1);border:1px solid rgba(26,111,196,.25);color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;}
-.e-num h4{font-size:13px;font-weight:700;margin-bottom:3px;}
-.e-num+div p{font-size:11px;color:var(--muted);line-height:1.6;}
-.rescue-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:10px;}
-.warn-list{list-style:none;display:flex;flex-direction:column;gap:9px;}
-.warn-list li{display:flex;gap:8px;font-size:12px;color:#8a0820;line-height:1.6;}
-.warn-list li::before{content:'✕';color:var(--danger);flex-shrink:0;font-weight:700;}
+        /* ─── Footer ─────────────────────────────── */
+        footer {
+            grid-area: footer;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 12px 24px;
+            font-size: 11px;
+            color: var(--txt-dim);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-family: var(--mono);
+            box-shadow: 0 -1px 3px rgba(0,0,0,0.06);
+        }
+        footer .sep { color: var(--border); }
 
-/* ═══════════════════════════════════════
-   QUIZ
-══════════════════════════════════════ */
-.quiz-wrap{max-width:660px;margin:0 auto;}
-.quiz-dots{display:flex;gap:5px;margin-bottom:28px;}
-.quiz-dot{height:4px;flex:1;border-radius:2px;background:var(--border);transition:background .3s;}
-.quiz-dot.done{background:var(--accent3)}.quiz-dot.cur{background:var(--accent);}
-.quiz-q{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:18px;animation:fadeUp .4s ease;box-shadow:0 1px 6px rgba(0,0,0,.07);}
-.q-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:14px;}
-.q-text{font-size:17px;font-weight:600;line-height:1.6;margin-bottom:22px;}
-.q-opts{display:flex;flex-direction:column;gap:9px;}
-.q-opt{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:12px 16px;cursor:pointer;transition:all .2s;font-size:13px;text-align:left;color:var(--text);font-family:'Noto Sans SC',sans-serif;display:flex;align-items:center;gap:10px;}
-.q-opt-lbl{width:22px;height:22px;border-radius:5px;background:var(--border);display:flex;align-items:center;justify-content:center;font-family:'Share Tech Mono',monospace;font-size:10px;flex-shrink:0;transition:all .2s;color:var(--muted);}
-.q-opt:hover{border-color:var(--accent);background:rgba(26,111,196,.06);}
-.q-opt:hover .q-opt-lbl{background:var(--accent);color:#fff;}
-.q-opt.correct{border-color:var(--accent3);background:rgba(13,158,110,.08);}
-.q-opt.correct .q-opt-lbl{background:var(--accent3);color:#fff;}
-.q-opt.wrong{border-color:var(--danger);background:rgba(192,20,46,.07);}
-.q-opt.wrong .q-opt-lbl{background:var(--danger);color:#fff;}
-.q-opt.disabled{cursor:default;pointer-events:none;}
-.q-fb{margin-top:14px;padding:12px 16px;border-radius:9px;font-size:12px;line-height:1.7;display:none;}
-.q-fb.show{display:block;animation:fadeUp .3s ease;}
-.q-fb.ok{background:rgba(13,158,110,.08);border:1px solid rgba(13,158,110,.3);color:#0a7a55;}
-.q-fb.bad{background:rgba(192,20,46,.07);border:1px solid rgba(192,20,46,.25);color:#8a0820;}
-.q-next{background:var(--accent);border:none;color:#fff;font-family:'Noto Sans SC',sans-serif;font-weight:700;font-size:13px;padding:12px 28px;border-radius:7px;cursor:pointer;transition:all .2s;display:none;margin-top:14px;}
-.q-next.show{display:block;}
-.q-next:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(26,111,196,.35);}
-.quiz-result{text-align:center;padding:48px 28px;background:var(--surface);border:1px solid var(--border);border-radius:14px;display:none;animation:fadeUp .6s ease;box-shadow:0 2px 12px rgba(0,0,0,.08);}
-.quiz-result.show{display:block;}
-.res-score{font-family:'Share Tech Mono',monospace;font-size:64px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;}
-.retry-btn{background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:'Noto Sans SC',sans-serif;font-size:13px;padding:11px 26px;border-radius:7px;cursor:pointer;margin-top:20px;transition:all .2s;}
-.retry-btn:hover{background:rgba(26,111,196,.08);}
+        /* ─── Range input slider ────────────────────── */
+        input[type="range"] {
+            width: 100%;
+            height: 32px;
+            padding: 0;
+            margin: 12px 0 8px 0;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(to right, #059669 0%, #0d9488 20%, #f59e0b 40%, #ea580c 70%, #dc2626 100%);
+            -webkit-appearance: none;
+            appearance: none;
+            outline: none;
+            cursor: pointer;
+        }
 
-/* ── scrollbar ── */
-::-webkit-scrollbar{width:5px;}
-::-webkit-scrollbar-track{background:var(--bg);}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-::-webkit-scrollbar-thumb:hover{background:var(--accent);}
+        input[type="range"].eta-slider {
+            background: linear-gradient(to right, #3b82f6 0%, #06b6d4 25%, #10b981 50%, #84cc16 75%, #eab308 100%);
+        }
 
-/* ── mobile ── */
-@media(max-width:768px){
-  .header-row{padding:0 12px;}
-  .logo span{display:none;}
-  .section{padding:24px 14px 60px;}
-  .hero{padding:40px 14px;}
-  .sec-title{font-size:24px;}
-  .mgmt-grid{grid-template-columns:1fr;}
-  .roles-grid{grid-template-columns:1fr 1fr;}
-  .emg-grid{grid-template-columns:1fr;}
-  .rescue-grid{grid-template-columns:1fr;}
-  .wf-illus{display:none;}
-  .gas-grid{grid-template-columns:1fr 1fr;}
-  .hero-stats{gap:20px;}
-  .detect-grid{grid-template-columns:1fr;}
-  .vent-grid{grid-template-columns:1fr;}
-  .process-principle{flex-direction:row;gap:12px;flex-wrap:nowrap;overflow-x:auto;padding:16px 12px;}
-  .principle-item{flex:0 0 auto;min-width:65px;padding:0 4px;}
-  .principle-num{font-size:24px;}
-  .principle-label{font-size:11px;}
-  .principle-arrow{transform:rotate(0deg);flex-shrink:0;font-size:16px;}
-  .roles-grid{grid-template-columns:1fr;}
-  .hazard-grid{grid-template-columns:1fr 1fr;}
-  .ex-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
-  .def-card-head{padding:14px 16px;gap:10px;}
-  .def-icon{font-size:20px;}
-  .def-title{font-size:15px;}
-  .def-body{padding:0 14px;}
-  .def-card.open .def-body{padding:0 14px 18px;}
-  .duty-list li{font-size:12px;word-break:break-word;}
-}
-@media(max-width:420px){
-  .roles-grid{grid-template-columns:1fr;}
-  .gas-grid{grid-template-columns:1fr;}
-  .hazard-grid{grid-template-columns:1fr;}
-  .ex-grid{grid-template-columns:repeat(2,1fr);}
-}
-</style>
+        input[type="range"].k-slider {
+            background: linear-gradient(to right, #059669 0%, #0d9488 20%, #f59e0b 40%, #ea580c 70%, #dc2626 100%);
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(8,145,178,0.3);
+            transition: all 0.15s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 10px rgba(8,145,178,0.4);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(8,145,178,0.3);
+            transition: all 0.15s;
+        }
+        input[type="range"]::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 10px rgba(8,145,178,0.4);
+        }
+
+        input[type="range"]::-moz-range-track {
+            background: transparent;
+            border: none;
+        }
+
+        .slider-value {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: var(--mono);
+            font-weight: 600;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .slider-label-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--txt-dim);
+            margin-top: 4px;
+            font-family: var(--mono);
+            font-weight: 600;
+        }
+
+        /* ─── Formulas section ──────────────────── */
+        .formulas-section {
+            grid-column: 1;
+            margin-top: 0;
+        }
+        
+        .formulas-section .panel {
+            margin: 0;
+        }
+
+        /* ─── Responsive ─────────────────────────── */
+        @media (max-width: 1024px) {
+            .calc-grid {
+                grid-template-columns: 1fr;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .formulas-section {
+                grid-column: 1;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .app { 
+                grid-template-columns: 1fr; 
+                grid-template-areas: "header" "main" "footer"; 
+            }
+            .sidebar { display: none; }
+            .tab-nav {
+                display: flex;
+            }
+            .admission-notice {
+                margin-top: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding: 0;
+            }
+            .tab-nav {
+                position: sticky;
+                top: 56px;
+                z-index: 100;
+            }
+            .tab-pane {
+                padding: 16px;
+            }
+            .panel-body {
+                padding: 16px;
+            }
+            .field-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .result-panel {
+                gap: 12px;
+            }
+            .result-container {
+                padding: 16px;
+            }
+            .result-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .metric-card {
+                padding: 14px 16px;
+            }
+            .metric-value {
+                font-size: 24px;
+            }
+            .quick-bar {
+                gap: 6px;
+            }
+            .qbtn {
+                font-size: 10px;
+                padding: 5px 9px;
+                flex: 1;
+            }
+            .topbar {
+                padding: 0 16px;
+            }
+            .admission-notice {
+                margin-top: 80px;
+                margin-bottom: 16px;
+                padding: 12px;
+            }
+            .status-pill {
+                display: none;
+            }
+            footer {
+                padding: 10px 16px;
+                font-size: 10px;
+                flex-wrap: wrap;
+            }
+            input[type="range"] {
+                height: 28px;
+                margin: 10px 0 6px 0;
+            }
+            input[type="range"]::-webkit-slider-thumb {
+                width: 18px;
+                height: 18px;
+            }
+            input[type="range"]::-moz-range-thumb {
+                width: 18px;
+                height: 18px;
+            }
+        }
+    </style>
 </head>
 <body>
+<div class="app">
 
-<header>
-  <div class="header-row">
-    <div class="logo">
-      <div class="logo-icon">⬡</div>
-      <span>有限空间作业安全</span>
-    </div>
-    <nav id="mainNav">
-      <button class="active" onclick="goSec('home',this)">首页</button>
-      <button onclick="goSec('concepts',this)">基础概念</button>
-      <button onclick="goSec('roles',this)">岗位职责</button>
-      <button onclick="goSec('process',this)">作业流程</button>
-      <button onclick="goSec('vent',this)">通风与气体检测</button>
-      <button onclick="goSec('emergency',this)">应急救援</button>
-      <button onclick="goSec('quiz',this)">知识测验</button>
+    <!-- ── Sidebar ── -->
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">CS</div>
+            <div class="logo-text">通风计算器<small>Confined Space v2.0</small></div>
+        </div>
+        <div class="nav-section">计算模式</div>
+        <button class="nav-btn active" data-tab="toxic" onclick="switchTab('toxic',this)">
+            <span class="nav-icon">🧪</span>
+            有害气体 / 易燃蒸气
+            <span class="nav-badge">TOXIC</span>
+        </button>
+        <button class="nav-btn" data-tab="oxygen" onclick="switchTab('oxygen',this)">
+            <span class="nav-icon">🫁</span>
+            缺氧恢复计算
+            <span class="nav-badge">O₂</span>
+        </button>
+
+        <div class="nav-section">参考信息</div>
+        <button class="nav-btn" onclick="scrollToSection('formulas')">
+            <span class="nav-icon">📐</span>
+            公式 & 说明
+        </button>
+
+        <div class="sidebar-footer">
+            符合 ACGIH 吹扫模型<br>
+            AQ 3028-2008 · GB 8958-2006<br>
+            <span style="color:var(--warn)">⚠ 计算值仅供参考，须以气体检测仪实测为准</span>
+        </div>
     </nav>
-  </div>
-  <div class="progress-bar"><div class="progress-fill" id="pf"></div></div>
-</header>
 
-<!-- ══════════ HOME ══════════ -->
-<section id="home" class="section active">
-  <div class="hero">
-    <div class="hero-badge">小鹏汽车 · 安全生产标准</div>
-    <h1>有限空间作业<span>安全学习中心</span></h1>
-    <p>系统掌握有限空间作业安全规范，从识别风险到应急处置，保护每一位作业人员的生命安全。</p>
-    <div class="hero-stats">
-      <div class="stat"><span class="stat-num">7</span><span class="stat-label">学习模块</span></div>
-      <div class="stat"><span class="stat-num">4</span><span class="stat-label">关键岗位</span></div>
-      <div class="stat"><span class="stat-num">10</span><span class="stat-label">测验题目</span></div>
-    </div>
-    <button class="cta-btn" onclick="goSec('concepts',document.querySelector('nav button:nth-child(2)'))">开始学习 →</button>
-  </div>
-</section>
-
-<!-- ══════════ CONCEPTS ══════════ -->
-<section id="concepts" class="section">
-  <span class="sec-tag">MODULE 01</span>
-  <h2 class="sec-title">基础<span class="hl">概念</span>与定义</h2>
-
-  <!-- ─── ROW 1: 三个核心定义卡片 ─── -->
-  <div class="con-row-label"><span class="con-row-num">第一部分</span>核心概念定义</div>
-  <div class="def-cards-row">
-
-    <!-- 卡片1: 有限空间 -->
-    <div class="def-card" id="dc-space" onclick="toggleDefCard('dc-space')">
-      <div class="def-card-head">
-        <span class="def-icon">🏗️</span>
-        <div>
-          <div class="def-title">有限空间</div>
-          <div class="def-sub">点击展开详解</div>
+    <!-- ── Topbar ── -->
+    <header class="topbar">
+        <div class="topbar-title">
+            <span>EHS</span> / 有限空间通风计算器
         </div>
-        <span class="def-arrow">▼</span>
-      </div>
-      <div class="def-body">
-        <div class="hl-box" style="margin-top:0">有限空间是一种<strong>静态的、固有的危险源</strong>。只要该空间存在，其潜在风险属性就持续存在，无论是否有人在内部作业。</div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.7">封闭或部分封闭，未被设计为固定工作场所，人员可以进入作业，易造成有毒有害、易燃易爆物质积聚或者氧含量不足的空间。</p>
-        <div style="font-size:12px;font-weight:600;margin-bottom:10px">典型示例：</div>
-        <div class="ex-grid">
-          <div class="ex-card"><svg viewBox="0 0 110 80"><rect x="10" y="25" width="90" height="50" rx="4" fill="#dde6f0" stroke="#b0c8e0" stroke-width="2"/><ellipse cx="55" cy="60" rx="28" ry="7" fill="#b5cfe8" opacity=".8"/><rect x="42" y="10" width="26" height="18" rx="3" fill="none" stroke="#b0c8e0" stroke-width="1.5" stroke-dasharray="4,2"/><rect x="44" y="12" width="22" height="13" rx="2" fill="#e8eef5" stroke="#1a6fc4" stroke-width="1.2"/><text x="55" y="22" text-anchor="middle" fill="#1a6fc4" font-size="7">入口</text><text x="55" y="55" text-anchor="middle" fill="#5a7a95" font-size="8">污水</text></svg><div class="ex-name">污水池</div><div class="ex-risk">H₂S·缺氧</div></div>
-          <div class="ex-card"><svg viewBox="0 0 110 80"><ellipse cx="55" cy="20" rx="32" ry="9" fill="#dde6f0" stroke="#1a6fc4" stroke-width="1.5"/><rect x="23" y="20" width="64" height="46" fill="#dde6f0" stroke="#b0c8e0" stroke-width="2"/><ellipse cx="55" cy="66" rx="32" ry="9" fill="#dde6f0" stroke="#b0c8e0" stroke-width="2"/><rect x="46" y="10" width="18" height="12" rx="2" fill="none" stroke="#d9520f" stroke-width="1.5"/><text x="55" y="19" text-anchor="middle" fill="#d9520f" font-size="7">人孔</text><text x="55" y="46" text-anchor="middle" fill="#5a7a95" font-size="8">储罐</text></svg><div class="ex-name">储罐</div><div class="ex-risk">残留物·燃爆</div></div>
-          <div class="ex-card"><svg viewBox="0 0 110 80"><rect x="0" y="38" width="110" height="42" fill="#c8d8e8" opacity=".5"/><path d="M5 55 Q55 44 105 55" stroke="#b0c8e0" stroke-width="14" fill="none" stroke-linecap="round"/><path d="M5 55 Q55 44 105 55" stroke="#dde6f0" stroke-width="10" fill="none" stroke-linecap="round"/><rect x="44" y="18" width="22" height="24" rx="3" fill="#e8eef5" stroke="#1a6fc4" stroke-width="1.5"/><circle cx="55" cy="30" r="7" fill="none" stroke="#1a6fc4" stroke-width="1.5"/><text x="55" y="34" text-anchor="middle" fill="#1a6fc4" font-size="6">井盖</text></svg><div class="ex-name">地下管道</div><div class="ex-risk">CO·缺氧</div></div>
-          <div class="ex-card"><svg viewBox="0 0 110 80"><rect x="8" y="18" width="94" height="58" rx="4" fill="#dde6f0" stroke="#b0c8e0" stroke-width="2"/><rect x="38" y="8" width="34" height="14" rx="2" fill="none" stroke="#d9520f" stroke-width="1.5" stroke-dasharray="3,2"/><text x="55" y="18" text-anchor="middle" fill="#d9520f" font-size="6">通风管道</text><circle cx="42" cy="48" r="2" fill="#8b44cc" opacity=".7"/><circle cx="48" cy="44" r="1.5" fill="#8b44cc" opacity=".5"/><circle cx="55" cy="50" r="2" fill="#8b44cc" opacity=".6"/><text x="55" y="65" text-anchor="middle" fill="#5a7a95" font-size="8">喷漆室</text></svg><div class="ex-name">喷漆室通风管道</div><div class="ex-risk">有机溶剂·燃爆</div></div>
-          <div class="ex-card"><svg viewBox="0 0 110 80"><rect x="0" y="32" width="110" height="8" fill="#b0c8e0" opacity=".4"/><rect x="32" y="2" width="46" height="30" rx="2" fill="none" stroke="#b0c8e0" stroke-width="2"/><rect x="34" y="4" width="42" height="28" fill="#c8d8e8"/><rect x="32" y="40" width="46" height="38" fill="#c8d8e8" stroke="#b0c8e0" stroke-width="2"/><text x="55" y="65" text-anchor="middle" fill="#5a7a95" font-size="8">竖井</text></svg><div class="ex-name">地坑 / 竖井</div><div class="ex-risk">坠落·缺氧</div></div>
-          <div class="ex-card"><svg viewBox="0 0 110 80"><rect x="18" y="22" width="74" height="50" rx="7" fill="#dde6f0" stroke="#b0c8e0" stroke-width="2"/><circle cx="55" cy="14" r="10" fill="#e8eef5" stroke="#d9520f" stroke-width="1.5"/><text x="55" y="18" text-anchor="middle" fill="#d9520f" font-size="7">盖口</text><line x1="55" y1="24" x2="55" y2="28" stroke="#b0c8e0" stroke-width="2"/><text x="55" y="50" text-anchor="middle" fill="#5a7a95" font-size="8">密闭设备</text></svg><div class="ex-name">密闭设备内部</div><div class="ex-risk">多种气体·窒息</div></div>
+        <div class="status-pill">
+            <div class="status-dot"></div>
+            须以实测数据为准
         </div>
-      </div>
-    </div>
+    </header>
 
-    <!-- 卡片2: 有限空间作业 -->
-    <div class="def-card" id="dc-work" onclick="toggleDefCard('dc-work')">
-      <div class="def-card-head">
-        <span class="def-icon">⚡</span>
-        <div>
-          <div class="def-title">有限空间作业</div>
-          <div class="def-sub">点击展开详解</div>
+    <!-- ── Main ── -->
+    <main>
+        <!-- 移动端 Tab 导航 -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('toxic', event)">🧪 有害气体</button>
+            <button class="tab-btn" onclick="switchTab('oxygen', event)">🫁 缺氧恢复</button>
         </div>
-        <span class="def-arrow">▼</span>
-      </div>
-      <div class="def-body">
-        <div class="warn-box" style="margin-top:0">⚠️ 作业是一种<strong>动态的、高风险的作业活动</strong>。风险在人员进入、作业和撤离过程中被激活和变化。</div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.7">包含以下类型的作业活动：<strong style="color:var(--text)">检查 · 维修 · 保养 · 清理 · 拆除</strong></p>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px">
-          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center"><div style="font-size:20px;margin-bottom:8px">🔍</div><div style="font-size:12px;color:var(--text);font-weight:600">检查</div></div>
-          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center"><div style="font-size:20px;margin-bottom:8px">🔧</div><div style="font-size:12px;color:var(--text);font-weight:600">维修</div></div>
-          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center"><div style="font-size:20px;margin-bottom:8px">⚙️</div><div style="font-size:12px;color:var(--text);font-weight:600">保养</div></div>
-          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center"><div style="font-size:20px;margin-bottom:8px">🧹</div><div style="font-size:12px;color:var(--text);font-weight:600">清理</div></div>
-          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center"><div style="font-size:20px;margin-bottom:8px">💥</div><div style="font-size:12px;color:var(--text);font-weight:600">拆除</div></div>
-        </div>
-      </div>
-    </div>
 
-    <!-- 卡片3: 进入 -->
-    <div class="def-card" id="dc-entry" onclick="toggleDefCard('dc-entry')">
-      <div class="def-card-head">
-        <span class="def-icon">🚨</span>
-        <div>
-          <div class="def-title">进入</div>
-          <div class="def-sub">最关键的安全边界定义</div>
-        </div>
-        <span class="def-arrow">▼</span>
-      </div>
-      <div class="def-body" onclick="event.stopPropagation()">
-        <!-- Key definition box -->
-        <div style="background:rgba(192,20,46,.07);border:2px solid rgba(192,20,46,.4);border-radius:10px;padding:16px;margin-bottom:16px">
-          <div style="font-size:13px;font-weight:700;color:var(--danger);margin-bottom:8px">📌 法规定义</div>
-          <div style="font-size:13px;color:var(--text);line-height:1.8"><strong style="color:var(--danger)">人员头部或全身进到有限空间内</strong>，即视为"进入"，须执行全部安全规程。</div>
-        </div>
-        <!-- Why head-based: breathing zone explanation -->
-        <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px">❓ 为何以头部进入为判定标准？</div>
-        <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
-          <!-- Breathing zone SVG -->
-          <div style="flex-shrink:0">
-            <svg viewBox="0 0 190 220" width="170" style="display:block">
-              <defs>
-                <radialGradient id="bzGlow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stop-color="#ff3366" stop-opacity="0.25"/>
-                  <stop offset="100%" stop-color="#ff3366" stop-opacity="0"/>
-                </radialGradient>
-              </defs>
-              <!-- Ground -->
-              <rect x="0" y="140" width="190" height="8" fill="#b0c8e0" opacity=".5"/>
-              <text x="95" y="135" text-anchor="middle" fill="#5a7a95" font-size="8">地　面</text>
+        <!-- 有害气体模式 -->
+        <div id="toxicPane" class="tab-pane active-pane">
+            <div class="calc-grid">
+                <!-- 最终准入依据 -->
+                <div class="admission-notice">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <span style="font-size: 20px;">⚠️</span>
+                        <strong style="color: #92400e; font-size: 14px; font-weight: 700;">最终准入依据</strong>
+                    </div>
+                    <p style="color: #92400e; font-size: 13px; line-height: 1.6; margin: 0; font-weight: 500;">
+                        泵吸式气体检测仪实测数据（有毒气体 / 可燃气体 / 氧含量）全部合格后方可进入
+                    </p>
+                </div>
 
-              <!-- Confined space pit -->
-              <rect x="60" y="148" width="70" height="65" fill="#c8d8e8" stroke="#b0c8e0" stroke-width="1.5"/>
-              <text x="95" y="188" text-anchor="middle" fill="#b0c8e0" font-size="7.5">有限空间</text>
-              <!-- Toxic gas cloud inside space -->
-              <ellipse cx="95" cy="205" rx="28" ry="7" fill="#ff336640" opacity=".6"/>
-              <text x="95" y="207" text-anchor="middle" fill="#c0142e" font-size="6.5" opacity=".8">有毒气体 / 缺氧</text>
+                <!-- 左：输入表单 -->
+                <div class="panel panel-input">
+                    <div class="panel-header">
+                        <span>🧪</span>
+                        <span class="panel-title">输入参数 — <span class="panel-title-accent">有害气体 / 易燃蒸气稀释</span></span>
+                    </div>
+                    <div class="panel-body">
 
-              <!-- Person standing at edge -->
-              <!-- Legs -->
-              <line x1="95" y1="118" x2="88" y2="140" stroke="#d9520f" stroke-width="2.2" stroke-linecap="round"/>
-              <line x1="95" y1="118" x2="102" y2="140" stroke="#d9520f" stroke-width="2.2" stroke-linecap="round"/>
-              <!-- Body -->
-              <line x1="95" y1="80" x2="95" y2="118" stroke="#d9520f" stroke-width="2.5" stroke-linecap="round"/>
-              <!-- Arms -->
-              <line x1="80" y1="92" x2="95" y2="100" stroke="#d9520f" stroke-width="2.2" stroke-linecap="round"/>
-              <line x1="110" y1="92" x2="95" y2="100" stroke="#d9520f" stroke-width="2.2" stroke-linecap="round"/>
+                        <div class="field">
+                            <div class="field-label">
+                                📦 有限空间容积 V
+                                <span class="unit">m³</span>
+                            </div>
+                            <input type="number" id="volToxic" value="25" step="1" min="0.1" placeholder="例: 25">
+                        </div>
 
-              <!-- Head -->
-              <circle cx="95" cy="68" r="13" fill="none" stroke="#c0142e" stroke-width="2.2"/>
-              <!-- Face hint -->
-              <circle cx="91" cy="65" r="1.5" fill="#c0142e" opacity=".6"/>
-              <circle cx="99" cy="65" r="1.5" fill="#c0142e" opacity=".6"/>
-              <path d="M91 72 Q95 75 99 72" fill="none" stroke="#c0142e" stroke-width="1.2" opacity=".6"/>
+                        <div class="field">
+                            <div class="field-label">
+                                🌀 风机铭牌风量 Q_nom
+                                <span class="unit">m³/h</span>
+                            </div>
+                            <input type="number" id="fanNominal" value="400" step="10" min="1" placeholder="例: 400">
+                        </div>
 
-              <!-- Breathing zone halo (30 cm around head) -->
-              <ellipse cx="95" cy="68" rx="36" ry="28" fill="url(#bzGlow)"/>
-              <ellipse cx="95" cy="68" rx="36" ry="28" fill="none" stroke="#c0142e" stroke-width="1.5" stroke-dasharray="5,3" opacity=".8"/>
+                        <div class="field">
+                            <div class="field-label">
+                                📉 风管损耗折减系数 η
+                                <span class="slider-value" id="etaDisplay">0.7</span>
+                            </div>
+                            <div style="font-size:11px; color:var(--txt-dim); margin-bottom:8px;">
+                                概念：实际风量与铭牌风量的比值，考虑管路阻力损耗
+                            </div>
+                            <input type="range" id="lossFactor" class="eta-slider" value="0.7" step="0.05" min="0.4" max="1.0">
+                            <div class="slider-label-row">
+                                <span>长复杂管 0.4</span>
+                                <span>一般管路 0.7</span>
+                                <span>短直管 0.9 ~ 1.0</span>
+                            </div>
+                        </div>
 
-              <!-- Breathing zone label -->
-              <line x1="131" y1="60" x2="148" y2="50" stroke="#c0142e" stroke-width="1.2"/>
-              <text x="150" y="48" fill="#c0142e" font-size="8.5" font-weight="700">呼吸带</text>
-              <text x="150" y="59" fill="#c0142e" font-size="7.5">头部周围约30cm</text>
-              <text x="150" y="70" fill="#5a7a95" font-size="7">吸入即暴露风险</text>
+                        <div class="field-row">
+                            <div class="field">
+                                <div class="field-label">⚠️ 初始浓度 C₀ <span class="unit">ppm</span></div>
+                                <input type="number" id="initConc" value="350" step="1" min="0" placeholder="ppm / mg/m³">
+                            </div>
+                            <div class="field">
+                                <div class="field-label">🎯 目标安全浓度 Cₛ <span class="unit">ppm</span></div>
+                                <input type="number" id="targetConc" value="10" step="1" min="0" placeholder="ppm / mg/m³">
+                            </div>
+                        </div>
 
-              <!-- Nose/mouth inhale arrows -->
-              <path d="M97 79 Q103 85 100 90" fill="none" stroke="#ff336680" stroke-width="1.5" marker-end="url(#arrBz)"/>
-              <defs>
-                <marker id="arrBz" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
-                  <path d="M0,0 L5,2.5 L0,5 Z" fill="#c0142e" opacity=".7"/>
-                </marker>
-              </defs>
-              <text x="108" y="94" fill="#ff336699" font-size="6.5">吸入</text>
+                        <div class="quick-bar">
+                            <div class="quick-label">⚡ 快速填充目标浓度（点击）</div>
+                            <button class="qbtn" data-target="1" onclick="setTarget('targetConc',1,this)">苯 1ppm</button>
+                            <button class="qbtn" data-target="13" onclick="setTarget('targetConc',13,this)">甲苯 13ppm</button>
+                            <button class="qbtn" data-target="12.5" onclick="setTarget('targetConc',12.5,this)">CO 12.5ppm</button>
+                            <button class="qbtn" data-target="3.5" onclick="setTarget('targetConc',3.5,this)">H₂S 3.5ppm</button>
+                            <button class="qbtn" data-target="1000" onclick="setTarget('targetConc',1000,this)">汽油 1000ppm</button>
+                        </div>
 
-              <!-- Entry arrow showing head dipping in -->
-              <path d="M95 81 L95 100 L95 148" stroke="#ff336660" stroke-width="2" stroke-dasharray="6,4"/>
-              <polygon points="91,143 95,155 99,143" fill="#c0142e" opacity=".7"/>
-              <text x="30" y="165" fill="#c0142e" font-size="7.5" font-weight="700">头部一旦进入</text>
-              <text x="30" y="175" fill="#c0142e" font-size="7.5">呼吸带即暴露！</text>
+                        <div class="callout callout-amber" style="margin-bottom:16px;">
+                            易燃易爆物质目标浓度须 ≤ 10% LEL；有毒物须 ≤ OEL，建议取 50% OEL 作为更安全目标
+                        </div>
 
-              <!-- Caption -->
-              <text x="95" y="218" text-anchor="middle" fill="#5a7a95" font-size="7.5">呼吸带暴露示意图</text>
-            </svg>
-          </div>
+                        <div class="field">
+                            <div class="field-label">
+                                🔄 混合不均匀系数 K
+                                <span class="slider-value" id="kDisplay">3.0</span>
+                            </div>
+                            <div style="font-size:11px; color:var(--txt-dim); margin-bottom:8px;">
+                                概念：气体混合均匀程度，数值越大表示混合越不均匀，所需时间越长
+                            </div>
+                            <input type="range" id="kFactor" class="k-slider" value="3.0" step="0.5" min="1.0" max="10.0">
+                            <div class="slider-label-row">
+                                <span>规则 1~2</span>
+                                <span>一般 3.0</span>
+                                <span>复杂/高风险 8~10</span>
+                            </div>
+                        </div>
 
-          <!-- Text explanation -->
-          <div style="flex:1;min-width:180px">
-            <div style="background:var(--surface2);border-radius:9px;padding:14px;margin-bottom:10px;border:1px solid rgba(192,20,46,.2)">
-              <div style="font-size:12px;font-weight:700;color:var(--danger);margin-bottom:8px">🔴 核心原因：呼吸带暴露</div>
-              <div style="font-size:12px;color:var(--text);line-height:1.85">
-                <strong>呼吸带</strong>是指口鼻周围约 30cm 范围内的空气区域——也就是人呼吸时实际吸入的空气来源。<br><br>
-                当头部进入有限空间，呼吸带随之暴露在可能积聚的<strong style="color:var(--danger)">有毒气体</strong>或<strong style="color:var(--danger)">缺氧环境</strong>中。<br><br>
-                <strong style="color:#8a0820">即便只是探头查看，吸一口气就可能导致中毒或窒息死亡。</strong>
-              </div>
+                        <button class="calc-btn" onclick="calculateToxic()">⏱ 计算所需通风时间</button>
+                    </div>
+                </div>
+
+                <!-- 右：结果 -->
+                <div class="result-panel" id="toxicResults">
+                    <div class="placeholder">
+                        <div class="placeholder-icon">📊</div>
+                        填写参数后点击计算<br>
+                        <span style="font-size:12px;margin-top:4px;">结果将显示在此处</span>
+                    </div>
+                </div>
+
+                <!-- 公式说明 -->
+                <div id="formulas-toxic" class="formulas-section">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span>📐</span>
+                            <span class="panel-title">核心公式 & 工程指南</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="info-grid">
+                                <div class="info-card">
+                                    <h4>有害气体稀释公式</h4>
+                                    <div class="formula">\( t = K \cdot V \cdot \ln\left(\frac{C_0}{C_s}\right) / Q_{\text{eff}} \)</div>
+                                    <p style="margin-top:8px;">其中有效风量 \( Q_{\text{eff}} = Q_{\text{nom}} \times \eta \)</p>
+                                </div>
+                                <div class="info-card">
+                                    <h4>缺氧恢复公式</h4>
+                                    <div class="formula">\( t = K \cdot V \cdot \ln\left[\frac{20.9 - C_0}{20.9 - C_s}\right] / Q_{\text{eff}} \)</div>
+                                    <p style="margin-top:8px;">基于新风含氧20.9%的稀释模型</p>
+                                </div>
+                                <div class="info-card">
+                                    <h4>换气次数要求</h4>
+                                    <ul>
+                                        <li>换气次数 \( N = \frac{Q_{\text{eff}}}{V} \)（次/小时）</li>
+                                        <li>AQ 3028 要求 \( N \geq 5 \) 次/小时</li>
+                                        <li>对应最低所需通风时间 30 分钟</li>
+                                    </ul>
+                                </div>
+                                <div class="info-card">
+                                    <h4>工程安全建议</h4>
+                                    <ul>
+                                        <li>计算值为理论值，增加 20%~50% 余量</li>
+                                        <li>η 无实测时默认 0.7；长管多弯取低值</li>
+                                        <li>持续气体检测优于任何计算模型</li>
+                                        <li><strong style="color:var(--danger)">禁止</strong>仅靠计算不做实测即进入</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div style="background:var(--surface2);border-radius:9px;padding:12px;border:1px solid rgba(26,111,196,.12)">
-              <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:8px">⚡ 因此规程规定</div>
-              <div style="font-size:12px;color:var(--muted);line-height:1.85">
-                以<strong style="color:var(--accent)">头部进入</strong>作为触发全套安全管控的最低门槛，而非全身进入——这是保护呼吸带、防止致命吸入事故的最前线防线。
-              </div>
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
-              <span class="tag t-red">头部入内即"进入"</span>
-              <span class="tag t-red">呼吸带暴露即触发规程</span>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
 
-  </div><!-- end def-cards-row -->
+        <!-- 缺氧恢复模式 -->
+        <div id="oxygenPane" class="tab-pane">
+            <div class="calc-grid">
+                <!-- 最终准入依据 -->
+                <div class="admission-notice">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <span style="font-size: 20px;">⚠️</span>
+                        <strong style="color: #92400e; font-size: 14px; font-weight: 700;">最终准入依据</strong>
+                    </div>
+                    <p style="color: #92400e; font-size: 13px; line-height: 1.6; margin: 0; font-weight: 500;">
+                        泵吸式气体检测仪实测数据（有毒气体 / 可燃气体 / 氧含量）全部合格后方可进入
+                    </p>
+                </div>
 
-  <!-- ─── ROW 2: 主要危险因素 ─── -->
-  <div class="con-row-label"><span class="con-row-num">第二部分</span>主要危险因素</div>
-  <div class="hazard-grid">
-    <div class="hazard-card" style="--hc:var(--danger)">
-      <div class="hazard-icon">💨</div>
-      <div class="hazard-title">缺氧窒息</div>
-      <div class="hazard-val">O₂ &lt; <strong>19.5%</strong></div>
-      <div class="hazard-desc">氧含量低于19.5%VOL即为缺氧；低于16%危及生命；数分钟可致死。</div>
-    </div>
-    <div class="hazard-card" style="--hc:var(--warning)">
-      <div class="hazard-icon">☠️</div>
-      <div class="hazard-title">有毒气体中毒</div>
-      <div class="hazard-val">H₂S &gt; <strong>3.5 PPM</strong></div>
-      <div class="hazard-desc">H₂S、CO等气体积聚，极低浓度即致命。H₂S高浓度时嗅觉迅速麻痹，察觉不到危险。</div>
-    </div>
-    <div class="hazard-card" style="--hc:var(--accent2)">
-      <div class="hazard-icon">🔥</div>
-      <div class="hazard-title">燃爆风险</div>
-      <div class="hazard-val">可燃气 &gt; <strong>10% LEL</strong></div>
-      <div class="hazard-desc">可燃气体浓度超过爆炸下限10%即报警；遇明火、静电即可发生爆燃。</div>
-    </div>
-    <div class="hazard-card" style="--hc:#4a90d9">
-      <div class="hazard-icon">💧</div>
-      <div class="hazard-title">淹溺</div>
-      <div class="hazard-val">液体突然涌入</div>
-      <div class="hazard-desc">作业时液体突然涌入，作业人员来不及逃离而淹溺。</div>
-    </div>
-    <div class="hazard-card" style="--hc:var(--warning)">
-      <div class="hazard-icon">⚡</div>
-      <div class="hazard-title">触电</div>
-      <div class="hazard-val">金属空间 ≤ <strong>24V</strong></div>
-      <div class="hazard-desc">金属结构导电性强，照明须限压；潮湿环境额定电压不超过12V。</div>
-    </div>
-    <div class="hazard-card" style="--hc:var(--accent3)">
-      <div class="hazard-icon">↓</div>
-      <div class="hazard-title">高处坠落</div>
-      <div class="hazard-val">竖向空间 ≥ <strong>2m</strong></div>
-      <div class="hazard-desc">竖向有限空间进出存在坠落风险，须系安全带、使用三脚架辅助。</div>
-    </div>
-  </div>
+                <div class="panel panel-input">
+                    <div class="panel-header">
+                        <span>🫁</span>
+                        <span class="panel-title">输入参数 — <span class="panel-title-accent">缺氧恢复（氧气稀释模型）</span></span>
+                    </div>
+                    <div class="panel-body">
 
-  <!-- ─── ROW 3: 管理职责划分 ─── -->
-  <div class="con-row-label"><span class="con-row-num">第三部分</span>管理职责划分</div>
-  <p style="font-size:13px;color:var(--muted);margin-bottom:16px">点击各管理单位卡片，查看详细职责与图示说明。</p>
-  <div class="mgmt-grid">
+                        <div class="field">
+                            <div class="field-label">📦 有限空间容积 V <span class="unit">m³</span></div>
+                            <input type="number" id="volOxy" value="25" step="1" min="0.1">
+                        </div>
+                        <div class="field">
+                            <div class="field-label">🌀 风机铭牌风量 Q_nom <span class="unit">m³/h</span></div>
+                            <input type="number" id="fanNominalOxy" value="400" step="10" min="1">
+                        </div>
+                        <div class="field">
+                            <div class="field-label">📉 折减系数 η <span class="slider-value" id="etaDisplayOxy">0.7</span></div>
+                            <div style="font-size:11px; color:var(--txt-dim); margin-bottom:8px;">
+                                概念：实际风量与铭牌风量的比值，考虑管路阻力损耗
+                            </div>
+                            <input type="range" id="lossFactorOxy" class="eta-slider" value="0.7" step="0.05" min="0.4" max="1.0">
+                            <div class="slider-label-row">
+                                <span>长复杂管 0.4</span>
+                                <span>一般管路 0.7</span>
+                                <span>短直管 0.9 ~ 1.0</span>
+                            </div>
+                        </div>
 
-    <!-- 项目接口单位 -->
-    <div class="mgmt-card" id="mc-jiekou" onclick="toggleMgmt('mc-jiekou')">
-      <div class="mgmt-head">
-        <span class="icon">🏢</span>
-        <div><div class="title">项目接口单位</div><div class="desc">负责委托、签订合同、统筹协调</div></div>
-        <span class="mgmt-arrow">▼</span>
-      </div>
-      <div class="mgmt-detail">
-        <div class="mgmt-detail-inner">
-          <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
-            <svg viewBox="0 0 150 130" width="130" style="flex-shrink:0">
-              <rect x="20" y="20" width="110" height="80" rx="5" fill="#e8eef5" stroke="#b0c8e0" stroke-width="1.5"/>
-              <rect x="28" y="30" width="60" height="6" rx="2" fill="#1a6fc4" opacity=".7"/>
-              <rect x="28" y="42" width="80" height="4" rx="2" fill="#aabdd4" opacity=".8"/>
-              <rect x="28" y="52" width="70" height="4" rx="2" fill="#aabdd4" opacity=".8"/>
-              <rect x="28" y="62" width="75" height="4" rx="2" fill="#aabdd4" opacity=".8"/>
-              <rect x="28" y="72" width="50" height="4" rx="2" fill="#aabdd4" opacity=".8"/>
-              <circle cx="110" cy="72" r="12" fill="rgba(13,158,110,.12)" stroke="#0d9e6e" stroke-width="1.5"/>
-              <path d="M104 72 L109 77 L117 66" fill="none" stroke="#0d9e6e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="20" stroke-dashoffset="20" style="animation:check-draw .8s .3s ease forwards"/>
-              <circle cx="68" cy="105" r="8" fill="none" stroke="#1a6fc4" stroke-width="1.5"/>
-              <line x1="68" y1="113" x2="68" y2="123" stroke="#1a6fc4" stroke-width="1.5"/>
-              <line x1="60" y1="118" x2="76" y2="118" stroke="#1a6fc4" stroke-width="1.5"/>
-              <path d="M76 112 L88 100" stroke="#d9520f" stroke-width="1.5" stroke-linecap="round"/>
-              <text x="75" y="128" text-anchor="middle" fill="#5a7a95" font-size="8">审核 · 签约 · 审批</text>
-            </svg>
-            <div style="flex:1;min-width:150px">
-              <ul style="list-style:none;display:flex;flex-direction:column;gap:7px">
-                <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent)">▸</span>审核作业单位资质和安全生产条件</li>
-                <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent)">▸</span>签订安全生产管理协议，明确双方职责</li>
-                <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent)">▸</span>项目层面作业审批，联合安全条件确认</li>
-                <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent)">▸</span>事故时统一协调应急指挥</li>
-              </ul>
+                        <div class="field-row">
+                            <div class="field">
+                                <div class="field-label">🫁 初始氧浓度 <span class="unit">%VOL</span></div>
+                                <input type="number" id="initO2" value="18.0" step="0.1" min="0" max="25">
+                            </div>
+                            <div class="field">
+                                <div class="field-label">🎯 目标氧浓度 <span class="unit">%VOL</span></div>
+                                <input type="number" id="targetO2" value="19.5" step="0.1" min="0" max="23.5">
+                            </div>
+                        </div>
+
+                        <div class="callout callout-blue" style="margin-bottom:16px;">
+                            新风含氧量取 20.9%（稀释模型）。若当前氧浓度 &gt; 23.5%（富氧），请切换至有害气体模式，将过量氧视为污染物处理。
+                        </div>
+
+                        <div class="field">
+                            <div class="field-label">🔄 混合不均匀系数 K <span class="slider-value" id="kDisplayOxy">3.0</span></div>
+                            <div style="font-size:11px; color:var(--txt-dim); margin-bottom:8px;">
+                                概念：气体混合均匀程度，数值越大表示混合越不均匀，所需时间越长
+                            </div>
+                            <input type="range" id="kFactorOxy" class="k-slider" value="3.0" step="0.5" min="1.0" max="10.0">
+                            <div class="slider-label-row">
+                                <span>规则 1~2</span>
+                                <span>一般 3.0</span>
+                                <span>复杂/高风险 8~10</span>
+                            </div>
+                        </div>
+
+                        <button class="calc-btn" onclick="calculateOxygen()">⏱ 计算恢复所需时间</button>
+                    </div>
+                </div>
+
+                <div class="result-panel" id="oxyResults">
+                    <div class="placeholder">
+                        <div class="placeholder-icon">🫁</div>
+                        填写参数后点击计算
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- 属地管理单位 -->
-    <div class="mgmt-card" id="mc-shudi" onclick="toggleMgmt('mc-shudi')">
-      <div class="mgmt-head">
-        <span class="icon">🏭</span>
-        <div><div class="title">属地管理单位</div><div class="desc">辨识建档 · 警示标识 · 现场监督</div></div>
-        <span class="mgmt-arrow">▼</span>
-      </div>
-      <div class="mgmt-detail">
-        <div class="mgmt-detail-inner">
-          <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
-            <svg viewBox="0 0 160 140" width="140" style="flex-shrink:0">
-              <rect x="10" y="50" width="60" height="70" fill="#dde6f0" stroke="#b0c8e0" stroke-width="1.5"/>
-              <rect x="20" y="60" width="15" height="15" fill="#b5cfe8"/>
-              <rect x="44" y="60" width="15" height="15" fill="#b5cfe8"/>
-              <rect x="28" y="88" width="18" height="32" fill="#c8d8e8"/>
-              <circle cx="27" cy="67" r="5" fill="none" stroke="#c0142e" stroke-width="1.5" stroke-dasharray="3,2"/>
-              <circle cx="51" cy="67" r="5" fill="none" stroke="#c0142e" stroke-width="1.5" stroke-dasharray="3,2"/>
-              <text x="27" y="71" text-anchor="middle" fill="#c0142e" font-size="5">!</text>
-              <text x="51" y="71" text-anchor="middle" fill="#c0142e" font-size="5">!</text>
-              <polygon points="35,46 40,37 45,46" fill="none" stroke="#b06000" stroke-width="1.5"/>
-              <text x="40" y="45" text-anchor="middle" fill="#b06000" font-size="5" font-weight="700">!</text>
-              <rect x="88" y="30" width="62" height="80" rx="3" fill="#e8eef5" stroke="#b0c8e0" stroke-width="1.5"/>
-              <rect x="88" y="30" width="62" height="16" rx="3" fill="#1a6fc4" opacity=".2"/>
-              <text x="119" y="42" text-anchor="middle" fill="#1a6fc4" font-size="8" font-weight="700">台账</text>
-              <rect x="95" y="53" width="48" height="4" rx="2" fill="#aabdd4"/>
-              <rect x="95" y="63" width="40" height="4" rx="2" fill="#aabdd4"/>
-              <rect x="95" y="73" width="44" height="4" rx="2" fill="#aabdd4"/>
-              <rect x="95" y="83" width="38" height="4" rx="2" fill="#aabdd4"/>
-              <rect x="95" y="93" width="42" height="4" rx="2" fill="#aabdd4"/>
-              <path d="M72 70 Q80 60 88 55" fill="none" stroke="#1a6fc4" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrMgmt2)"/>
-              <defs><marker id="arrMgmt2" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#1a6fc4"/></marker></defs>
-              <text x="80" y="48" fill="#5a7a95" font-size="7">辨识→建档</text>
-              <text x="85" y="120" text-anchor="middle" fill="#5a7a95" font-size="7">有限空间管理台账</text>
-            </svg>
-            <div style="flex:1;min-width:150px">
-              <ul style="list-style:none;display:flex;flex-direction:column;gap:7px">
-                <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent2)">▸</span>辨识所辖区域内所有有限空间，建立管理台账</li>
-                <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent2)">▸</span>设置永久性安全警示标志和风险告知牌</li>
-                <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent2)">▸</span>对外来作业单位进行属地安全告知与准入审查</li>
-                <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent2)">▸</span>派员对作业全过程进行现场监督检查</li>
-                <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent2)">▸</span>立即启动先期应急处置</li>
-              </ul>
+            <!-- 公式说明 -->
+            <div id="formulas-oxygen" class="formulas-section">
+                <div class="panel">
+                    <div class="panel-header">
+                        <span>📐</span>
+                        <span class="panel-title">核心公式 & 工程指南</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <h4>有害气体稀释公式</h4>
+                                <div class="formula">\( t = K \cdot V \cdot \ln\left(\frac{C_0}{C_s}\right) / Q_{\text{eff}} \)</div>
+                                <p style="margin-top:8px;">其中有效风量 \( Q_{\text{eff}} = Q_{\text{nom}} \times \eta \)</p>
+                            </div>
+                            <div class="info-card">
+                                <h4>缺氧恢复公式</h4>
+                                <div class="formula">\( t = K \cdot V \cdot \ln\left[\frac{20.9 - C_0}{20.9 - C_s}\right] / Q_{\text{eff}} \)</div>
+                                <p style="margin-top:8px;">基于新风含氧20.9%的稀释模型</p>
+                            </div>
+                            <div class="info-card">
+                                <h4>换气次数要求</h4>
+                                <ul>
+                                    <li>换气次数 \( N = \frac{Q_{\text{eff}}}{V} \)（次/小时）</li>
+                                    <li>AQ 3028 要求 \( N \geq 5 \) 次/小时</li>
+                                    <li>对应最低所需通风时间 30 分钟</li>
+                                </ul>
+                            </div>
+                            <div class="info-card">
+                                <h4>工程安全建议</h4>
+                                <ul>
+                                    <li>计算值为理论值，增加 20%~50% 余量</li>
+                                    <li>η 无实测时默认 0.7；长管多弯取低值</li>
+                                    <li>持续气体检测优于任何计算模型</li>
+                                    <li><strong style="color:var(--danger)">禁止</strong>仅靠计算不做实测即进入</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- 作业单位 -->
-    <div class="mgmt-card" id="mc-zuoye" onclick="toggleMgmt('mc-zuoye')">
-      <div class="mgmt-head">
-        <span class="icon">👷</span>
-        <div><div class="title">作业单位</div><div class="desc">主体责任 · 设备配备 · 人员培训</div></div>
-        <span class="mgmt-arrow">▼</span>
-      </div>
-      <div class="mgmt-detail">
-        <div class="mgmt-detail-inner">
-          <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
-            <svg viewBox="0 0 150 130" width="130" style="flex-shrink:0">
-              <circle cx="55" cy="28" r="12" fill="none" stroke="#d9520f" stroke-width="2"/>
-              <path d="M43 26 Q55 14 67 26" fill="#d9520f" opacity=".7"/>
-              <rect x="41" y="26" width="28" height="4" rx="2" fill="#d9520f" opacity=".5"/>
-              <line x1="55" y1="40" x2="55" y2="68" stroke="#d9520f" stroke-width="2.5"/>
-              <line x1="40" y1="50" x2="70" y2="50" stroke="#d9520f" stroke-width="2.5"/>
-              <line x1="55" y1="68" x2="44" y2="80" stroke="#d9520f" stroke-width="2.5"/>
-              <line x1="55" y1="68" x2="66" y2="80" stroke="#d9520f" stroke-width="2.5"/>
-              <rect x="62" y="40" width="10" height="18" rx="3" fill="#e8eef5" stroke="#1a6fc4" stroke-width="1.5"/>
-              <text x="67" y="52" text-anchor="middle" fill="#1a6fc4" font-size="5">SCBA</text>
-              <rect x="85" y="20" width="55" height="80" rx="4" fill="#dde6f0" stroke="#b0c8e0" stroke-width="1"/>
-              <text x="112" y="34" text-anchor="middle" fill="#1a6fc4" font-size="7.5">气体检测仪</text>
-              <text x="112" y="47" text-anchor="middle" fill="#d9520f" font-size="7.5">呼吸防护用品</text>
-              <text x="112" y="60" text-anchor="middle" fill="#0d9e6e" font-size="7.5">坠落防护装备</text>
-              <text x="112" y="73" text-anchor="middle" fill="#b06000" font-size="7.5">通风设备</text>
-              <text x="112" y="86" text-anchor="middle" fill="#5a7a95" font-size="7.5">应急救援器材</text>
-            </svg>
-            <div style="flex:1;min-width:150px">
-              <ul style="list-style:none;display:flex;flex-direction:column;gap:7px">
-                <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent3)">▸</span>落实安全管理制度和操作规程</li>
-                <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent3)">▸</span>配备、维护个体防护装备与应急器材</li>
-                <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent3)">▸</span>每年至少1次专项安全培训，考核合格上岗</li>
-                <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent3)">▸</span>制定作业方案和专项应急预案</li>
-                <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent3)">▸</span>完工后恢复现场，报请接口单位验收</li>
-              </ul>
+        <!-- 原formulas占位符 -->
+        <div id="formulas" style="display:none;">
+            <div class="panel">
+                <div class="panel-header">
+                    <span>📐</span>
+                    <span class="panel-title">核心公式 & 工程指南</span>
+                </div>
+                <div class="panel-body">
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h4>有害气体稀释公式</h4>
+                            <div class="formula">\( t = K \cdot V \cdot \ln\left(\frac{C_0}{C_s}\right) / Q_{\text{eff}} \)</div>
+                            <p style="margin-top:8px;">其中有效风量 \( Q_{\text{eff}} = Q_{\text{nom}} \times \eta \)</p>
+                        </div>
+                        <div class="info-card">
+                            <h4>缺氧恢复公式</h4>
+                            <div class="formula">\( t = K \cdot V \cdot \ln\left[\frac{20.9 - C_0}{20.9 - C_s}\right] / Q_{\text{eff}} \)</div>
+                            <p style="margin-top:8px;">基于新风含氧20.9%的稀释模型</p>
+                        </div>
+                        <div class="info-card">
+                            <h4>换气次数要求</h4>
+                            <ul>
+                                <li>换气次数 \( N = \frac{Q_{\text{eff}}}{V} \)（次/小时）</li>
+                                <li>AQ 3028 要求 \( N \geq 5 \) 次/小时</li>
+                                <li>对应最低所需通风时间 30 分钟</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h4>工程安全建议</h4>
+                            <ul>
+                                <li>计算值为理论值，增加 20%~50% 余量</li>
+                                <li>η 无实测时默认 0.7；长管多弯取低值</li>
+                                <li>持续气体检测优于任何计算模型</li>
+                                <li><strong style="color:var(--danger)">禁止</strong>仅靠计算不做实测即进入</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
 
-  </div><!-- end mgmt-grid -->
+    </main>
 
-  <div style="text-align:center;margin-top:40px">
-    <button class="next-section-btn" onclick="goSec('roles',document.querySelectorAll('nav button')[2])">点击进入下一章节：岗位职责 →</button>
-  </div>
+    <script>
+        // 同步结果框与输入框高度（全屏模式）
+        function syncPanelHeights() {
+            const width = window.innerWidth;
+            if (width > 1024) {
+                const inputPanels = document.querySelectorAll('.panel-input');
+                const resultPanels = document.querySelectorAll('.result-panel');
+                
+                inputPanels.forEach((inputPanel, idx) => {
+                    if (resultPanels[idx]) {
+                        const inputHeight = inputPanel.offsetHeight;
+                        resultPanels[idx].style.minHeight = inputHeight + 'px';
+                    }
+                });
+            } else {
+                // 移动端：移除min-height
+                document.querySelectorAll('.result-panel').forEach(panel => {
+                    panel.style.minHeight = 'auto';
+                });
+            }
+        }
+        
+        // 初始化并监听窗口大小变化
+        window.addEventListener('load', syncPanelHeights);
+        window.addEventListener('resize', syncPanelHeights);
+        
+        // 计算后也要同步高度
+        const originalCalculateToxic = window.calculateToxic || function() {};
+        const originalCalculateOxygen = window.calculateOxygen || function() {};
+    </script>
 
-</section><!-- end concepts -->
-
-<!-- KEEP OLD PANEL STRUCTURE HIDDEN (for openCtab backward compat) -->
-<div style="display:none">
-  <div id="c-space"></div>
-  <div id="c-work"></div>
-  <div id="c-hazard"></div>
-  <div id="c-mgmt"></div>
+    <!-- ── Footer ── -->
+    <footer>
+        <span>EHS 专业工具</span>
+        <span class="sep">|</span>
+        <span>ACGIH 吹扫模型</span>
+        <span class="sep">|</span>
+        <span>AQ 3028-2008</span>
+        <span class="sep">|</span>
+        <span>GB 8958-2006</span>
+    </footer>
 </div>
-<!-- ══════════ ROLES ══════════ -->
-<section id="roles" class="section">
-  <span class="sec-tag">MODULE 02</span>
-  <h2 class="sec-title">岗位<span class="hl">职责</span>说明</h2>
-  <p style="color:var(--muted);margin-bottom:22px;font-size:13px">点击任意岗位卡片，查看详细职责要求。</p>
-  <div class="roles-grid">
-    <div class="role-card" onclick="showRole('r-fzr')" id="card-r-fzr">
-      <div class="role-avatar" style="background:rgba(26,111,196,.1);border-color:var(--accent);color:var(--accent)">👨‍💼</div>
-      <div class="role-name">作业负责人</div>
-      <div class="role-sum">组织实施有限空间作业，负责风险评估与进入确认</div>
-    </div>
-    <div class="role-card" onclick="showRole('r-jhr')" id="card-r-jhr">
-      <div class="role-avatar" style="background:rgba(13,158,110,.1);border-color:var(--accent3);color:var(--accent3)">👀</div>
-      <div class="role-name">监护人</div>
-      <div class="role-sum">全程在外部持续监护，严禁离岗或进入参与作业</div>
-    </div>
-    <div class="role-card" onclick="showRole('r-zyr')" id="card-r-zyr">
-      <div class="role-avatar" style="background:rgba(217,82,15,.1);border-color:var(--accent2);color:var(--accent2)">⛑️</div>
-      <div class="role-name">作业人</div>
-      <div class="role-sum">进入有限空间实施作业，正确佩戴防护装备</div>
-    </div>
-    <div class="role-card" onclick="showRole('r-yjr')" id="card-r-yjr">
-      <div class="role-avatar" style="background:rgba(192,20,46,.08);border-color:var(--danger);color:var(--danger)">🚒</div>
-      <div class="role-name">应急救援人员</div>
-      <div class="role-sum">事故发生时实施救援，严禁盲目施救</div>
-    </div>
-    <div class="role-card" onclick="showRole('r-spr')" id="card-r-spr">
-      <div class="role-avatar" style="background:rgba(176,96,0,.1);border-color:var(--warning);color:var(--warning)">📋</div>
-      <div class="role-name">作业审批人</div>
-      <div class="role-sum">负责有限空间作业审批，三级审批把关</div>
-    </div>
-  </div>
-  <div id="r-fzr" class="role-detail"><h3 style="font-family:'Noto Serif SC',serif;font-size:20px;margin-bottom:14px;color:var(--accent)">👨‍💼 作业负责人职责</h3><ul class="duty-list"><li>负责作业前的<strong>风险评估</strong>，识别有限空间内可能存在的危险因素</li><li>对全体作业人员进行<strong>安全交底</strong>，双方签字确认</li><li>检查所有安全防护设备和应急救援设备，确保完好有效</li><li>确认气体检测结果、现场安全措施均达标后，<strong>签字允许进入</strong></li><li>作业完成后进行<strong>完工验收</strong>，确认人员、工具全部清点</li></ul></div>
-  <div id="r-jhr" class="role-detail"><h3 style="font-family:'Noto Serif SC',serif;font-size:20px;margin-bottom:14px;color:var(--accent3)">👀 监护人职责</h3><ul class="duty-list"><li>全程在<strong>有限空间外部</strong>持续监护，<strong>严禁离岗或进入</strong>有限空间</li><li>每15分钟记录气体检测数据，与作业人保持通讯</li><li>防止<strong>无关人员</strong>进入作业区域</li><li>发现异常时，立即向作业人发出<strong>撤离警报</strong>并协助撤离</li></ul><div class="warn-box" style="margin-top:14px">⚠️ 监护人是最后一道防线，必须始终保持岗位，不得以任何理由离开！</div></div>
-  <div id="r-zyr" class="role-detail"><h3 style="font-family:'Noto Serif SC',serif;font-size:20px;margin-bottom:14px;color:var(--accent2)">⛑️ 作业人职责</h3><ul class="duty-list"><li>正确佩戴和使用<strong>个体防护装备</strong></li><li>随身携带气体检测报警仪，每<strong>15分钟</strong>向监护人报告数据</li><li>与监护人保持持续沟通，及时报告身体状况</li><li>发生异常或收到撤离指令时，<strong>立即撤离</strong>，不得迟疑</li></ul></div>
-  <div id="r-yjr" class="role-detail"><h3 style="font-family:'Noto Serif SC',serif;font-size:20px;margin-bottom:14px;color:var(--danger)">🚒 应急救援人员职责</h3><ul class="duty-list"><li>必须经过<strong>有限空间救援专项培训</strong>，每年复训考核</li><li>事故发生时，<strong>优先采用非进入式救援</strong>（三脚架、绞盘等）</li><li>进入救援时，必须<strong>佩戴SCBA</strong>，至少两人同行</li><li><strong>严禁盲目施救！</strong>救援人员安全始终是第一位的</li></ul><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><span class="tag t-red">非进入优先</span><span class="tag t-red">SCBA必备</span><span class="tag t-red">严禁盲目</span></div></div>
-  <div id="r-spr" class="role-detail"><h3 style="font-family:'Noto Serif SC',serif;font-size:20px;margin-bottom:14px;color:var(--warning)">📋 作业审批人职责</h3><ul class="duty-list"><li>审查《有限空间作业审批表》填写完整性</li><li>核实安全条件、人员资质是否符合要求</li><li>确认隔离、通风、检测等安全措施已落实</li><li>对不符合要求的，有权<strong>拒绝审批</strong>或要求整改</li></ul><div class="hl-box" style="margin-top:14px">💡 审批流程：作业负责人 → 项目接口单位 → 属地管理单位，三级缺一不可！</div></div>
-
-  <div style="text-align:center;margin-top:40px">
-    <button class="next-section-btn" onclick="goSec('process',document.querySelectorAll('nav button')[3])">点击进入下一章节：作业流程 →</button>
-  </div>
-</section>
-
-<!-- ══════════ PROCESS ══════════ -->
-<section id="process" class="section">
-  <span class="sec-tag">MODULE 03</span>
-  <h2 class="sec-title">作业<span class="hl">全流程</span>解析</h2>
-
-  <!-- 总体原则 -->
-  <div class="process-principle">
-    <div class="principle-item">
-      <span class="principle-num">①</span>
-      <span style="font-size:22px">💨</span>
-      <span class="principle-label">先<strong style="color:var(--accent)">通风</strong></span>
-    </div>
-    <span class="principle-arrow">→</span>
-    <div class="principle-item">
-      <span class="principle-num">②</span>
-      <span style="font-size:22px">🔍</span>
-      <span class="principle-label">再<strong style="color:var(--accent3)">检测</strong></span>
-    </div>
-    <span class="principle-arrow">→</span>
-    <div class="principle-item">
-      <span class="principle-num">③</span>
-      <span style="font-size:22px">⛑️</span>
-      <span class="principle-label">后<strong style="color:var(--accent2)">作业</strong></span>
-    </div>
-    <div style="flex:2;min-width:200px;font-size:12px;color:var(--muted);line-height:1.8;border-left:1px solid var(--border);padding-left:20px">
-      这是有限空间作业最重要的<strong style="color:var(--text)">总体原则</strong>。无论何种作业类型，均必须严格按照此顺序执行。任何绕过通风和检测直接进入的行为均属于严重违规。
-    </div>
-  </div>
-
-  <!-- Phase 1: 作业前 -->
-  <div class="phase-label" style="color:var(--accent)">作业前准备</div>
-
-  <!-- STEP 01 -->
-  <div class="wf-step">
-    <div class="wf-left"><div class="wf-circle" style="border-color:var(--accent);color:var(--accent);background:rgba(26,111,196,.1)">01</div><div class="wf-line"></div></div>
-    <div class="wf-body">
-      <div class="step-num">STEP 01</div>
-      <div class="step-title">🔍 风险评估</div>
-      <div class="step-desc">对有限空间作业环境及作业过程进行风险评估，分析可能存在的危险因素，提出消除、控制危险的措施。涉及发包作业的，项目接口单位应参与评估。</div>
-      <div class="step-tags"><span class="tag t-ora">必须执行</span><span class="tag t-blue">形成书面记录</span></div>
-    </div>
-    <div class="wf-illus">
-      <svg class="illus-svg" viewBox="0 0 140 110">
-        <!-- Clipboard with checklist -->
-        <rect x="30" y="10" width="80" height="90" rx="5" fill="#e8eef5" stroke="#b0c8e0" stroke-width="1.5"/>
-        <rect x="50" y="5" width="40" height="12" rx="3" fill="#dde6f0" stroke="#1a6fc4" stroke-width="1.5"/>
-        <rect x="38" y="25" width="64" height="5" rx="2" fill="#aabdd4"/>
-        <circle cx="42" cy="38" r="4" fill="none" stroke="#d9520f" stroke-width="1.5"/>
-        <rect x="50" y="35" width="46" height="4" rx="2" fill="#aabdd4"/>
-        <circle cx="42" cy="52" r="4" fill="none" stroke="#d9520f" stroke-width="1.5"/>
-        <rect x="50" y="49" width="38" height="4" rx="2" fill="#aabdd4"/>
-        <circle cx="42" cy="66" r="4" fill="none" stroke="#b06000" stroke-width="1.5"/>
-        <rect x="50" y="63" width="50" height="4" rx="2" fill="#aabdd4"/>
-        <!-- Danger flag -->
-        <line x1="88" y1="38" x2="88" y2="25" stroke="#c0142e" stroke-width="1.5"/>
-        <polygon points="88,25 100,30 88,35" fill="#c0142e" opacity=".8"/>
-        <text x="70" y="95" text-anchor="middle" fill="#5a7a95" font-size="8">辨识危险因素</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- STEP 02 -->
-  <div class="wf-step">
-    <div class="wf-left"><div class="wf-circle" style="border-color:var(--accent2);color:var(--accent2);background:rgba(217,82,15,.1)">02</div><div class="wf-line"></div></div>
-    <div class="wf-body">
-      <div class="step-num">STEP 02</div>
-      <div class="step-title">📋 三级作业审批</div>
-      <div class="step-desc">填写《有限空间作业审批表》，依次经作业负责人、项目接口单位审批人、属地管理单位审批人逐级审批后方可开展作业。审批表归档保存。</div>
-      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:10px">
-        <span style="font-size:11px;background:rgba(26,111,196,.1);border:1px solid rgba(26,111,196,.25);color:var(--accent);padding:3px 8px;border-radius:4px">作业负责人</span>
-        <span style="color:var(--muted);font-size:12px">→</span>
-        <span style="font-size:11px;background:rgba(217,82,15,.1);border:1px solid rgba(255,107,53,.3);color:var(--accent2);padding:3px 8px;border-radius:4px">项目接口单位</span>
-        <span style="color:var(--muted);font-size:12px">→</span>
-        <span style="font-size:11px;background:rgba(176,96,0,.1);border:1px solid rgba(176,96,0,.3);color:var(--warning);padding:3px 8px;border-radius:4px">属地管理单位</span>
-      </div>
-    </div>
-    <div class="wf-illus">
-      <svg class="illus-svg" viewBox="0 0 140 110">
-        <!-- Three approval stamps -->
-        <rect x="10" y="20" width="36" height="44" rx="4" fill="#e8eef5" stroke="#1a6fc4" stroke-width="1.2"/>
-        <text x="28" y="38" text-anchor="middle" fill="#1a6fc4" font-size="7">作业</text>
-        <text x="28" y="48" text-anchor="middle" fill="#1a6fc4" font-size="7">负责人</text>
-        <path d="M18 56 L25 62 L38 50" fill="none" stroke="#0d9e6e" stroke-width="2" stroke-linecap="round" stroke-dasharray="22" stroke-dashoffset="22" style="animation:check-draw 1s .2s ease forwards"/>
-        <rect x="52" y="20" width="36" height="44" rx="4" fill="#e8eef5" stroke="#d9520f" stroke-width="1.2"/>
-        <text x="70" y="38" text-anchor="middle" fill="#d9520f" font-size="7">接口</text>
-        <text x="70" y="48" text-anchor="middle" fill="#d9520f" font-size="7">单位</text>
-        <path d="M60 56 L67 62 L80 50" fill="none" stroke="#0d9e6e" stroke-width="2" stroke-linecap="round" stroke-dasharray="22" stroke-dashoffset="22" style="animation:check-draw 1s .6s ease forwards"/>
-        <rect x="94" y="20" width="36" height="44" rx="4" fill="#e8eef5" stroke="#b06000" stroke-width="1.2"/>
-        <text x="112" y="38" text-anchor="middle" fill="#b06000" font-size="7">属地</text>
-        <text x="112" y="48" text-anchor="middle" fill="#b06000" font-size="7">单位</text>
-        <path d="M102 56 L109 62 L122 50" fill="none" stroke="#0d9e6e" stroke-width="2" stroke-linecap="round" stroke-dasharray="22" stroke-dashoffset="22" style="animation:check-draw 1s 1s ease forwards"/>
-        <text x="70" y="95" text-anchor="middle" fill="#5a7a95" font-size="8">三级审批缺一不可</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- STEP 03 -->
-  <div class="wf-step">
-    <div class="wf-left"><div class="wf-circle" style="border-color:var(--accent3);color:var(--accent3);background:rgba(13,158,110,.1)">03</div><div class="wf-line"></div></div>
-    <div class="wf-body">
-      <div class="step-num">STEP 03</div>
-      <div class="step-title">🗣️ 安全交底</div>
-      <div class="step-desc">作业负责人对全体作业人员进行面对面安全交底，告知作业内容、分工、主要危险、安全措施、防护措施和应急处置措施。交底人和被交底人均需签字确认，记录归档。</div>
-      <div class="step-tags"><span class="tag t-blue">📝 面对面进行</span><span class="tag t-blue">双方签字确认</span></div>
-    </div>
-    <div class="wf-illus">
-      <svg class="illus-svg" viewBox="0 0 140 110">
-        <!-- Speaker -->
-        <circle cx="40" cy="30" r="11" fill="none" stroke="#1a6fc4" stroke-width="1.8"/>
-        <line x1="40" y1="41" x2="40" y2="62" stroke="#1a6fc4" stroke-width="2"/>
-        <line x1="27" y1="50" x2="53" y2="50" stroke="#1a6fc4" stroke-width="2"/>
-        <line x1="40" y1="62" x2="30" y2="75" stroke="#1a6fc4" stroke-width="2"/>
-        <line x1="40" y1="62" x2="50" y2="75" stroke="#1a6fc4" stroke-width="2"/>
-        <!-- Speech bubble -->
-        <rect x="58" y="15" width="72" height="50" rx="6" fill="#e8eef5" stroke="#1a6fc4" stroke-width="1.2"/>
-        <polygon points="58,42 48,48 58,52" fill="#e8eef5" stroke="#1a6fc4" stroke-width="1"/>
-        <rect x="65" y="22" width="58" height="4" rx="2" fill="#aabdd4"/>
-        <rect x="65" y="32" width="50" height="4" rx="2" fill="#aabdd4"/>
-        <rect x="65" y="42" width="54" height="4" rx="2" fill="#aabdd4"/>
-        <rect x="65" y="52" width="46" height="4" rx="2" fill="#aabdd4"/>
-        <!-- Group of people listening -->
-        <circle cx="28" cy="90" r="7" fill="none" stroke="#7a9bb5" stroke-width="1.2"/>
-        <circle cx="50" cy="90" r="7" fill="none" stroke="#7a9bb5" stroke-width="1.2"/>
-        <circle cx="72" cy="90" r="7" fill="none" stroke="#7a9bb5" stroke-width="1.2"/>
-        <text x="70" y="106" text-anchor="middle" fill="#5a7a95" font-size="7">全体作业人员</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- STEP 04 -->
-  <div class="wf-step">
-    <div class="wf-left"><div class="wf-circle" style="border-color:var(--warning);color:var(--warning);background:rgba(176,96,0,.1)">04</div><div class="wf-line"></div></div>
-    <div class="wf-body">
-      <div class="step-num">STEP 04</div>
-      <div class="step-title">🚧 现场隔离与警示</div>
-      <div class="step-desc">封闭作业区域，在出入口周边醒目位置设置"危险！有限空间作业，未经许可严禁入内"等安全风险告知牌，设置警戒线或围栏。属地管理单位检查人员须进行现场确认。</div>
-      <div class="step-tags"><span class="tag t-yel">⚠️ 警戒线设置</span><span class="tag t-yel">告知牌张贴</span></div>
-    </div>
-    <div class="wf-illus">
-      <svg class="illus-svg" viewBox="0 0 140 110">
-        <!-- Warning fence posts -->
-        <line x1="20" y1="40" x2="20" y2="80" stroke="#b06000" stroke-width="3" stroke-linecap="round"/>
-        <line x1="70" y1="40" x2="70" y2="80" stroke="#b06000" stroke-width="3" stroke-linecap="round"/>
-        <line x1="120" y1="40" x2="120" y2="80" stroke="#b06000" stroke-width="3" stroke-linecap="round"/>
-        <!-- Caution tape -->
-        <path d="M20 55 L70 55 L120 55" stroke="#b06000" stroke-width="4" stroke-dasharray="8,6" fill="none" style="animation:dash-flow 1.5s linear infinite"/>
-        <path d="M20 70 L70 70 L120 70" stroke="#b06000" stroke-width="4" stroke-dasharray="8,6" fill="none" style="animation:dash-flow 1.5s linear infinite"/>
-        <!-- Warning sign -->
-        <polygon points="70,10 90,42 50,42" fill="none" stroke="#c0142e" stroke-width="2"/>
-        <text x="70" y="36" text-anchor="middle" fill="#c0142e" font-size="14" font-weight="700">!</text>
-        <!-- Space entrance -->
-        <rect x="50" y="80" width="40" height="28" fill="#c8d8e8" stroke="#b0c8e0" stroke-width="1.5"/>
-        <text x="70" y="95" text-anchor="middle" fill="#b0c8e0" font-size="7">有限空间</text>
-        <text x="70" y="106" text-anchor="middle" fill="#5a7a95" font-size="7">警戒隔离示意</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- STEP 05 -->
-  <div class="wf-step">
-    <div class="wf-left"><div class="wf-circle" style="border-color:var(--danger);color:var(--danger);background:rgba(192,20,46,.08)">05</div><div class="wf-line"></div></div>
-    <div class="wf-body">
-      <div class="step-num">STEP 05</div>
-      <div class="step-title">🔒 能量隔离与清洗置换</div>
-      <div class="step-desc">存在可能危及作业安全的物料、能量时，应采取隔断、封堵、关闭、移除等安全隔离措施，并<strong>上锁挂牌</strong>或设专人看管。有害物料须清空、清洗或置换。</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
-        <span style="font-size:11px;padding:3px 8px;background:rgba(192,20,46,.08);border:1px solid rgba(192,20,46,.25);color:var(--danger);border-radius:4px">🔐 关阀上锁</span>
-        <span style="font-size:11px;padding:3px 8px;background:rgba(192,20,46,.08);border:1px solid rgba(192,20,46,.25);color:var(--danger);border-radius:4px">🏷️ 挂牌警示</span>
-        <span style="font-size:11px;padding:3px 8px;background:rgba(192,20,46,.08);border:1px solid rgba(192,20,46,.25);color:var(--danger);border-radius:4px">⚡ 断开电源</span>
-        <span style="font-size:11px;padding:3px 8px;background:rgba(192,20,46,.08);border:1px solid rgba(192,20,46,.25);color:var(--danger);border-radius:4px">🧽 清洗置换</span>
-      </div>
-    </div>
-    <div class="wf-illus">
-      <svg class="illus-svg" viewBox="0 0 140 110">
-        <!-- Valve/pipe -->
-        <rect x="15" y="48" width="50" height="14" rx="3" fill="#e8eef5" stroke="#b0c8e0" stroke-width="1.5"/>
-        <rect x="35" y="36" width="14" height="14" rx="3" fill="#e8eef5" stroke="#b0c8e0" stroke-width="1.5"/>
-        <circle cx="42" cy="48" r="8" fill="none" stroke="#c0142e" stroke-width="2"/>
-        <line x1="38" y1="44" x2="46" y2="52" stroke="#c0142e" stroke-width="2"/>
-        <!-- Lock -->
-        <rect x="78" y="48" width="22" height="18" rx="3" fill="#d9520f" opacity=".8"/>
-        <path d="M83 48 Q83 38 89 38 Q95 38 95 48" fill="none" stroke="#d9520f" stroke-width="2.5" stroke-linecap="round"/>
-        <!-- Tag -->
-        <rect x="108" y="38" width="24" height="30" rx="3" fill="#b06000" opacity=".7"/>
-        <line x1="120" y1="38" x2="120" y2="32" stroke="#b06000" stroke-width="1.5"/>
-        <text x="120" y="52" text-anchor="middle" fill="#000" font-size="6" font-weight="700">请勿</text>
-        <text x="120" y="62" text-anchor="middle" fill="#000" font-size="6" font-weight="700">操作</text>
-        <text x="70" y="95" text-anchor="middle" fill="#5a7a95" font-size="8">上锁挂牌示意</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- STEP 06 - 通风 -->
-  <div class="wf-step">
-    <div class="wf-left"><div class="wf-circle" style="border-color:var(--accent3);color:var(--accent3);background:rgba(13,158,110,.1)">06</div><div class="wf-line"></div></div>
-    <div class="wf-body">
-      <div class="step-num">STEP 06</div>
-      <div class="step-title">💨 强制通风（≥5次换气）</div>
-      <div class="step-desc">作业前必须进行强制通风，整体换气次数不少于5次。风管应延伸至作业区域底部或作业人员工作处。使用防爆型通风设备。作业期间持续通风，通风中断须立即停止作业。</div>
-      <div class="step-tags"><span class="tag t-grn">🌬️ 换气≥5次</span><span class="tag t-grn">防爆设备</span><span class="tag t-grn">风管伸入底部</span></div>
-    </div>
-    <div class="wf-illus">
-      <svg class="illus-svg" viewBox="0 0 140 110">
-        <!-- Fan -->
-        <circle cx="50" cy="45" r="22" fill="none" stroke="#b0c8e0" stroke-width="1.5"/>
-        <g style="animation:rotate-slow 3s linear infinite;transform-origin:50px 45px">
-          <path d="M50 23 Q60 35 50 45 Q40 35 50 23" fill="#1a6fc4" opacity=".5"/>
-          <path d="M72 45 Q60 55 50 45 Q60 35 72 45" fill="#1a6fc4" opacity=".5"/>
-          <path d="M50 67 Q40 55 50 45 Q60 55 50 67" fill="#1a6fc4" opacity=".5"/>
-          <path d="M28 45 Q40 35 50 45 Q40 55 28 45" fill="#1a6fc4" opacity=".5"/>
-        </g>
-        <circle cx="50" cy="45" r="4" fill="#1a6fc4"/>
-        <!-- Air flow arrows -->
-        <path d="M72 45 L90 45" stroke="#0d9e6e" stroke-width="2" marker-end="url(#arrWind)"/>
-        <path d="M72 38 L88 32" stroke="#0d9e6e" stroke-width="1.5" opacity=".6" marker-end="url(#arrWind)"/>
-        <path d="M72 52 L88 58" stroke="#0d9e6e" stroke-width="1.5" opacity=".6" marker-end="url(#arrWind)"/>
-        <defs><marker id="arrWind" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#0d9e6e"/></marker></defs>
-        <!-- Space below -->
-        <rect x="90" y="55" width="40" height="45" fill="#c8d8e8" stroke="#b0c8e0" stroke-width="1.2"/>
-        <!-- Wind lines inside space -->
-        <path d="M95 68 L125 68" stroke="#0d9e6e" stroke-width="1" stroke-dasharray="4,3" style="animation:dash-flow 1s linear infinite" opacity=".7"/>
-        <path d="M95 78 L125 78" stroke="#0d9e6e" stroke-width="1" stroke-dasharray="4,3" style="animation:dash-flow 1s .3s linear infinite" opacity=".5"/>
-        <text x="70" y="106" text-anchor="middle" fill="#5a7a95" font-size="7">强制通风示意</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- Phase 2 divider -->
-  <div class="divider"></div>
-  <div class="phase-label" style="color:var(--accent2)">作业中与作业后</div>
-
-  <!-- STEP 07 -->
-  <div class="wf-step">
-    <div class="wf-left"><div class="wf-circle" style="border-color:var(--accent);color:var(--accent);background:rgba(26,111,196,.1)">07</div><div class="wf-line"></div></div>
-    <div class="wf-body">
-      <div class="step-num">STEP 07</div>
-      <div class="step-title">✅ 进入确认（签字放行）</div>
-      <div class="step-desc">作业负责人在确认气体检测合格、安全防护措施到位、应急救援措施备好、设备工具符合要求，并已获属地管理单位安全检查人员最终同意后，签字同意，作业人方可进入。</div>
-      <div class="step-tags"><span class="tag t-blue">气体达标</span><span class="tag t-blue">防护到位</span><span class="tag t-blue">负责人签字</span></div>
-    </div>
-    <div class="wf-illus">
-      <svg class="illus-svg" viewBox="0 0 140 110">
-        <!-- Person entering -->
-        <rect x="55" y="55" width="50" height="55" fill="#c8d8e8" stroke="#b0c8e0" stroke-width="1.5"/>
-        <text x="80" y="88" text-anchor="middle" fill="#b0c8e0" font-size="7">有限空间</text>
-        <!-- Green gate/signal -->
-        <rect x="50" y="40" width="60" height="18" rx="3" fill="rgba(13,158,110,.1)" stroke="#0d9e6e" stroke-width="1.5"/>
-        <text x="80" y="52" text-anchor="middle" fill="#0d9e6e" font-size="9" font-weight="700">✓ 允许进入</text>
-        <!-- Person descending into space -->
-        <g style="animation:person-enter 2s 0.5s ease both">
-          <circle cx="80" cy="70" r="7" fill="none" stroke="#d9520f" stroke-width="1.8"/>
-          <line x1="80" y1="77" x2="80" y2="90" stroke="#d9520f" stroke-width="2"/>
-          <line x1="72" y1="82" x2="88" y2="82" stroke="#d9520f" stroke-width="2"/>
-        </g>
-        <!-- Signature -->
-        <path d="M18 80 Q25 72 32 80 Q39 88 46 80" fill="none" stroke="#1a6fc4" stroke-width="2" stroke-linecap="round"/>
-        <text x="32" y="95" text-anchor="middle" fill="#5a7a95" font-size="7">负责人签字</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- STEP 08 -->
-  <div class="wf-step">
-    <div class="wf-left"><div class="wf-circle" style="border-color:var(--accent2);color:var(--accent2);background:rgba(217,82,15,.1)">08</div><div class="wf-line"></div></div>
-    <div class="wf-body">
-      <div class="step-num">STEP 08</div>
-      <div class="step-title">👁️ 持续作业监护</div>
-      <div class="step-desc">作业人随身携带气体检测仪，每15分钟通过对讲机向监护人报告检测数据；持续机械通风；监护人全程在有限空间外部持续监护，不得离岗。</div>
-      <div class="step-tags"><span class="tag t-ora">⏱️ 15min报告</span><span class="tag t-grn">持续通风</span><span class="tag t-ora">监护不离岗</span></div>
-    </div>
-    <div class="wf-illus">
-      <svg class="illus-svg" viewBox="0 0 140 110">
-        <!-- Guardian outside -->
-        <circle cx="25" cy="32" r="10" fill="none" stroke="#0d9e6e" stroke-width="1.8"/>
-        <line x1="25" y1="42" x2="25" y2="62" stroke="#0d9e6e" stroke-width="2"/>
-        <line x1="14" y1="50" x2="36" y2="50" stroke="#0d9e6e" stroke-width="2"/>
-        <line x1="25" y1="62" x2="17" y2="75" stroke="#0d9e6e" stroke-width="2"/>
-        <line x1="25" y1="62" x2="33" y2="75" stroke="#0d9e6e" stroke-width="2"/>
-        <!-- Radio waves from guardian -->
-        <path d="M36 44 Q44 40 44 48 Q44 56 36 52" fill="none" stroke="#0d9e6e" stroke-width="1.2" opacity=".6" style="animation:blink 1.2s ease-in-out infinite"/>
-        <path d="M40 40 Q52 34 52 48 Q52 62 40 56" fill="none" stroke="#0d9e6e" stroke-width="1" opacity=".4" style="animation:blink 1.2s .3s ease-in-out infinite"/>
-        <!-- Space with worker -->
-        <rect x="60" y="30" width="70" height="80" fill="#c8d8e8" stroke="#b0c8e0" stroke-width="1.5"/>
-        <circle cx="95" cy="60" r="8" fill="none" stroke="#d9520f" stroke-width="1.8"/>
-        <line x1="95" y1="68" x2="95" y2="82" stroke="#d9520f" stroke-width="2"/>
-        <line x1="86" y1="74" x2="104" y2="74" stroke="#d9520f" stroke-width="2"/>
-        <!-- Timer -->
-        <rect x="105" y="35" width="20" height="20" rx="3" fill="#e8eef5" stroke="#b06000" stroke-width="1.2"/>
-        <text x="115" y="48" text-anchor="middle" fill="#b06000" font-size="8">15'</text>
-        <text x="95" y="102" text-anchor="middle" fill="#5a7a95" font-size="7">定时汇报</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- STEP ALERT -->
-  <div class="wf-step alert-step">
-    <div class="wf-left"><div class="wf-circle">⚡</div><div class="wf-line"></div></div>
-    <div class="wf-body">
-      <div class="step-num" style="color:var(--danger)">ALERT — 立即撤离触发条件</div>
-      <div class="step-title" style="color:var(--danger)">🚨 出现任一情况，立即撤离！</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
-        <span style="font-size:11px;padding:3px 10px;background:rgba(192,20,46,.08);border:1px solid var(--danger);color:var(--danger);border-radius:4px">🤢 身体不适</span>
-        <span style="font-size:11px;padding:3px 10px;background:rgba(192,20,46,.08);border:1px solid var(--danger);color:var(--danger);border-radius:4px">🔔 检测仪报警</span>
-        <span style="font-size:11px;padding:3px 10px;background:rgba(192,20,46,.08);border:1px solid var(--danger);color:var(--danger);border-radius:4px">⚙️ 防护设备失效</span>
-        <span style="font-size:11px;padding:3px 10px;background:rgba(192,20,46,.08);border:1px solid var(--danger);color:var(--danger);border-radius:4px">📢 监护人下令</span>
-        <span style="font-size:11px;padding:3px 10px;background:rgba(192,20,46,.08);border:1px solid var(--danger);color:var(--danger);border-radius:4px">💨 通风中断</span>
-      </div>
-    </div>
-    <div class="wf-illus">
-      <svg class="illus-svg" viewBox="0 0 140 110">
-        <!-- Alarm bell -->
-        <path d="M70 15 Q70 8 70 15" stroke="#c0142e" stroke-width="0"/>
-        <circle cx="70" cy="20" r="6" fill="#c0142e" style="animation:alarm-flash 1s ease-in-out infinite"/>
-        <path d="M55 20 Q45 35 45 50 L95 50 Q95 35 85 20 Z" fill="none" stroke="#c0142e" stroke-width="2"/>
-        <rect x="62" y="50" width="16" height="6" rx="2" fill="#c0142e" opacity=".7"/>
-        <!-- Arrow up (evacuation) -->
-        <path d="M70 70 L70 90" stroke="#0d9e6e" stroke-width="3" stroke-linecap="round"/>
-        <path d="M58 80 L70 68 L82 80" fill="none" stroke="#0d9e6e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        <text x="70" y="105" text-anchor="middle" fill="#0d9e6e" font-size="8" font-weight="700">立即撤离！</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- STEP 09 -->
-  <div class="wf-step">
-    <div class="wf-left"><div class="wf-circle" style="border-color:var(--accent);color:var(--accent);background:rgba(26,111,196,.1)">09</div><div class="wf-line"></div></div>
-    <div class="wf-body">
-      <div class="step-num">STEP 09</div>
-      <div class="step-title">🏁 完工验收</div>
-      <div class="step-desc">作业完成后，作业负责人确认：①作业人全部安全出离；②设备工具全部带离；③出入口已关闭；④隔离措施已解除。完工记录经负责人签字确认并归档保存。</div>
-      <div class="step-tags"><span class="tag t-blue">👥 人员清点</span><span class="tag t-blue">🔧 工具清点</span><span class="tag t-blue">📝 签字归档</span></div>
-    </div>
-    <div class="wf-illus">
-      <svg class="illus-svg" viewBox="0 0 140 110">
-        <rect x="25" y="15" width="90" height="80" rx="5" fill="#e8eef5" stroke="#0d9e6e" stroke-width="1.5"/>
-        <text x="70" y="32" text-anchor="middle" fill="#0d9e6e" font-size="9" font-weight="700">完工验收单</text>
-        <path d="M35 45 L46 55 L65 38" fill="none" stroke="#0d9e6e" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="35" stroke-dashoffset="35" style="animation:check-draw 1s .3s ease forwards"/>
-        <text x="72" y="52" fill="#5a7a95" font-size="9">人员已清点</text>
-        <path d="M35 63 L46 73 L65 56" fill="none" stroke="#0d9e6e" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="35" stroke-dashoffset="35" style="animation:check-draw 1s .7s ease forwards"/>
-        <text x="72" y="70" fill="#5a7a95" font-size="9">工具已带离</text>
-        <path d="M35 81 L46 91 L65 74" fill="none" stroke="#0d9e6e" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="35" stroke-dashoffset="35" style="animation:check-draw 1s 1.1s ease forwards"/>
-        <text x="72" y="88" fill="#5a7a95" font-size="9">出入口已关</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- STEP 10 -->
-  <div class="wf-step">
-    <div class="wf-left"><div class="wf-circle" style="border-color:var(--accent3);color:var(--accent3);background:rgba(13,158,110,.1)">10</div></div>
-    <div class="wf-body">
-      <div class="step-num">STEP 10</div>
-      <div class="step-title">📁 撤离现场·归档</div>
-      <div class="step-desc">清理现场，解除作业区域封闭措施，撤离所有人员和设备。归档保存所有记录文件：审批表、安全交底记录、气体检测记录、进入确认表、完工验收表等。</div>
-      <div class="step-tags"><span class="tag t-grn">🗂️ 归档保存</span></div>
-    </div>
-    <div class="wf-illus">
-      <svg class="illus-svg" viewBox="0 0 140 110">
-        <rect x="20" y="20" width="100" height="75" rx="5" fill="#e8eef5" stroke="#0d9e6e" stroke-width="1.5"/>
-        <rect x="20" y="20" width="100" height="20" rx="5" fill="rgba(13,158,110,.1)"/>
-        <text x="70" y="34" text-anchor="middle" fill="#0d9e6e" font-size="9">归档文件</text>
-        <text x="36" y="52" fill="#5a7a95" font-size="8">📄 审批表</text>
-        <text x="36" y="63" fill="#5a7a95" font-size="8">📄 安全交底记录</text>
-        <text x="36" y="74" fill="#5a7a95" font-size="8">📄 气体检测记录</text>
-        <text x="36" y="85" fill="#5a7a95" font-size="8">📄 完工验收表</text>
-      </svg>
-    </div>
-  </div>
-
-  <div class="warn-box">⚠️ <strong>特殊情况</strong>：涉及动火、临时用电、高处作业等特殊作业时，必须同时办理相应专项作业许可证，并落实叠加风险的控制措施。</div>
-
-  <div style="text-align:center;margin-top:40px">
-    <button class="next-section-btn" onclick="goSec('vent',document.querySelectorAll('nav button')[4])">点击进入下一章节：通风与气体检测 →</button>
-  </div>
-</section>
-
-<!-- ══════════ VENTILATION & GAS ══════════ -->
-<section id="vent" class="section">
-  <span class="sec-tag">MODULE 04</span>
-  <h2 class="sec-title">通风与<span class="hl">气体检测</span></h2>
-
-  <!-- Ventilation requirements -->
-  <div style="margin-bottom:8px;font-size:14px;font-weight:700;color:var(--accent)">💨 通风要求</div>
-  <div class="vent-grid">
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
-      <div style="font-size:13px;font-weight:700;margin-bottom:10px">🕐 作业前</div>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:7px">
-        <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent3)">▸</span>必须进行<strong style="color:var(--text)">强制通风</strong>，确保整体换气次数不少于<strong style="color:var(--accent3)">5次</strong></li>
-        <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent3)">▸</span>使用<strong style="color:var(--text)">防爆型</strong>强制送风或排风设备</li>
-        <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent3)">▸</span>风管应延伸至空间<strong style="color:var(--text)">底部</strong>或作业人员工作处</li>
-      </ul>
-    </div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
-      <div style="font-size:13px;font-weight:700;margin-bottom:10px">⏱️ 作业中</div>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:7px">
-        <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent2)">▸</span>应保持<strong style="color:var(--text)">连续强制通风</strong>，不得中断</li>
-        <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--danger)">▸</span>通风设备停止运转时，<strong style="color:var(--danger)">立即停止作业并撤离人员</strong></li>
-        <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent2)">▸</span>清淤、涂装、焊接等高危作业<strong style="color:var(--text)">必须持续通风</strong></li>
-      </ul>
-    </div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
-      <div style="font-size:13px;font-weight:700;margin-bottom:10px">📐 风口布置</div>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:7px">
-        <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent)">▸</span>仅1个出入口：风管置于<strong style="color:var(--text)">底部送风</strong></li>
-        <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent)">▸</span>≥2个出入口：<strong style="color:var(--text)">临近作业人处送风，远处排风</strong></li>
-        <li style="font-size:12px;color:var(--muted);display:flex;gap:8px"><span style="color:var(--accent)">▸</span>自然通风时，人员应位于<strong style="color:var(--text)">上风侧</strong></li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- Gas detection simulator -->
-  <div class="gas-monitor">
-    <h3>实时气体监测面板</h3>
-    <div class="gas-grid">
-      <div class="gas-card" id="gc-o2"><div class="gas-name">OXYGEN · 氧气</div><div class="gas-value" id="gv-o2" style="color:var(--accent3)">20.9</div><div class="gas-unit">% VOL</div><div class="gas-bar-track"><div class="gas-bar-fill" id="gb-o2" style="width:52%;background:var(--accent3)"></div></div><div class="gas-status ok" id="gs-o2">✓ 正常</div><div class="gas-limit">正常范围：19.5% ~ 23.5%</div></div>
-      <div class="gas-card" id="gc-comb"><div class="gas-name">COMBUSTIBLE GAS · 可燃气</div><div class="gas-value" id="gv-comb" style="color:var(--accent3)">2</div><div class="gas-unit">% LEL</div><div class="gas-bar-track"><div class="gas-bar-fill" id="gb-comb" style="width:2%;background:var(--accent3)"></div></div><div class="gas-status ok" id="gs-comb">✓ 正常</div><div class="gas-limit">报警值：≤ 10% LEL</div></div>
-      <div class="gas-card" id="gc-h2s"><div class="gas-name">H₂S · 硫化氢</div><div class="gas-value" id="gv-h2s" style="color:var(--accent3)">1.2</div><div class="gas-unit">PPM</div><div class="gas-bar-track"><div class="gas-bar-fill" id="gb-h2s" style="width:17%;background:var(--accent3)"></div></div><div class="gas-status ok" id="gs-h2s">✓ 正常</div><div class="gas-limit">低报：3.5PPM | 高报：7PPM</div></div>
-      <div class="gas-card" id="gc-co"><div class="gas-name">CO · 一氧化碳</div><div class="gas-value" id="gv-co" style="color:var(--accent3)">5</div><div class="gas-unit">PPM</div><div class="gas-bar-track"><div class="gas-bar-fill" id="gb-co" style="width:20%;background:var(--accent3)"></div></div><div class="gas-status ok" id="gs-co">✓ 正常</div><div class="gas-limit">低报：12.5PPM | 高报：25PPM</div></div>
-    </div>
-    <div class="sim-controls">
-      <button class="sim-btn sb-ok" onclick="setScenario('normal')">✓ 正常环境</button>
-      <button class="sim-btn sb-warn" onclick="setScenario('lowO2')">⚠ 缺氧场景</button>
-      <button class="sim-btn sb-warn" onclick="setScenario('h2sWarn')">⚠ H₂S预警</button>
-      <button class="sim-btn sb-danger" onclick="setScenario('multiAlarm')">🚨 多项超标</button>
-      <button class="sim-btn sb-danger" onclick="setScenario('richO2')">🚨 富氧场景</button>
-    </div>
-    <div id="scenario-tip" style="margin-top:14px;font-size:12px;color:var(--muted);display:none;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)"></div>
-  </div>
-
-  <!-- Detection layout diagrams -->
-  <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:14px">📐 检测点布置规范</div>
-  <div class="detect-grid">
-    <!-- Vertical -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px">
-      <div style="font-size:13px;font-weight:700;margin-bottom:10px">📐 竖向检测要求</div>
-      <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">高度≥2m：不少于<strong>3个点</strong>（上、中、下）；高度&lt;2m：设上、下2个点。</p>
-      <svg viewBox="0 0 160 240" width="100%">
-        <rect x="30" y="10" width="100" height="220" rx="6" fill="#dde6f0" stroke="#b0c8e0" stroke-width="2"/>
-        <rect x="60" y="0" width="40" height="14" rx="3" fill="#e8eef5" stroke="#1a6fc4" stroke-width="1.5"/>
-        <text x="80" y="10" text-anchor="middle" fill="#1a6fc4" font-size="8">入口</text>
-        <!-- Upper section -->
-        <line x1="145" y1="10" x2="145" y2="50" stroke="#b0c8e0" stroke-width="1" stroke-dasharray="3,2"/>
-        <text x="152" y="30" fill="#5a7a95" font-size="7">≤1m</text>
-        <!-- Lower section -->
-        <line x1="145" y1="190" x2="145" y2="230" stroke="#b0c8e0" stroke-width="1" stroke-dasharray="3,2"/>
-        <text x="152" y="210" fill="#5a7a95" font-size="7">≤1m</text>
-        <!-- Vertical center line -->
-        <path d="M80 14 L80 50 M80 50 L80 120 M80 120 L80 190" stroke="#1a6fc4" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <!-- Upper point -->
-        <circle cx="80" cy="50" r="8" fill="#c0142e" opacity=".9"/>
-        <text x="80" y="54" text-anchor="middle" fill="#ffffff" font-size="8" font-weight="700">上</text>
-        <line x1="88" y1="50" x2="128" y2="50" stroke="#c0142e" stroke-width="1" stroke-dasharray="2,2"/>
-        <text x="131" y="55" fill="#c0142e" font-size="8">点①</text>
-        <!-- Middle point -->
-        <circle cx="80" cy="120" r="8" fill="#b06000" opacity=".9"/>
-        <text x="80" y="124" text-anchor="middle" fill="#ffffff" font-size="8" font-weight="700">中</text>
-        <line x1="88" y1="120" x2="128" y2="120" stroke="#b06000" stroke-width="1" stroke-dasharray="2,2"/>
-        <text x="131" y="125" fill="#b06000" font-size="8">点②</text>
-        <!-- Lower point -->
-        <circle cx="80" cy="190" r="8" fill="#0d9e6e" opacity=".9"/>
-        <text x="80" y="194" text-anchor="middle" fill="#000" font-size="8" font-weight="700">下</text>
-        <line x1="88" y1="190" x2="128" y2="190" stroke="#0d9e6e" stroke-width="1" stroke-dasharray="2,2"/>
-        <text x="131" y="195" fill="#0d9e6e" font-size="8">点③</text>
-        <rect x="31" y="210" width="98" height="19" rx="0" fill="#c8d8e8" opacity=".5"/>
-        <text x="80" y="233" text-anchor="middle" fill="#5a7a95" font-size="7" font-weight="600">高度≥2m：上中下3点</text>
-      </svg>
-    </div>
-    <!-- Horizontal -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px">
-      <div style="font-size:13px;font-weight:700;margin-bottom:10px">📏 水平检测要求</div>
-      <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">不少于<strong>2个点</strong>，近端点距入口≥0.5m，远端点距入口≥2m。</p>
-      <svg viewBox="0 0 200 200" width="100%">
-        <rect x="5" y="70" width="190" height="60" rx="6" fill="#dde6f0" stroke="#b0c8e0" stroke-width="2"/>
-        <rect x="0" y="80" width="15" height="40" rx="3" fill="#e8eef5" stroke="#1a6fc4" stroke-width="1.5"/>
-        <text x="8" y="103" text-anchor="middle" fill="#1a6fc4" font-size="7" writing-mode="vertical-lr">入口</text>
-        <!-- Direction arrow -->
-        <path d="M15 100 L60 100 L110 100 L170 100" stroke="#1a6fc4" stroke-width="1.5" stroke-dasharray="5,3"/>
-        <polygon points="170,96 180,100 170,104" fill="#1a6fc4"/>
-        <!-- Near point -->
-        <circle cx="55" cy="100" r="9" fill="#b06000" opacity=".9"/>
-        <text x="55" y="104" text-anchor="middle" fill="#ffffff" font-size="8" font-weight="700">近</text>
-        <!-- Far point -->
-        <circle cx="155" cy="100" r="9" fill="#c0142e" opacity=".9"/>
-        <text x="155" y="104" text-anchor="middle" fill="#ffffff" font-size="8" font-weight="700">远</text>
-        <!-- Near distance measurement -->
-        <line x1="15" y1="52" x2="55" y2="52" stroke="#b06000" stroke-width="1"/>
-        <line x1="15" y1="47" x2="15" y2="57" stroke="#b06000" stroke-width="1"/>
-        <line x1="55" y1="47" x2="55" y2="57" stroke="#b06000" stroke-width="1"/>
-        <text x="35" y="46" text-anchor="middle" fill="#b06000" font-size="8">≥0.5m</text>
-        <!-- Far distance measurement -->
-        <line x1="15" y1="150" x2="155" y2="150" stroke="#c0142e" stroke-width="1"/>
-        <line x1="15" y1="145" x2="15" y2="155" stroke="#c0142e" stroke-width="1"/>
-        <line x1="155" y1="145" x2="155" y2="155" stroke="#c0142e" stroke-width="1"/>
-        <text x="85" y="164" text-anchor="middle" fill="#c0142e" font-size="8">≥2m</text>
-        <!-- Personnel indication -->
-        <circle cx="8" cy="40" r="6" fill="none" stroke="#1a6fc4" stroke-width="1.5"/>
-        <line x1="8" y1="46" x2="8" y2="58" stroke="#1a6fc4" stroke-width="1.5"/>
-        <line x1="2" y1="52" x2="14" y2="52" stroke="#1a6fc4" stroke-width="1.5"/>
-        <line x1="8" y1="58" x2="4" y2="65" stroke="#1a6fc4" stroke-width="1.5"/>
-        <line x1="8" y1="58" x2="12" y2="65" stroke="#1a6fc4" stroke-width="1.5"/>
-        <text x="28" y="36" fill="#1a6fc4" font-size="7">检测员</text>
-        <text x="28" y="45" fill="#5a7a95" font-size="6">(上风侧)</text>
-        <text x="100" y="185" text-anchor="middle" fill="#5a7a95" font-size="8">俯视图（水平方向）</text>
-      </svg>
-    </div>
-    <!-- Frequency -->
-    <div style="background:var(--surface);border:1px solid rgba(0,212,255,.25);border-radius:12px;padding:18px">
-      <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:var(--accent)">🔄 检测频率</div>
-      <div style="display:flex;flex-direction:column;gap:11px">
-        <div style="display:flex;gap:8px;align-items:flex-start"><span style="width:8px;height:8px;background:var(--accent);border-radius:50%;flex-shrink:0;margin-top:4px;display:block"></span><span style="font-size:12px;color:var(--muted)"><strong style="color:var(--text)">作业前</strong>：初始检测，全部合格方可入内</span></div>
-        <div style="display:flex;gap:8px;align-items:flex-start"><span style="width:8px;height:8px;background:var(--accent2);border-radius:50%;flex-shrink:0;margin-top:4px;display:block"></span><span style="font-size:12px;color:var(--muted)"><strong style="color:var(--text)">作业中</strong>：每15分钟记录瞬时值</span></div>
-        <div style="display:flex;gap:8px;align-items:flex-start"><span style="width:8px;height:8px;background:var(--warning);border-radius:50%;flex-shrink:0;margin-top:4px;display:block"></span><span style="font-size:12px;color:var(--muted)"><strong style="color:var(--text)">中断恢复前</strong>：重新检测确认合格</span></div>
-        <div style="display:flex;gap:8px;align-items:flex-start"><span style="width:8px;height:8px;background:var(--accent3);border-radius:50%;flex-shrink:0;margin-top:4px;display:block"></span><span style="font-size:12px;color:var(--muted)"><strong style="color:var(--text)">通风后</strong>：必须再次检测确认达标</span></div>
-        <div style="display:flex;gap:8px;align-items:flex-start"><span style="width:8px;height:8px;background:var(--danger);border-radius:50%;flex-shrink:0;margin-top:4px;display:block"></span><span style="font-size:12px;color:var(--muted)"><strong style="color:var(--text)">初次不合格</strong>：通风→再检测→分析原因</span></div>
-      </div>
-    </div>
-  </div>
-  <div class="hl-box">💡 <strong>重要</strong>：检测人员应在有限空间外<strong>上风侧</strong>使用泵吸式气体检测仪进行检测。若有积水、积泥，应先在空间外搅动，使危害气体充分释放后再检测。</div>
-
-  <div style="text-align:center;margin-top:40px">
-    <button class="next-section-btn" onclick="goSec('emergency',document.querySelectorAll('nav button')[5])">点击进入下一章节：应急救援 →</button>
-  </div>
-</section>
-
-<!-- ══════════ EMERGENCY ══════════ -->
-<section id="emergency" class="section">
-  <span class="sec-tag">MODULE 05</span>
-  <h2 class="sec-title">应急<span class="hl">救援</span>程序</h2>
-  <div class="danger-box" style="margin-bottom:20px">🚨 核心原则：优先确保救援人员自身安全，优先采用非进入式救援，严禁盲目施救！</div>
-
-  <div class="emg-grid">
-    <div class="emg-card step-card">
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--accent)">🔔 第一响应流程</h3>
-      <div class="e-step"><div class="e-num">01</div><div><h4>立即报告</h4><p>监护人立即向作业负责人报告，拨打内部应急电话，必要时直接拨打119/120</p></div></div>
-      <div class="e-step"><div class="e-num">02</div><div><h4>现场警戒</h4><p>封锁事故区域，疏散无关人员</p></div></div>
-      <div class="e-step"><div class="e-num">03</div><div><h4>加强通风</h4><p>立即启动机械通风，持续向空间内送风</p></div></div>
-      <div class="e-step"><div class="e-num">04</div><div><h4>持续检测</h4><p>从外部持续检测空间内气体浓度</p></div></div>
-    </div>
-    <div class="emg-card warn-card">
-      <h3 style="color:var(--danger);font-size:16px;font-weight:700;margin-bottom:16px">⛔ 救援禁止事项</h3>
-      <ul class="warn-list">
-        <li>未佩戴SCBA等防护装备盲目进入</li>
-        <li>单人进入实施救援（必须至少两人同行）</li>
-        <li>非进入式救援可行时采取进入式救援</li>
-        <li>现场人员中毒后仍贸然进入救援</li>
-        <li>事故处置前擅自清理或破坏现场</li>
-        <li>推诿责任，不协同应对</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-  <h3 style="font-size:18px;font-weight:700;margin-bottom:20px">救援方式决策 + 图示</h3>
-  <div class="rescue-grid">
-    <!-- Non-entry rescue -->
-    <div style="background:rgba(0,255,157,.04);border:1px solid rgba(0,255,157,.25);border-radius:12px;padding:18px">
-      <div style="color:var(--accent3);font-weight:700;font-size:14px;margin-bottom:14px;text-align:center">✅ 优先采用：非进入式救援</div>
-      <svg viewBox="0 0 280 210" width="100%">
-        <style>.winch-r{animation:winch-rotate 2s linear infinite;transform-origin:222px 38px}.person-r{animation:person-rise 3s ease-in-out infinite alternate}</style>
-        <rect x="0" y="90" width="280" height="8" fill="#b0c8e0" opacity=".5"/>
-        <text x="140" y="86" text-anchor="middle" fill="#5a7a95" font-size="8">地面</text>
-        <!-- Tripod legs -->
-        <line x1="180" y1="90" x2="220" y2="20" stroke="#0d9e6e" stroke-width="3" stroke-linecap="round"/>
-        <line x1="260" y1="90" x2="220" y2="20" stroke="#0d9e6e" stroke-width="3" stroke-linecap="round"/>
-        <line x1="200" y1="90" x2="220" y2="20" stroke="#0d9e6e" stroke-width="3" stroke-linecap="round"/>
-        <!-- Tripod top connection -->
-        <circle cx="220" cy="20" r="6" fill="#0d9e6e"/>
-        <!-- Winch drum (rotating) -->
-        <circle class="winch-r" cx="222" cy="38" r="10" fill="none" stroke="#0d9e6e" stroke-width="2"/>
-        <line class="winch-r" x1="222" y1="28" x2="222" y2="48" stroke="#0d9e6e" stroke-width="1.5"/>
-        <line class="winch-r" x1="212" y1="38" x2="232" y2="38" stroke="#0d9e6e" stroke-width="1.5"/>
-        <text x="238" y="40" fill="#0d9e6e" font-size="7" font-weight="700">绞盘</text>
-        <!-- Safety rope from winch -->
-        <path d="M222 48 Q160 100 130 150" stroke="#c0142e" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-        <!-- Trapped person in space -->
-        <rect x="60" y="98" width="140" height="105" rx="4" fill="#c8d8e8" stroke="#b0c8e0" stroke-width="2"/>
-        <text x="130" y="185" text-anchor="middle" fill="#b0c8e0" font-size="8">有限空间</text>
-        <g class="person-r">
-          <!-- Head with rope connection -->
-          <circle cx="130" cy="145" r="9" fill="none" stroke="#d9520f" stroke-width="2"/>
-          <!-- Body -->
-          <line x1="130" y1="154" x2="130" y2="172" stroke="#d9520f" stroke-width="2"/>
-          <!-- Arms -->
-          <line x1="120" y1="160" x2="140" y2="160" stroke="#d9520f" stroke-width="2"/>
-          <!-- Rope attachment point at head -->
-          <circle cx="130" cy="138" r="3" fill="#c0142e"/>
-          <path d="M130 141 Q160 115 222 48" stroke="#c0142e" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-        </g>
-        <!-- Rescue personnel above ground -->
-        <circle cx="232" cy="60" r="8" fill="none" stroke="#0d9e6e" stroke-width="2"/>
-        <line x1="232" y1="68" x2="232" y2="82" stroke="#0d9e6e" stroke-width="2"/>
-        <line x1="222" y1="73" x2="242" y2="73" stroke="#0d9e6e" stroke-width="2"/>
-        <text x="232" y="97" text-anchor="middle" fill="#0d9e6e" font-size="8">救援人员</text>
-        <text x="130" y="140" text-anchor="end" fill="#d9520f" font-size="8">被困者</text>
-        <text x="220" y="10" text-anchor="middle" fill="#0d9e6e" font-size="8">三脚架</text>
-      </svg>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:10px">
-        <span class="tag t-grn">🏗️ 三脚架</span><span class="tag t-grn">🔩 绞盘</span><span class="tag t-grn">🪢 安全绳</span>
-      </div>
-    </div>
-    <!-- Entry rescue -->
-    <div style="background:rgba(255,107,53,.04);border:1px solid rgba(255,107,53,.3);border-radius:12px;padding:18px">
-      <div style="color:var(--accent2);font-weight:700;font-size:14px;margin-bottom:14px;text-align:center">⚠️ 最后手段：进入式救援</div>
-      <svg viewBox="0 0 280 210" width="100%">
-        <style>.descend-a{animation:descend 4s ease-in-out infinite}.sig-a{animation:blink 1s ease-in-out infinite}</style>
-        <rect x="0" y="70" width="280" height="8" fill="#b0c8e0" opacity=".5"/>
-        <rect x="60" y="78" width="160" height="130" rx="4" fill="#c8d8e8" stroke="#b0c8e0" stroke-width="2"/>
-        <rect x="110" y="68" width="60" height="16" rx="2" fill="#e8eef5" stroke="#d9520f" stroke-width="1.5"/>
-        <text x="140" y="79" text-anchor="middle" fill="#d9520f" font-size="7">作业入口</text>
-        <circle cx="90" cy="140" r="4" fill="#c0142e" opacity=".5"/>
-        <circle cx="110" cy="120" r="3" fill="#c0142e" opacity=".4"/>
-        <circle cx="170" cy="150" r="4" fill="#c0142e" opacity=".5"/>
-        <text x="140" y="190" text-anchor="middle" fill="#c0142e" font-size="8" opacity=".6">有毒气体环境</text>
-        <circle cx="140" cy="165" r="7" fill="none" stroke="#7a9bb5" stroke-width="1.5" opacity=".7"/>
-        <line x1="140" y1="172" x2="140" y2="182" stroke="#7a9bb5" stroke-width="1.5" opacity=".7"/>
-        <text x="155" y="175" fill="#5a7a95" font-size="7">被困者</text>
-        <g class="descend-a">
-          <circle cx="140" cy="115" r="9" fill="none" stroke="#d9520f" stroke-width="2.5"/>
-          <!-- SCBA backpack - large and prominent -->
-          <rect x="135" y="100" width="10" height="20" rx="2" fill="#e8eef5" stroke="#0d5fa8" stroke-width="2.2" style="stroke-dasharray:4,2"/>
-          <text x="140" y="114" text-anchor="middle" fill="#0d5fa8" font-size="6" font-weight="700">SCBA</text>
-          <!-- Oxygen tank -->
-          <rect x="148" y="102" width="6" height="14" rx="1.5" fill="#d9520f" opacity=".9"/>
-          <text x="151" y="112" text-anchor="middle" fill="#fff" font-size="4" font-weight="700">O₂</text>
-          <line x1="140" y1="124" x2="140" y2="140" stroke="#d9520f" stroke-width="2.5"/>
-          <line x1="128" y1="130" x2="152" y2="130" stroke="#d9520f" stroke-width="2.5"/>
-          <line x1="140" y1="106" x2="140" y2="78" stroke="#1a6fc4" stroke-width="2.2" stroke-dasharray="4,2"/>
-        </g>
-        <circle cx="230" cy="45" r="8" fill="none" stroke="#1a6fc4" stroke-width="2.5"/>
-        <line x1="230" y1="53" x2="230" y2="65" stroke="#1a6fc4" stroke-width="2.2"/>
-        <line x1="220" y1="59" x2="240" y2="59" stroke="#1a6fc4" stroke-width="2.2"/>
-        <line x1="222" y1="57" x2="170" y2="78" stroke="#1a6fc4" stroke-width="1.8" stroke-dasharray="4,2"/>
-        <text x="230" y="35" text-anchor="middle" fill="#1a6fc4" font-size="8" font-weight="700">外部保护</text>
-        <circle class="sig-a" cx="62" cy="80" r="5" fill="#c0142e"/>
-        <text x="62" y="68" text-anchor="middle" fill="#c0142e" font-size="7" font-weight="700">气体</text>
-        <text x="62" y="58" text-anchor="middle" fill="#c0142e" font-size="7" font-weight="700">报警</text>
-        <text x="20" y="115" fill="#b06000" font-size="8" font-weight="700">规则：</text>
-        <text x="20" y="127" fill="#b06000" font-size="7">✓ ≥2人同行</text>
-        <text x="20" y="138" fill="#b06000" font-size="7">✓ SCBA必戴</text>
-        <text x="20" y="149" fill="#b06000" font-size="7">✓ 外部保护</text>
-      </svg>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:10px">
-        <span class="tag t-ora">😷 SCBA必戴</span><span class="tag t-ora">👥 ≥2人</span><span class="tag t-ora">🔗 外部保护</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-  <h3 style="font-size:16px;font-weight:700;margin-bottom:14px">现场急救要点</h3>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px"><span style="font-size:28px;display:block;margin-bottom:10px">💨</span><h3 style="font-size:14px;margin-bottom:7px">移至安全区</h3><p style="font-size:12px;color:var(--muted);line-height:1.7">救出后立即移至<strong>上风侧</strong>平坦安全地带，远离有限空间入口。</p></div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px"><span style="font-size:28px;display:block;margin-bottom:10px">❤️</span><h3 style="font-size:14px;margin-bottom:7px">检查生命体征</h3><p style="font-size:12px;color:var(--muted);line-height:1.7">无呼吸无心跳，立即开始<strong>心肺复苏（CPR）</strong>，直至专业医护到达。</p></div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px"><span style="font-size:28px;display:block;margin-bottom:10px">🩹</span><h3 style="font-size:14px;margin-bottom:7px">止血包扎</h3><p style="font-size:12px;color:var(--muted);line-height:1.7">如有外伤出血，立即进行<strong>止血包扎</strong>，注意保暖防止休克。</p></div>
-  </div>
-
-  <div style="text-align:center;margin-top:40px">
-    <button class="next-section-btn" onclick="goSec('quiz',document.querySelectorAll('nav button')[6])">点击进入下一章节：知识测验 →</button>
-  </div>
-</section>
-
-<!-- ══════════ QUIZ ══════════ -->
-<section id="quiz" class="section">
-  <span class="sec-tag">MODULE 06</span>
-  <h2 class="sec-title">知识<span class="hl">测验</span></h2>
-  <div class="quiz-wrap">
-    <div id="quiz-dots" class="quiz-dots"></div>
-    <div id="quiz-area"></div>
-    <div id="quiz-result" class="quiz-result">
-      <div class="res-score" id="res-score"></div>
-      <div style="font-size:13px;color:var(--muted);margin-bottom:16px">答对题数 / 总题数</div>
-      <div style="font-size:15px;font-weight:600;margin-bottom:20px" id="res-msg"></div>
-      <button class="retry-btn" onclick="initQuiz()">重新测验</button>
-    </div>
-  </div>
-</section>
 
 <script>
-// ─── NAVIGATION ───────────────────────────────────────────────
-const SECS=['home','concepts','roles','process','vent','emergency','quiz'];
-function goSec(id,btn){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('#mainNav button').forEach(b=>b.classList.remove('active'));
-  if(btn)btn.classList.add('active');
-  window.scrollTo(0,0);
-  document.getElementById('pf').style.width=((SECS.indexOf(id)/(SECS.length-1))*100)+'%';
-}
+    // ── Tab switching ─────────────────────────────────
+    function switchTab(id, e) {
+        if (e && e.preventDefault) e.preventDefault();
+        const tabId = typeof id === 'string' ? id : (e.target.textContent.includes('有害') ? 'toxic' : 'oxygen');
+        
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active-pane'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        
+        document.getElementById(tabId + 'Pane').classList.add('active-pane');
+        document.querySelector(`.nav-btn[data-tab="${tabId}"]`)?.classList.add('active');
+        document.querySelector(`.tab-btn[onclick*="${tabId}"]`)?.classList.add('active');
+        
+        if (tabId === 'toxic') calculateToxic();
+        else calculateOxygen();
+    }
 
-// ─── PARTICLES ───────────────────────────────────────────────
-for(let i=0;i<14;i++){
-  const p=document.createElement('div');p.className='particle';
-  p.style.cssText=`left:${Math.random()*100}vw;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;background:${Math.random()>.5?'var(--accent)':'var(--accent3)'};animation-duration:${8+Math.random()*12}s;animation-delay:${Math.random()*15}s`;
-  document.body.appendChild(p);
-}
+    function scrollToSection(id) {
+        document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
 
-// ─── DEF CARD ACCORDION ──────────────────────────────────────
-function toggleDefCard(id){
-  const card=document.getElementById(id);
-  const wasOpen=card.classList.contains('open');
-  // Allow multiple open at the same time — just toggle this one
-  card.classList.toggle('open');
-}
+    // ── Slider updates ────────────────────────────────
+    function updateSliderDisplay() {
+        const etaVal = document.getElementById('lossFactor').value;
+        const kVal = document.getElementById('kFactor').value;
+        const etaValOxy = document.getElementById('lossFactorOxy').value;
+        const kValOxy = document.getElementById('kFactorOxy').value;
+        
+        document.getElementById('etaDisplay').textContent = parseFloat(etaVal).toFixed(2);
+        document.getElementById('kDisplay').textContent = parseFloat(kVal).toFixed(1);
+        document.getElementById('etaDisplayOxy').textContent = parseFloat(etaValOxy).toFixed(2);
+        document.getElementById('kDisplayOxy').textContent = parseFloat(kValOxy).toFixed(1);
+    }
 
-// ─── CONCEPT TABS (kept for backward compat) ─────────────────
-function openCtab(id,el){}
+    document.addEventListener('DOMContentLoaded', function() {
+        const sliders = document.querySelectorAll('input[type="range"]');
+        sliders.forEach(slider => {
+            slider.addEventListener('input', updateSliderDisplay);
+            slider.addEventListener('change', function() {
+                if (this.id.includes('lossFactor') || this.id.includes('kFactor')) {
+                    if (this.id.includes('Oxy')) calculateOxygen();
+                    else calculateToxic();
+                }
+            });
+        });
+        updateSliderDisplay();
+        calculateToxic();
+    });
 
-// ─── MANAGEMENT ACCORDION ─────────────────────────────────────
-function toggleMgmt(id){
-  const card=document.getElementById(id);
-  const wasOpen=card.classList.contains('open');
-  document.querySelectorAll('.mgmt-card').forEach(c=>c.classList.remove('open'));
-  if(!wasOpen)card.classList.add('open');
-}
+    // ── Quick fill ────────────────────────────────────
+    function setTarget(fieldId, val, btn) {
+        document.getElementById(fieldId).value = val;
+        btn.classList.add('flash');
+        setTimeout(() => btn.classList.remove('flash'), 300);
+    }
 
-// ─── ROLES ────────────────────────────────────────────────────
-function showRole(id){
-  document.querySelectorAll('.role-detail').forEach(r=>r.classList.remove('active'));
-  document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('sel'));
-  document.getElementById(id).classList.add('active');
-  document.getElementById('card-'+id).classList.add('sel');
-}
+    // ── Result renderer ───────────────────────────────
+    function renderResults(containerId, tTheo, tReq, qNom, eta, qEff, K, extraNote, status) {
+        const minTheo = Math.round(tTheo * 60);
+        const minReqRaw = Math.round(tReq * 60);
+        const minReq = Math.max(minReqRaw, 30); // 最低30分钟
+        const hoursReq = (minReq / 60).toFixed(2);
+        const hoursTheo = (minTheo / 60).toFixed(2);
+        const ach     = (60 / tReq).toFixed(1);
+        const minLow  = Math.ceil(minReq * 1.2);
+        const minHigh = Math.ceil(minReq * 1.5);
+        const achClass = parseFloat(ach) < 5 ? 'warn' : 'ok';
+        const achNote  = parseFloat(ach) < 5
+            ? `⚠ 低于规范要求（AQ 3028 ≥ 5次/小时），建议增大风量或减少K值`
+            : `✓ 满足 AQ 3028 换气次数要求（≥ 5次/小时）`;
 
-// ─── GAS MONITOR ──────────────────────────────────────────────
-const gasData={
-  normal:{o2:20.9,comb:2,h2s:1.2,co:5,tip:'✅ 各项气体浓度均在安全范围内，满足进入作业条件。'},
-  lowO2:{o2:17.5,comb:3,h2s:1.5,co:8,tip:'⚠️ 缺氧场景：氧含量低于19.5%VOL，严禁进入！必须加强通风。'},
-  h2sWarn:{o2:20.5,comb:4,h2s:4.8,co:10,tip:'⚠️ H₂S预警：硫化氢浓度超过低报值（3.5PPM），应立即撤离并加强通风！'},
-  multiAlarm:{o2:16.2,comb:18,h2s:12,co:35,tip:'🚨 严重超标：氧含量严重不足，可燃气超18%LEL，H₂S和CO严重超标！立即启动应急预案！'},
-  richO2:{o2:25.8,comb:1,h2s:0.5,co:3,tip:'🚨 富氧场景：氧含量超23.5%VOL，存在燃爆风险！严禁明火作业。'}
-};
-function setScenario(s){
-  const d=gasData[s];
-  updateGas('o2',d.o2,20,[19.5,23.5],'o2');
-  updateGas('comb',d.comb,100,[0,10],'comb');
-  updateGas('h2s',d.h2s,14,[0,3.5],'h2s',7);
-  updateGas('co',d.co,50,[0,12.5],'co',25);
-  const t=document.getElementById('scenario-tip');t.style.display='block';t.textContent=d.tip;
-}
-function updateGas(key,value,max,[lo,hi],id,hiAlarm){
-  const ve=document.getElementById('gv-'+id),be=document.getElementById('gb-'+id),se=document.getElementById('gs-'+id),ce=document.getElementById('gc-'+id);
-  ve.textContent=value.toFixed(1);be.style.width=Math.min(100,(value/max)*100)+'%';ce.classList.remove('alarming');
-  let color,txt,cls;
-  if(id==='o2'){const ok=value>=lo&&value<=hi;color=ok?'var(--accent3)':'var(--danger)';txt=ok?'✓ 正常':(value<lo?'⚠ 缺氧报警！':'⚠ 富氧报警！');cls=ok?'ok':'danger-c';if(!ok)ce.classList.add('alarming');}
-  else{const w=value>lo&&(!hiAlarm||value<=hiAlarm),d2=value>hi||(hiAlarm&&value>hiAlarm);if(d2){color='var(--danger)';txt='🚨 高度报警！';cls='danger-c';ce.classList.add('alarming');}else if(w){color='var(--warning)';txt='⚠ 预警！';cls='warn';}else{color='var(--accent3)';txt='✓ 正常';cls='ok';}}
-  ve.style.color=color;be.style.background=color;se.textContent=txt;se.className='gas-status '+cls;
-}
+        document.getElementById(containerId).innerHTML = `
+            <div class="result-container">
+                <div class="result-header">
+                    <span class="result-title">📊 计算结果</span>
+                    <span class="update-time">更新时间: ${new Date().toLocaleTimeString()}</span>
+                </div>
+                <div class="result-cards">
+                    <div class="metric-card">
+                        <div class="metric-label">考虑 K 值后所需通风时间</div>
+                        <div class="metric-value">${minReq} <span style="font-size:16px;font-weight:400;">min</span><span style="font-size:11px;color:var(--txt-dim);margin-left:4px;">(${hoursReq}h)</span></div>
+                        <div class="metric-sub">K=${K} · η=${eta} · Q_eff=${qEff} m³/h</div>
+                    </div>
+                    <div class="metric-card" style="--accent:var(--txt-dim)">
+                        <div class="metric-label">理论最小时间（理想混合）</div>
+                        <div class="metric-value" style="color:var(--txt-dim)">${minTheo} <span style="font-size:16px;font-weight:400;">min</span><span style="font-size:11px;color:var(--txt-dim);margin-left:4px;">(${hoursTheo}h)</span></div>
+                        <div class="metric-sub">K=1 理想情况</div>
+                    </div>
+                    <div class="metric-card ${achClass}">
+                        <div class="metric-label">换气次数</div>
+                        <div class="metric-value">${ach} <span style="font-size:14px;font-weight:400;">次/小时</span></div>
+                        <div class="metric-sub">${achNote}</div>
+                    </div>
+                </div>
+                <div class="calc-detail">
+                    <strong style="color:var(--txt)">计算过程</strong><br>
+                    铭牌风量 <span class="hl">${qNom} m³/h</span> × 折减系数 <span class="hl">${eta}</span> = 有效风量 <span class="hl">${qEff} m³/h</span><br>
+                    理论时间 <span class="hl">${minTheo} min</span> × K = <span class="hl">${minReqRaw} min</span><br>
+                    ${minReqRaw < 30 ? `<span class="warn">⚠ 计算时间低于 30 分钟，按最低要求调整为 30 分钟</span><br>` : ''}
+                    <br>
+                    <strong style="color:var(--txt)">建议实际通风时间</strong><br>
+                    <span class="hl">${minLow} ~ ${minHigh} 分钟</span>（理论值 +20%~+50% 余量）<br>
+                    <br>
+                    ${extraNote}
+                </div>
+            </div>
+        `;
+    }
 
-// ─── QUIZ ─────────────────────────────────────────────────────
-const QS=[
-  {q:'有限空间内氧含量低于多少时，判定为缺氧环境，严禁人员进入？',opts:['A. 18%VOL','B. 19.5%VOL','C. 21%VOL','D. 16%VOL'],ans:1,fb:'正确！氧含量低于19.5%VOL即为缺氧，高于23.5%VOL为富氧，两种情况都禁止作业人员进入。'},
-  {q:'以下对"进入"的解释，最准确的是？',opts:['A. 全身进入有限空间内','B. 头部或全身进到有限空间内（呼吸带暴露即触发）','C. 双脚踏入有限空间内','D. 任何人员靠近有限空间出入口'],ans:1,fb:'正确！规程规定以头部进入为准，因为呼吸带一旦暴露于有限空间内，即面临缺氧或中毒的致命风险。'},
-  {q:'有限空间作业中，作业人员应每隔多久向监护人报告一次气体检测数据？',opts:['A. 5分钟','B. 10分钟','C. 15分钟','D. 30分钟'],ans:2,fb:'正确！规程要求每15分钟向监护人报告检测数据，监护人应记录瞬时值。'},
-  {q:'以下哪种情况，监护人可以进入有限空间？',opts:['A. 作业人员发生事故需要救援时','B. 作业人员让监护人进来帮忙','C. 监护人经过培训且自认为安全','D. 以上情况均不能进入'],ans:3,fb:'正确！监护人必须全程在有限空间外持续监护，严禁以任何理由进入有限空间。'},
-  {q:'作业前强制通风，要求整体换气次数不少于多少次？',opts:['A. 3次','B. 4次','C. 5次','D. 10次'],ans:2,fb:'正确！作业前必须进行强制通风，确保整体换气次数不少于5次，且作业期间应保持连续强制通风。'},
-  {q:'发生事故时，以下哪种救援方式应该优先采用？',opts:['A. 直接进入救援，速度最快','B. 非进入式救援（三脚架、绞盘等）','C. 等待119消防队到达后再行动','D. 由监护人立即进入施救'],ans:1,fb:'正确！应优先采用非进入式救援，只有当非进入式救援无法实施时，才考虑进入式救援。'},
-  {q:'气体检测仪中，硫化氢（H₂S）的低报警值是多少？',opts:['A. 1PPM','B. 3.5PPM','C. 7PPM','D. 10PPM'],ans:1,fb:'正确！H₂S两级报警：低报3.5PPM，高报7PPM。CO低报12.5PPM，高报25PPM。'},
-  {q:'有限空间竖直方向气体检测，至少应设置几个检测点？',opts:['A. 1个（入口处即可）','B. 至少2个（高度不足2m时，设上下2点）','C. 至少5个，间距不超过2m','D. 只需在最底部设1个'],ans:1,fb:'正确！竖向距离不足2m时，可设上、下2个点（最低要求）。当竖向距离≥2m时，不应少于3个点（上、中、下）。'},
-  {q:'在金属结构有限空间内作业时，照明灯具额定电压不应超过多少？',opts:['A. 36V','B. 24V','C. 12V','D. 48V'],ans:1,fb:'正确！一般有限空间照明≤36V；金属结构有限空间≤24V；积水、结露等潮湿环境≤12V。'},
-  {q:'以下关于监护人职责的描述，哪项是错误的？',opts:['A. 全程在有限空间外持续监护','B. 当作业人员呼叫时，可短暂进入查看情况','C. 每15分钟记录一次气体检测数据','D. 发现异常时立即向作业人发出撤离警报'],ans:1,fb:'正确（选出错误的）！监护人严禁以任何理由进入有限空间，"短暂进入查看"同样是严重错误。'}
-];
-let cQ=0,score=0;
-function initQuiz(){
-  cQ=0;score=0;
-  document.getElementById('quiz-result').classList.remove('show');
-  document.getElementById('quiz-area').innerHTML='';
-  buildDots();showQ();
-}
-function buildDots(){
-  const c=document.getElementById('quiz-dots');c.innerHTML='';
-  QS.forEach((_,i)=>{const d=document.createElement('div');d.className='quiz-dot'+(i===0?' cur':'');d.id='dot-'+i;c.appendChild(d);});
-}
-function showQ(){
-  const q=QS[cQ];const area=document.getElementById('quiz-area');
-  area.innerHTML=`<div class="quiz-q"><div class="q-num">题目 ${cQ+1} / ${QS.length}</div><div class="q-text">${q.q}</div><div class="q-opts">${q.opts.map((o,i)=>`<button class="q-opt" onclick="ansQ(${i})" id="opt-${i}"><span class="q-opt-lbl">${String.fromCharCode(65+i)}</span>${o.substring(3)}</button>`).join('')}</div><div class="q-fb" id="q-fb"></div><button class="q-next" id="q-next" onclick="nextQ()">${cQ<QS.length-1?'下一题 →':'查看结果'}</button></div>`;
-}
-function ansQ(idx){
-  const q=QS[cQ];document.querySelectorAll('.q-opt').forEach(o=>o.classList.add('disabled'));
-  const fb=document.getElementById('q-fb');
-  if(idx===q.ans){document.querySelectorAll('.q-opt')[idx].classList.add('correct');fb.className='q-fb ok show';fb.innerHTML='✓ '+q.fb;score++;}
-  else{document.querySelectorAll('.q-opt')[idx].classList.add('wrong');document.querySelectorAll('.q-opt')[q.ans].classList.add('correct');fb.className='q-fb bad show';fb.innerHTML='✗ 错误。正确答案是 '+QS[cQ].opts[q.ans]+'。<br>'+q.fb;}
-  document.getElementById('q-next').classList.add('show');document.getElementById('dot-'+cQ).classList.add('done');
-}
-function nextQ(){
-  cQ++;
-  if(cQ<QS.length){document.querySelectorAll('.quiz-dot').forEach((d,i)=>{d.classList.remove('cur');if(i===cQ)d.classList.add('cur');});showQ();}
-  else{document.getElementById('quiz-area').innerHTML='';const r=document.getElementById('quiz-result');r.classList.add('show');document.getElementById('res-score').textContent=score+'/'+QS.length;const pct=Math.round(score/QS.length*100);document.getElementById('res-msg').textContent=pct>=90?'🏆 优秀！已熟练掌握安全规范，继续保持！':pct>=70?'👍 良好！请复习错题涉及的知识点。':pct>=50?'📖 继续加油！请重新学习相关章节。':'⚠️ 需要加强学习！安全知识至关重要，请认真复习。';}
-}
+    function renderError(containerId, msg) {
+        document.getElementById(containerId).innerHTML = `
+            <div class="metric-card" style="border-color:var(--danger)">
+                <div class="metric-label">输入错误</div>
+                <div style="color:var(--danger); font-size:13px; margin-top:6px;">${msg}</div>
+            </div>`;
+    }
 
-// init
-initQuiz();
+    function renderInfo(containerId, msg, color) {
+        document.getElementById(containerId).innerHTML = `
+            <div class="metric-card" style="border-color:${color || 'var(--ok)'}">
+                <div style="font-size:13px; line-height:1.7; color:${color || 'var(--ok)'}; margin-top:2px;">${msg}</div>
+            </div>`;
+    }
+
+    // ── Toxic calc ────────────────────────────────────
+    function calculateToxic() {
+        const V     = parseFloat(document.getElementById('volToxic').value);
+        const Q_nom = parseFloat(document.getElementById('fanNominal').value);
+        const eta   = parseFloat(document.getElementById('lossFactor').value);
+        const C0    = parseFloat(document.getElementById('initConc').value);
+        const Cs    = parseFloat(document.getElementById('targetConc').value);
+        const K     = parseFloat(document.getElementById('kFactor').value);
+        const cid   = 'toxicResults';
+
+        if (!V || V <= 0)              return renderError(cid, '❌ 容积须为正数（m³）');
+        if (!Q_nom || Q_nom <= 0)      return renderError(cid, '❌ 铭牌风量须为正数（m³/h）');
+        if (!eta || eta < 0.4 || eta > 1) return renderError(cid, '❌ 折减系数应在 0.4 ~ 1.0 之间');
+        if (isNaN(C0) || C0 < 0)       return renderError(cid, '❌ 初始浓度无效');
+        if (!Cs || Cs <= 0)            return renderError(cid, '❌ 目标安全浓度须大于 0');
+        if (!K || K < 1)               return renderError(cid, '❌ 混合系数 K 须 ≥ 1');
+
+        if (C0 <= Cs) {
+            return renderInfo(cid,
+                `✅ 初始浓度（${C0}）已 ≤ 目标安全浓度（${Cs}）<br>建议仍进行机械通风至少 5 次换气，并实时检测确认。`,
+                'var(--ok)');
+        }
+
+        const Q_eff  = Q_nom * eta;
+        const t_theo = (V * Math.log(C0 / Cs)) / Q_eff;
+        const t_req  = t_theo * K;
+        const extra  = t_req <= 0.5
+            ? `<span class="warn">⚠ 计算时间低于 30 分钟，仍建议至少通风 30 分钟</span>`
+            : '';
+        renderResults(cid, t_theo, t_req, Q_nom, eta, Q_eff.toFixed(1), K, extra);
+    }
+
+    // ── Oxygen calc ───────────────────────────────────
+    function calculateOxygen() {
+        const V      = parseFloat(document.getElementById('volOxy').value);
+        const Q_nom  = parseFloat(document.getElementById('fanNominalOxy').value);
+        const eta    = parseFloat(document.getElementById('lossFactorOxy').value);
+        const C0_O2  = parseFloat(document.getElementById('initO2').value);
+        const Cs_O2  = parseFloat(document.getElementById('targetO2').value);
+        const K      = parseFloat(document.getElementById('kFactorOxy').value);
+        const fresh  = 20.9;
+        const cid    = 'oxyResults';
+
+        if (!V || V <= 0)               return renderError(cid, '❌ 容积须为正数（m³）');
+        if (!Q_nom || Q_nom <= 0)       return renderError(cid, '❌ 铭牌风量须为正数（m³/h）');
+        if (!eta || eta < 0.4 || eta > 1) return renderError(cid, '❌ 折减系数应在 0.4 ~ 1.0 之间');
+        if (isNaN(C0_O2) || C0_O2 < 0 || C0_O2 > 25) return renderError(cid, '❌ 初始氧气浓度异常（0 ~ 25%）');
+        if (isNaN(Cs_O2) || Cs_O2 <= 0 || Cs_O2 > 23.5) return renderError(cid, '❌ 目标氧气浓度应在 19.5% ~ 23.5%');
+        if (!K || K < 1)                return renderError(cid, '❌ 混合系数 K 须 ≥ 1');
+
+        if (C0_O2 > Cs_O2) {
+            return renderInfo(cid,
+                `⚠ 当前氧气浓度 ${C0_O2}% > 目标浓度 ${Cs_O2}%（富氧状态）<br>请切换至【有害气体模式】，将氧气视为污染物处理。`,
+                'var(--warn)');
+        }
+        if (C0_O2 >= fresh) {
+            return renderInfo(cid,
+                `✅ 当前氧气浓度 ${C0_O2}% 已达到或优于目标 ${Cs_O2}%，无需置换。<br>仍需持续通风并检测其他有害气体。`,
+                'var(--ok)');
+        }
+        if (Cs_O2 > fresh + 0.1) {
+            return renderError(cid, '❌ 目标氧气浓度不能超过新风含氧量（20.9%）');
+        }
+
+        const Q_eff  = Q_nom * eta;
+        const num    = fresh - C0_O2;
+        const den    = fresh - Cs_O2;
+        if (num <= 0 || den <= 0) return renderError(cid, '⚠ 参数异常，请检查初始和目标氧气浓度');
+
+        const t_theo = (V * Math.log(num / den)) / Q_eff;
+        const t_req  = t_theo * K;
+        const extra  = t_req <= 0.5
+            ? `<span class="warn">⚠ 计算时间低于 30 分钟，仍建议至少通风 30 分钟</span>` : '';
+        renderResults(cid, t_theo, t_req, Q_nom, eta, Q_eff.toFixed(1), K, extra);
+        setTimeout(syncPanelHeights, 100);
+        setTimeout(syncPanelHeights, 100);
+    }
 </script>
 </body>
 </html>
