@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>有限空间通风计算器 </title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -183,7 +185,16 @@
             background: #fafbfc;
         }
 
-        /* ─── Form card ──────────────────────────── */
+        /* ─── Admission notice ────────────────────── */
+        .admission-notice {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(245,158,11,0.2);
+        }
         .calc-grid {
             display: grid;
             grid-template-columns: 1fr 420px;
@@ -366,11 +377,11 @@
             gap: 14px;
         }
         .result-container {
-            background: var(--surface);
-            border: 1.5px solid var(--border);
+            background: #fafbfc;
+            border: 2px solid var(--accent);
             border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(8,145,178,0.12);
         }
         .result-header {
             display: flex;
@@ -688,6 +699,16 @@
             font-weight: 600;
         }
 
+        /* ─── Formulas section ──────────────────── */
+        .formulas-section {
+            grid-column: 1;
+            margin-top: 0;
+        }
+        
+        .formulas-section .panel {
+            margin: 0;
+        }
+
         /* ─── Responsive ─────────────────────────── */
         @media (max-width: 1024px) {
             .calc-grid {
@@ -695,6 +716,9 @@
             }
             .info-grid {
                 grid-template-columns: 1fr;
+            }
+            .formulas-section {
+                grid-column: 1;
             }
         }
 
@@ -759,8 +783,9 @@
             .topbar {
                 padding: 0 16px;
             }
-            .topbar-title {
-                font-size: 12px;
+            .admission-notice {
+                margin-bottom: 16px;
+                padding: 12px;
             }
             .status-pill {
                 display: none;
@@ -841,6 +866,17 @@
         <!-- 有害气体模式 -->
         <div id="toxicPane" class="tab-pane active-pane">
             <div class="calc-grid">
+                <!-- 最终准入依据 -->
+                <div class="admission-notice">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <span style="font-size: 20px;">⚠️</span>
+                        <strong style="color: #92400e; font-size: 14px; font-weight: 700;">最终准入依据</strong>
+                    </div>
+                    <p style="color: #92400e; font-size: 13px; line-height: 1.6; margin: 0; font-weight: 500;">
+                        泵吸式气体检测仪实测数据（有毒气体 / 可燃气体 / 氧含量）全部合格后方可进入
+                    </p>
+                </div>
+
                 <!-- 左：输入表单 -->
                 <div class="panel panel-input">
                     <div class="panel-header">
@@ -848,16 +884,6 @@
                         <span class="panel-title">输入参数 — <span class="panel-title-accent">有害气体 / 易燃蒸气稀释</span></span>
                     </div>
                     <div class="panel-body">
-                        <!-- 醒目的最终准入依据 -->
-                        <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(245,158,11,0.2);">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                <span style="font-size: 20px;">⚠️</span>
-                                <strong style="color: #92400e; font-size: 14px; font-weight: 700;">最终准入依据</strong>
-                            </div>
-                            <p style="color: #92400e; font-size: 13px; line-height: 1.6; margin: 0; font-weight: 500;">
-                                泵吸式气体检测仪实测数据（有毒气体 / 可燃气体 / 氧含量）全部合格后方可进入
-                            </p>
-                        </div>
 
                         <div class="field">
                             <div class="field-label">
@@ -943,28 +969,70 @@
                         <span style="font-size:12px;margin-top:4px;">结果将显示在此处</span>
                     </div>
                 </div>
+
+                <!-- 公式说明 -->
+                <div id="formulas-toxic" class="formulas-section">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span>📐</span>
+                            <span class="panel-title">核心公式 & 工程指南</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="info-grid">
+                                <div class="info-card">
+                                    <h4>有害气体稀释公式</h4>
+                                    <div class="formula">\( t = K \cdot V \cdot \ln\left(\frac{C_0}{C_s}\right) / Q_{\text{eff}} \)</div>
+                                    <p style="margin-top:8px;">其中有效风量 \( Q_{\text{eff}} = Q_{\text{nom}} \times \eta \)</p>
+                                </div>
+                                <div class="info-card">
+                                    <h4>缺氧恢复公式</h4>
+                                    <div class="formula">\( t = K \cdot V \cdot \ln\left[\frac{20.9 - C_0}{20.9 - C_s}\right] / Q_{\text{eff}} \)</div>
+                                    <p style="margin-top:8px;">基于新风含氧20.9%的稀释模型</p>
+                                </div>
+                                <div class="info-card">
+                                    <h4>换气次数要求</h4>
+                                    <ul>
+                                        <li>换气次数 \( N = \frac{Q_{\text{eff}}}{V} \)（次/小时）</li>
+                                        <li>AQ 3028 要求 \( N \geq 5 \) 次/小时</li>
+                                        <li>对应最低所需通风时间 30 分钟</li>
+                                    </ul>
+                                </div>
+                                <div class="info-card">
+                                    <h4>工程安全建议</h4>
+                                    <ul>
+                                        <li>计算值为理论值，增加 20%~50% 余量</li>
+                                        <li>η 无实测时默认 0.7；长管多弯取低值</li>
+                                        <li>持续气体检测优于任何计算模型</li>
+                                        <li><strong style="color:var(--danger)">禁止</strong>仅靠计算不做实测即进入</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- 缺氧恢复模式 -->
         <div id="oxygenPane" class="tab-pane">
             <div class="calc-grid">
+                <!-- 最终准入依据 -->
+                <div class="admission-notice">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <span style="font-size: 20px;">⚠️</span>
+                        <strong style="color: #92400e; font-size: 14px; font-weight: 700;">最终准入依据</strong>
+                    </div>
+                    <p style="color: #92400e; font-size: 13px; line-height: 1.6; margin: 0; font-weight: 500;">
+                        泵吸式气体检测仪实测数据（有毒气体 / 可燃气体 / 氧含量）全部合格后方可进入
+                    </p>
+                </div>
+
                 <div class="panel panel-input">
                     <div class="panel-header">
                         <span>🫁</span>
                         <span class="panel-title">输入参数 — <span class="panel-title-accent">缺氧恢复（氧气稀释模型）</span></span>
                     </div>
                     <div class="panel-body">
-                        <!-- 醒目的最终准入依据 -->
-                        <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(245,158,11,0.2);">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                <span style="font-size: 20px;">⚠️</span>
-                                <strong style="color: #92400e; font-size: 14px; font-weight: 700;">最终准入依据</strong>
-                            </div>
-                            <p style="color: #92400e; font-size: 13px; line-height: 1.6; margin: 0; font-weight: 500;">
-                                泵吸式气体检测仪实测数据（有毒气体 / 可燃气体 / 氧含量）全部合格后方可进入
-                            </p>
-                        </div>
 
                         <div class="field">
                             <div class="field-label">📦 有限空间容积 V <span class="unit">m³</span></div>
@@ -1026,33 +1094,74 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 公式说明 -->
+            <div id="formulas-oxygen" class="formulas-section">
+                <div class="panel">
+                    <div class="panel-header">
+                        <span>📐</span>
+                        <span class="panel-title">核心公式 & 工程指南</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <h4>有害气体稀释公式</h4>
+                                <div class="formula">\( t = K \cdot V \cdot \ln\left(\frac{C_0}{C_s}\right) / Q_{\text{eff}} \)</div>
+                                <p style="margin-top:8px;">其中有效风量 \( Q_{\text{eff}} = Q_{\text{nom}} \times \eta \)</p>
+                            </div>
+                            <div class="info-card">
+                                <h4>缺氧恢复公式</h4>
+                                <div class="formula">\( t = K \cdot V \cdot \ln\left[\frac{20.9 - C_0}{20.9 - C_s}\right] / Q_{\text{eff}} \)</div>
+                                <p style="margin-top:8px;">基于新风含氧20.9%的稀释模型</p>
+                            </div>
+                            <div class="info-card">
+                                <h4>换气次数要求</h4>
+                                <ul>
+                                    <li>换气次数 \( N = \frac{Q_{\text{eff}}}{V} \)（次/小时）</li>
+                                    <li>AQ 3028 要求 \( N \geq 5 \) 次/小时</li>
+                                    <li>对应最低所需通风时间 30 分钟</li>
+                                </ul>
+                            </div>
+                            <div class="info-card">
+                                <h4>工程安全建议</h4>
+                                <ul>
+                                    <li>计算值为理论值，增加 20%~50% 余量</li>
+                                    <li>η 无实测时默认 0.7；长管多弯取低值</li>
+                                    <li>持续气体检测优于任何计算模型</li>
+                                    <li><strong style="color:var(--danger)">禁止</strong>仅靠计算不做实测即进入</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- 公式说明 -->
-        <div id="formulas" style="margin-top:24px;">
+        <!-- 原formulas占位符 -->
+        <div id="formulas" style="display:none;">
             <div class="panel">
                 <div class="panel-header">
                     <span>📐</span>
-                    <span class="panel-title">核心公式 & 工程指南 — <span class="panel-title-accent">版本 3.0</span></span>
+                    <span class="panel-title">核心公式 & 工程指南</span>
                 </div>
                 <div class="panel-body">
                     <div class="info-grid">
                         <div class="info-card">
                             <h4>有害气体稀释公式</h4>
-                            <div class="formula">t = K · V · ln(C₀/Cₛ) / Q_eff</div>
-                            <p style="margin-top:8px;">其中有效风量 Q_eff = Q_nom × η</p>
+                            <div class="formula">\( t = K \cdot V \cdot \ln\left(\frac{C_0}{C_s}\right) / Q_{\text{eff}} \)</div>
+                            <p style="margin-top:8px;">其中有效风量 \( Q_{\text{eff}} = Q_{\text{nom}} \times \eta \)</p>
                         </div>
                         <div class="info-card">
                             <h4>缺氧恢复公式</h4>
-                            <div class="formula">t = K·V·ln[(20.9−C₀)/(20.9−Cₛ)] / Q_eff</div>
+                            <div class="formula">\( t = K \cdot V \cdot \ln\left[\frac{20.9 - C_0}{20.9 - C_s}\right] / Q_{\text{eff}} \)</div>
                             <p style="margin-top:8px;">基于新风含氧20.9%的稀释模型</p>
                         </div>
                         <div class="info-card">
                             <h4>换气次数要求</h4>
                             <ul>
-                                <li>换气次数 N = Q_eff / V（次/小时）</li>
-                                <li>AQ 3028 要求 N ≥ 5 次/小时</li>
-                                <li>对应最低通风时间 30 分钟</li>
+                                <li>换气次数 \( N = \frac{Q_{\text{eff}}}{V} \)（次/小时）</li>
+                                <li>AQ 3028 要求 \( N \geq 5 \) 次/小时</li>
+                                <li>对应最低所需通风时间 30 分钟</li>
                             </ul>
                         </div>
                         <div class="info-card">
@@ -1071,8 +1180,47 @@
 
     </main>
 
-    <!-- ── Footer ── -->
+    <script>
+        // 同步结果框与输入框高度（全屏模式）
+        function syncPanelHeights() {
+            const width = window.innerWidth;
+            if (width > 1024) {
+                const inputPanels = document.querySelectorAll('.panel-input');
+                const resultPanels = document.querySelectorAll('.result-panel');
+                
+                inputPanels.forEach((inputPanel, idx) => {
+                    if (resultPanels[idx]) {
+                        const inputHeight = inputPanel.offsetHeight;
+                        resultPanels[idx].style.minHeight = inputHeight + 'px';
+                    }
+                });
+            } else {
+                // 移动端：移除min-height
+                document.querySelectorAll('.result-panel').forEach(panel => {
+                    panel.style.minHeight = 'auto';
+                });
+            }
+        }
+        
+        // 初始化并监听窗口大小变化
+        window.addEventListener('load', syncPanelHeights);
+        window.addEventListener('resize', syncPanelHeights);
+        
+        // 计算后也要同步高度
+        const originalCalculateToxic = window.calculateToxic || function() {};
+        const originalCalculateOxygen = window.calculateOxygen || function() {};
+    </script>
 
+    <!-- ── Footer ── -->
+    <footer>
+        <span>EHS 专业工具</span>
+        <span class="sep">|</span>
+        <span>ACGIH 吹扫模型</span>
+        <span class="sep">|</span>
+        <span>AQ 3028-2008</span>
+        <span class="sep">|</span>
+        <span>GB 8958-2006</span>
+    </footer>
 </div>
 
 <script>
@@ -1156,13 +1304,13 @@
                 <div class="result-cards">
                     <div class="metric-card">
                         <div class="metric-label">考虑 K 值后所需通风时间</div>
-                        <div class="metric-value">${minReq} <span style="font-size:16px;font-weight:400;">min</span></div>
-                        <div class="metric-sub">${hoursReq} 小时 | K=${K} · η=${eta} · Q_eff=${qEff} m³/h</div>
+                        <div class="metric-value">${minReq} <span style="font-size:16px;font-weight:400;">min</span><span style="font-size:11px;color:var(--txt-dim);margin-left:4px;">(${hoursReq}h)</span></div>
+                        <div class="metric-sub">K=${K} · η=${eta} · Q_eff=${qEff} m³/h</div>
                     </div>
                     <div class="metric-card" style="--accent:var(--txt-dim)">
                         <div class="metric-label">理论最小时间（理想混合）</div>
-                        <div class="metric-value" style="color:var(--txt-dim)">${minTheo} <span style="font-size:16px;font-weight:400;">min</span></div>
-                        <div class="metric-sub">${hoursTheo} 小时 | K=1 理想情况</div>
+                        <div class="metric-value" style="color:var(--txt-dim)">${minTheo} <span style="font-size:16px;font-weight:400;">min</span><span style="font-size:11px;color:var(--txt-dim);margin-left:4px;">(${hoursTheo}h)</span></div>
+                        <div class="metric-sub">K=1 理想情况</div>
                     </div>
                     <div class="metric-card ${achClass}">
                         <div class="metric-label">换气次数</div>
@@ -1226,8 +1374,8 @@
         const Q_eff  = Q_nom * eta;
         const t_theo = (V * Math.log(C0 / Cs)) / Q_eff;
         const t_req  = t_theo * K;
-        const extra  = t_req <= 0.2
-            ? `<span class="warn">⚠ 计算时间低于 12 分钟，仍建议至少通风 30 分钟（5次/小时底线）</span>`
+        const extra  = t_req <= 0.5
+            ? `<span class="warn">⚠ 计算时间低于 30 分钟，仍建议至少通风 30 分钟</span>`
             : '';
         renderResults(cid, t_theo, t_req, Q_nom, eta, Q_eff.toFixed(1), K, extra);
     }
@@ -1271,9 +1419,11 @@
 
         const t_theo = (V * Math.log(num / den)) / Q_eff;
         const t_req  = t_theo * K;
-        const extra  = t_req <= 0.2
-            ? `<span class="warn">⚠ 计算时间低于 12 分钟，仍建议至少通风 30 分钟</span>` : '';
+        const extra  = t_req <= 0.5
+            ? `<span class="warn">⚠ 计算时间低于 30 分钟，仍建议至少通风 30 分钟</span>` : '';
         renderResults(cid, t_theo, t_req, Q_nom, eta, Q_eff.toFixed(1), K, extra);
+        setTimeout(syncPanelHeights, 100);
+        setTimeout(syncPanelHeights, 100);
     }
 </script>
 </body>
