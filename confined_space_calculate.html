@@ -1052,7 +1052,7 @@
                             <ul>
                                 <li>换气次数 N = Q_eff / V（次/小时）</li>
                                 <li>AQ 3028 要求 N ≥ 5 次/小时</li>
-                                <li>对应最允许通风时间 30 分钟</li>
+                                <li>对应最低通风时间 30 分钟</li>
                             </ul>
                         </div>
                         <div class="info-card">
@@ -1227,7 +1227,7 @@
         const t_theo = (V * Math.log(C0 / Cs)) / Q_eff;
         const t_req  = t_theo * K;
         const extra  = t_req <= 0.2
-            ? `<span class="warn">⚠ 计算时间低于 12 分钟，仍建议至少通风 12 分钟（5次/小时底线）</span>`
+            ? `<span class="warn">⚠ 计算时间低于 12 分钟，仍建议至少通风 30 分钟（5次/小时底线）</span>`
             : '';
         renderResults(cid, t_theo, t_req, Q_nom, eta, Q_eff.toFixed(1), K, extra);
     }
@@ -1272,7 +1272,7 @@
         const t_theo = (V * Math.log(num / den)) / Q_eff;
         const t_req  = t_theo * K;
         const extra  = t_req <= 0.2
-            ? `<span class="warn">⚠ 计算时间低于 12 分钟，仍建议至少通风 12 分钟</span>` : '';
+            ? `<span class="warn">⚠ 计算时间低于 12 分钟，仍建议至少通风 30 分钟</span>` : '';
         renderResults(cid, t_theo, t_req, Q_nom, eta, Q_eff.toFixed(1), K, extra);
     }
 </script>
