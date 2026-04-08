@@ -526,6 +526,47 @@
             border: 1px solid var(--border);
             font-weight: 600;
         }
+        .formula-block {
+            font-family: var(--mono);
+            font-size: 14px;
+            color: var(--txt);
+            background: #ffffff;
+            padding: 14px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            margin-top: 12px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 12px;
+        }
+        .detail-table th, .detail-table td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+        }
+        .detail-table th {
+            background: var(--surface2);
+            color: var(--txt);
+            font-weight: 700;
+        }
+        .detail-table tbody tr:nth-child(odd) {
+            background: #f8fafc;
+        }
+        .warning-note {
+            background: rgba(254,243,199,0.9);
+            border-left: 4px solid #f59e0b;
+            padding: 14px 16px;
+            border-radius: 10px;
+            color: #92400e;
+            margin-top: 12px;
+            font-size: 12px;
+            line-height: 1.7;
+        }
 
         /* ─── Tab panes ──────────────────────────── */
         .tab-pane { display: none; padding: 0; }
@@ -836,7 +877,7 @@
         </button>
 
         <div class="nav-section">参考信息</div>
-        <button class="nav-btn" onclick="scrollToSection('formulas')">
+        <button class="nav-btn" data-tab="formulas" onclick="switchTab('formulas',this)">
             <span class="nav-icon">📐</span>
             公式 & 说明
         </button>
@@ -865,6 +906,7 @@
         <div class="tab-nav">
             <button class="tab-btn active" onclick="switchTab('toxic', event)">🧪 有害气体</button>
             <button class="tab-btn" onclick="switchTab('oxygen', event)">🫁 缺氧恢复</button>
+            <button class="tab-btn" onclick="switchTab('formulas', event)">📐 公式&说明</button>
         </div>
 
         <!-- 有害气体模式 -->
@@ -974,7 +1016,7 @@
                     </div>
                 </div>
 
-                <!-- 公式说明 -->
+                <!-- 核心公式 -->
                 <div id="formulas-toxic" class="formulas-section">
                     <div class="panel">
                         <div class="panel-header">
@@ -984,30 +1026,28 @@
                         <div class="panel-body">
                             <div class="info-grid">
                                 <div class="info-card">
-                                    <h4>有害气体稀释公式</h4>
-                                    <div class="formula">\( t = K \cdot V \cdot \ln\left(\frac{C_0}{C_s}\right) / Q_{\text{eff}} \)</div>
-                                    <p style="margin-top:8px;">其中有效风量 \( Q_{\text{eff}} = Q_{\text{nom}} \times \eta \)</p>
-                                </div>
-                                <div class="info-card">
-                                    <h4>缺氧恢复公式</h4>
-                                    <div class="formula">\( t = K \cdot V \cdot \ln\left[\frac{20.9 - C_0}{20.9 - C_s}\right] / Q_{\text{eff}} \)</div>
-                                    <p style="margin-top:8px;">基于新风含氧20.9%的稀释模型</p>
-                                </div>
-                                <div class="info-card">
-                                    <h4>换气次数要求</h4>
+                                    <h4>有害气体 / 易燃蒸气稀释</h4>
+                                    <div class="formula-block">\( t = K \cdot V \cdot \ln\left(\frac{C_0}{C_s}\right) / (Q_{\text{nom}} \cdot \eta) \)</div>
+                                    <p>其中有效风量 \( Q_{\text{eff}} = Q_{\text{nom}} \times \eta \)。</p>
+                                    <p>参数说明：</p>
                                     <ul>
-                                        <li>换气次数 \( N = \frac{Q_{\text{eff}}}{V} \)（次/小时）</li>
-                                        <li>AQ 3028 要求 \( N \geq 5 \) 次/小时</li>
-                                        <li>对应最低所需通风时间 30 分钟</li>
+                                        <li>\( t \)：所需通风时间（小时）</li>
+                                        <li>\( K \)：混合不均匀系数，1~10</li>
+                                        <li>\( V \)：空间净容积（m³）</li>
+                                        <li>\( Q_{\text{nom}} \)：风机铭牌风量（m³/h）</li>
+                                        <li>\( \eta \)：风管损耗折减系数（0.4~1.0）</li>
+                                        <li>\( C_0 / C_s \)：初始浓度 / 目标安全浓度</li>
                                     </ul>
                                 </div>
                                 <div class="info-card">
-                                    <h4>工程安全建议</h4>
+                                    <h4>缺氧恢复（氧气回升）</h4>
+                                    <div class="formula-block">\( t = K \cdot V \cdot \ln\left(\frac{20.9 - C_{O_2,0}}{20.9 - C_{O_2,s}}\right) / (Q_{\text{nom}} \cdot \eta) \)</div>
+                                    <p>仅适用于缺氧情形（\( C_{O_2,0} < 20.9\% \) 且目标浓度 \( C_{O_2,s} \le 20.9\% \)）。若出现富氧，请切换至有害气体模式处理。</p>
+                                    <p>参数说明：</p>
                                     <ul>
-                                        <li>计算值为理论值，增加 20%~50% 余量</li>
-                                        <li>η 无实测时默认 0.7；长管多弯取低值</li>
-                                        <li>持续气体检测优于任何计算模型</li>
-                                        <li><strong style="color:var(--danger)">禁止</strong>仅靠计算不做实测即进入</li>
+                                        <li>\( C_{O_2,0} \)：初始氧气浓度（%）</li>
+                                        <li>\( C_{O_2,s} \)：目标氧气浓度（%）</li>
+                                        <li>新风含氧量取 20.9%</li>
                                     </ul>
                                 </div>
                             </div>
@@ -1099,7 +1139,7 @@
                 </div>
             </div>
 
-            <!-- 公式说明 -->
+            <!-- 核心公式 -->
             <div id="formulas-oxygen" class="formulas-section">
                 <div class="panel">
                     <div class="panel-header">
@@ -1109,30 +1149,28 @@
                     <div class="panel-body">
                         <div class="info-grid">
                             <div class="info-card">
-                                <h4>有害气体稀释公式</h4>
-                                <div class="formula">\( t = K \cdot V \cdot \ln\left(\frac{C_0}{C_s}\right) / Q_{\text{eff}} \)</div>
-                                <p style="margin-top:8px;">其中有效风量 \( Q_{\text{eff}} = Q_{\text{nom}} \times \eta \)</p>
-                            </div>
-                            <div class="info-card">
-                                <h4>缺氧恢复公式</h4>
-                                <div class="formula">\( t = K \cdot V \cdot \ln\left[\frac{20.9 - C_0}{20.9 - C_s}\right] / Q_{\text{eff}} \)</div>
-                                <p style="margin-top:8px;">基于新风含氧20.9%的稀释模型</p>
-                            </div>
-                            <div class="info-card">
-                                <h4>换气次数要求</h4>
+                                <h4>有害气体 / 易燃蒸气稀释</h4>
+                                <div class="formula-block">\( t = K \cdot V \cdot \ln\left(\frac{C_0}{C_s}\right) / (Q_{\text{nom}} \cdot \eta) \)</div>
+                                <p>其中有效风量 \( Q_{\text{eff}} = Q_{\text{nom}} \times \eta \)。</p>
+                                <p>参数说明：</p>
                                 <ul>
-                                    <li>换气次数 \( N = \frac{Q_{\text{eff}}}{V} \)（次/小时）</li>
-                                    <li>AQ 3028 要求 \( N \geq 5 \) 次/小时</li>
-                                    <li>对应最低所需通风时间 30 分钟</li>
+                                    <li>\( t \)：所需通风时间（小时）</li>
+                                    <li>\( K \)：混合不均匀系数，1~10</li>
+                                    <li>\( V \)：空间净容积（m³）</li>
+                                    <li>\( Q_{\text{nom}} \)：风机铭牌风量（m³/h）</li>
+                                    <li>\( \eta \)：风管损耗折减系数（0.4~1.0）</li>
+                                    <li>\( C_0 / C_s \)：初始浓度 / 目标安全浓度</li>
                                 </ul>
                             </div>
                             <div class="info-card">
-                                <h4>工程安全建议</h4>
+                                <h4>缺氧恢复（氧气回升）</h4>
+                                <div class="formula-block">\( t = K \cdot V \cdot \ln\left(\frac{20.9 - C_{O_2,0}}{20.9 - C_{O_2,s}}\right) / (Q_{\text{nom}} \cdot \eta) \)</div>
+                                <p>仅适用于缺氧情形（\( C_{O_2,0} < 20.9\% \) 且目标浓度 \( C_{O_2,s} \le 20.9\% \)）。若出现富氧，请切换至有害气体模式处理。</p>
+                                <p>参数说明：</p>
                                 <ul>
-                                    <li>计算值为理论值，增加 20%~50% 余量</li>
-                                    <li>η 无实测时默认 0.7；长管多弯取低值</li>
-                                    <li>持续气体检测优于任何计算模型</li>
-                                    <li><strong style="color:var(--danger)">禁止</strong>仅靠计算不做实测即进入</li>
+                                    <li>\( C_{O_2,0} \)：初始氧气浓度（%）</li>
+                                    <li>\( C_{O_2,s} \)：目标氧气浓度（%）</li>
+                                    <li>新风含氧量取 20.9%</li>
                                 </ul>
                             </div>
                         </div>
@@ -1141,8 +1179,8 @@
             </div>
         </div>
 
-        <!-- 原formulas占位符 -->
-        <div id="formulas" style="display:none;">
+        <!-- 公式 & 说明 页面 -->
+        <div id="formulasPane" class="tab-pane">
             <div class="panel">
                 <div class="panel-header">
                     <span>📐</span>
@@ -1151,31 +1189,140 @@
                 <div class="panel-body">
                     <div class="info-grid">
                         <div class="info-card">
-                            <h4>有害气体稀释公式</h4>
-                            <div class="formula">\( t = K \cdot V \cdot \ln\left(\frac{C_0}{C_s}\right) / Q_{\text{eff}} \)</div>
-                            <p style="margin-top:8px;">其中有效风量 \( Q_{\text{eff}} = Q_{\text{nom}} \times \eta \)</p>
+                            <h4>手册概述</h4>
+                            <p>本计算器基于指数衰减（吹扫）模型，结合有限空间容积、初始浓度、目标安全浓度、风机铭牌风量、风管损耗折减系数与混合不均匀系数 K，计算理论最小通风时间与换气次数。</p>
+                            <div class="warning-note">⚠️ 计算结果为理论指导值，不能替代现场实测。作业前及作业中必须使用泵吸式多气体检测仪对空间上、中、下部位进行实测，所有指标合格后方可进入。</div>
                         </div>
                         <div class="info-card">
-                            <h4>缺氧恢复公式</h4>
-                            <div class="formula">\( t = K \cdot V \cdot \ln\left[\frac{20.9 - C_0}{20.9 - C_s}\right] / Q_{\text{eff}} \)</div>
-                            <p style="margin-top:8px;">基于新风含氧20.9%的稀释模型</p>
-                        </div>
-                        <div class="info-card">
-                            <h4>换气次数要求</h4>
+                            <h4>安全重点</h4>
                             <ul>
-                                <li>换气次数 \( N = \frac{Q_{\text{eff}}}{V} \)（次/小时）</li>
-                                <li>AQ 3028 要求 \( N \geq 5 \) 次/小时</li>
-                                <li>对应最低所需通风时间 30 分钟</li>
+                                <li>先通风、再检测、后作业：严禁未检测合格前进入。</li>
+                                <li>持续通风：作业过程中风机必须全程开启。</li>
+                                <li>多点检测：覆盖顶部、中部、底部，防范重质气体积聚。</li>
+                                <li>防爆要求：存在易燃易爆气体的空间，必须使用防爆型通风设备。</li>
                             </ul>
                         </div>
                         <div class="info-card">
-                            <h4>工程安全建议</h4>
+                            <h4>有害气体 / 易燃蒸气稀释</h4>
+                            <div class="formula-block">\( t = K \cdot V \cdot \ln\left(\frac{C_0}{C_s}\right) / (Q_{\text{nom}} \cdot \eta) \)</div>
+                            <p>其中有效风量 \( Q_{\text{eff}} = Q_{\text{nom}} \times \eta \)。</p>
+                            <p>参数说明：</p>
                             <ul>
-                                <li>计算值为理论值，增加 20%~50% 余量</li>
-                                <li>η 无实测时默认 0.7；长管多弯取低值</li>
-                                <li>持续气体检测优于任何计算模型</li>
-                                <li><strong style="color:var(--danger)">禁止</strong>仅靠计算不做实测即进入</li>
+                                <li>\( t \)：所需通风时间（小时）</li>
+                                <li>\( K \)：混合不均匀系数，1~10</li>
+                                <li>\( V \)：空间净容积（m³）</li>
+                                <li>\( Q_{\text{nom}} \)：风机铭牌风量（m³/h）</li>
+                                <li>\( \eta \)：风管损耗折减系数（0.4~1.0）</li>
+                                <li>\( C_0 / C_s \)：初始浓度 / 目标安全浓度</li>
                             </ul>
+                        </div>
+                        <div class="info-card">
+                            <h4>缺氧恢复（氧气回升）</h4>
+                            <div class="formula-block">\( t = K \cdot V \cdot \ln\left(\frac{20.9 - C_{O_2,0}}{20.9 - C_{O_2,s}}\right) / (Q_{\text{nom}} \cdot \eta) \)</div>
+                            <p>仅适用于缺氧情形（\( C_{O_2,0} < 20.9\% \) 且目标浓度 \( C_{O_2,s} \le 20.9\% \)）。若出现富氧，请切换至有害气体模式处理。</p>
+                            <p>参数说明：</p>
+                            <ul>
+                                <li>\( C_{O_2,0} \)：初始氧气浓度（%）</li>
+                                <li>\( C_{O_2,s} \)：目标氧气浓度（%）</li>
+                                <li>新风含氧量取 20.9%</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h4>换气次数与安全底线</h4>
+                            <div class="formula-block">\( N = \dfrac{Q_{\text{eff}}}{V} \)</div>
+                            <p>按 AQ 3028 要求，换气次数应满足 \( N \ge 5 \) 次/小时。</p>
+                            <p>若计算时间小于 0.2 小时（12 分钟），仍建议至少通风 30 分钟作为安全底线。</p>
+                        </div>
+                        <div class="info-card">
+                            <h4>折减系数 η 推荐</h4>
+                            <table class="detail-table">
+                                <thead>
+                                    <tr><th>风管情况</th><th>推荐 η 值</th><th>说明</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>短直管（<5m）</td><td>0.8 ~ 0.9</td><td>损耗极小</td></tr>
+                                    <tr><td>标准管（5-15m）</td><td>0.6 ~ 0.7</td><td>默认推荐值</td></tr>
+                                    <tr><td>复杂管（>15m/多弯头）</td><td>0.4 ~ 0.5</td><td>风量损耗严重</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="info-card">
+                            <h4>混合系数 K 推荐</h4>
+                            <table class="detail-table">
+                                <thead>
+                                    <tr><th>空间特征</th><th>推荐 K 值</th><th>备注</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>规则空旷、无死角</td><td>1.5 ~ 2.0</td><td>理想状态</td></tr>
+                                    <tr><td>有障碍物（管道/支架）</td><td>2.0 ~ 4.0</td><td>普通工业井/罐</td></tr>
+                                    <tr><td>形状复杂、长径比大</td><td>4.0 ~ 7.0</td><td>隧道、L型管廊</td></tr>
+                                    <tr><td>高毒/易吸附物质</td><td>7.0 ~ 10.0</td><td>极度保守计算</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="info-card">
+                            <h4>目标浓度参考</h4>
+                            <table class="detail-table">
+                                <thead>
+                                    <tr><th>物质</th><th>限值类型</th><th>安全目标浓度</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>苯</td><td>PC-STEL</td><td>5 ~ 10 ppm</td></tr>
+                                    <tr><td>甲苯</td><td>PC-STEL</td><td>50 ppm</td></tr>
+                                    <tr><td>一氧化碳 CO</td><td>MAC</td><td>30 ppm</td></tr>
+                                    <tr><td>硫化氢 H₂S</td><td>MAC</td><td>10 ppm</td></tr>
+                                    <tr><td>甲烷（10% LEL）</td><td>安全</td><td>5000 ppm</td></tr>
+                                    <tr><td>汽油蒸气（10% LEL）</td><td>安全</td><td>约 1000 ppm</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="info-card">
+                            <h4>浓度换算参考</h4>
+                            <table class="detail-table">
+                                <thead>
+                                    <tr><th>气体</th><th>质量浓度</th><th>换算结果</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>硫化氢</td><td>10 mg/m³</td><td>7 ppm</td></tr>
+                                    <tr><td>氯化氢</td><td>7.5 mg/m³</td><td>4.9 ppm</td></tr>
+                                    <tr><td>氰化氢</td><td>1 mg/m³</td><td>0.8 ppm</td></tr>
+                                    <tr><td>磷化氢</td><td>0.3 mg/m³</td><td>0.2 ppm</td></tr>
+                                    <tr><td>溴化氢</td><td>10 mg/m³</td><td>2.9 ppm</td></tr>
+                                    <tr><td>一氧化碳</td><td>30 mg/m³</td><td>25 ppm</td></tr>
+                                    <tr><td>一氧化氮</td><td>10 mg/m³</td><td>8 ppm</td></tr>
+                                    <tr><td>二氧化碳</td><td>18 000 mg/m³</td><td>9 830 ppm</td></tr>
+                                    <tr><td>二氧化氮</td><td>10 mg/m³</td><td>5.2 ppm</td></tr>
+                                    <tr><td>二氧化硫</td><td>10 mg/m³</td><td>3.7 ppm</td></tr>
+                                    <tr><td>二硫化碳</td><td>10 mg/m³</td><td>3.1 ppm</td></tr>
+                                    <tr><td>苯</td><td>1 mg/m³</td><td>1.8 ppm</td></tr>
+                                    <tr><td>甲苯</td><td>100 mg/m³</td><td>26 ppm</td></tr>
+                                    <tr><td>二甲苯</td><td>100 mg/m³</td><td>22 ppm</td></tr>
+                                    <tr><td>乙苯</td><td>150 mg/m³</td><td>34 ppm</td></tr>
+                                    <tr><td>氨</td><td>30 mg/m³</td><td>42 ppm</td></tr>
+                                    <tr><td>氯</td><td>1 mg/m³</td><td>0.3 ppm</td></tr>
+                                    <tr><td>甲醛</td><td>0.5 mg/m³</td><td>0.4 ppm</td></tr>
+                                    <tr><td>乙酸</td><td>20 mg/m³</td><td>8 ppm</td></tr>
+                                    <tr><td>丙酮</td><td>450 mg/m³</td><td>186 ppm</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="info-card">
+                            <h4>实例计算</h4>
+                            <p>场景：</p>
+                            <p>20 m³ 地下管道井，苯初始浓度 200 mg/m³，目标 10 mg/m³；风机 400 m³/h；风管 12m 有 2 个弯头，取 η=0.7；空间有障碍物，取 K=3.0。</p>
+                            <div class="formula-block">有效风量：\( Q_{\text{eff}} = 400 \times 0.7 = 280 \text{ m³/h} \)</div>
+                            <div class="formula-block">理论时间：\( t_{\text{theo}} = \frac{20 \times \ln(200/10)}{280} = 0.214 \text{ h} = 12.8 \text{ 分钟} \)</div>
+                            <div class="formula-block">实际时间：\( t_{\text{req}} = 3.0 \times 0.214 = 0.642 \text{ h} = 38.5 \text{ 分钟} \)</div>
+                            <p>换气次数：\( N = 280 / 20 = 14 \text{ 次/小时} \)</p>
+                            <p>结论：建议通风 40 分钟，之后实测苯浓度应 ≤ 10 mg/m³，方可进入。</p>
+                        </div>
+                        <div class="info-card">
+                            <h4>公式汇总</h4>
+                            <div class="formula-block">\( t = K \cdot V \cdot \ln\left(\frac{C_0}{C_s}\right) / (Q_{\text{nom}} \cdot \eta) \)</div>
+                            <div class="formula-block">\( t = K \cdot V \cdot \ln\left(\frac{20.9 - C_{O_2,0}}{20.9 - C_{O_2,s}}\right) / (Q_{\text{nom}} \cdot \eta) \)</div>
+                            <div class="formula-block">\( Q_{\text{eff}} = Q_{\text{nom}} \cdot \eta \)</div>
+                            <div class="formula-block">\( N = Q_{\text{eff}} / V \)</div>
+                            <p>安全底线：\( N \ge 5 \) 次/小时；若计算时间 ≤ 0.2 小时（12 分钟），仍建议至少通风30分钟。</p>
                         </div>
                     </div>
                 </div>
@@ -1231,22 +1378,35 @@
     // ── Tab switching ─────────────────────────────────
     function switchTab(id, e) {
         if (e && e.preventDefault) e.preventDefault();
-        const tabId = typeof id === 'string' ? id : (e.target.textContent.includes('有害') ? 'toxic' : 'oxygen');
-        
+        let tabId;
+        if (typeof id === 'string') {
+            tabId = id;
+        } else if (e && e.target) {
+            const text = e.target.textContent;
+            if (text.includes('有害')) tabId = 'toxic';
+            else if (text.includes('缺氧')) tabId = 'oxygen';
+            else if (text.includes('公式')) tabId = 'formulas';
+            else tabId = 'toxic';
+        } else {
+            tabId = 'toxic';
+        }
+
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active-pane'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        
+
         document.getElementById(tabId + 'Pane').classList.add('active-pane');
         document.querySelector(`.nav-btn[data-tab="${tabId}"]`)?.classList.add('active');
         document.querySelector(`.tab-btn[onclick*="${tabId}"]`)?.classList.add('active');
-        
-        if (tabId === 'toxic') calculateToxic();
-        else calculateOxygen();
-    }
 
-    function scrollToSection(id) {
-        document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        if (tabId === 'toxic') calculateToxic();
+        else if (tabId === 'oxygen') calculateOxygen();
+        else if (tabId === 'formulas') {
+            // 触发 MathJax 重新渲染公式页面
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
     }
 
     // ── Slider updates ────────────────────────────────
